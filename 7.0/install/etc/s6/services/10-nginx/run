@@ -1,0 +1,29 @@
+#!/usr/bin/with-contenv bash
+
+while [ ! -f /tmp/state/99-container-init ]
+do
+  sleep 1
+done
+
+if [ ! -f /tmp/state/10-nginx ]; then
+
+	### Check to see if this is a new install, if yes create directories...
+	if [ ! -f /www/html/index.php ] ; then
+	   echo "** [10-nginx] Nothing in /www/html - New Installation Detected"
+	   mkdir -p /www/html
+	   touch /www/html/index.php
+	   chown nginx:www-data /www/html
+	fi
+
+	### Force Reset Permissions for Security
+	chown -R nginx:www-data /www/html
+	mkdir -p /www/logs/nginx
+	mkdir -p /tmp/nginx
+	chown -R nginx /www/logs/nginx
+	chown nginx /tmp/nginx
+	echo 'Initialization Complete' >/tmp/state/10-nginx
+fi
+
+echo ''
+echo '** Starting nginx..'
+exec nginx

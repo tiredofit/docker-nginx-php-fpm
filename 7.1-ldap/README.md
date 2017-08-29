@@ -171,6 +171,19 @@ If you enable `DEBUG_MODE=TRUE` all extensions above will be enabled, and you wi
 | `PHP_XDEBUG_REMOTE_HOST` | Set this to your IP Address - Default `127.0.0.1` |
 | `PHP_XDEBUG_REMOTE_PORT` | XDebug Remote Port - Default `9090` |
 
+To provide LDAP Authentication the following environment variables must be set
+
+| Parameter | Description |
+|-----------|-------------|
+| `LDAP_HOST` | `ldap://ldapserver:389` |
+| `LDAP_BIND_DN ` | Bind User - Default `cn=binduser,dc=whatever,dc=org` |
+| `LDAP_BIND_PW` | Bind Password - Default `surepassword` |
+| `LDAP_BASE_DN` | Base DN - Default `dc=hostname,dc=com` |
+| `LDAP_ATTRIBUTE` | Which attribute to authenticate against - Default `uid` |
+| `LDAP_SCOPE` | Scope of Search - Default `sub` |
+| `LDAP_FILTER` | Your LDAP Filter - Defatult `(objectClass=*)` |
+| `LDAP_GROUP_ATTRIBUTE` | Group Attribute - Default `uniquemember` |
+
 ### Networking
 
 The following ports are exposed.
