@@ -1,0 +1,85 @@
+variables:
+  REGISTRY: registry.selfdesign.org
+
+stages:
+  - prepare
+  - build
+  - push
+
+prepare:
+  stage: prepare
+  script:
+    - docker info
+    - git fetch origin
+  
+build:
+  stage: build
+  script:
+    - cd 5.3
+    - IMAGE_TAG=`head -n 1 CHANGELOG.md | awk '{print $2'}`
+    - docker build -t $REGISTRY/$CI_PROJECT_PATH:5.3-$IMAGE_TAG --compress --squash .
+    - docker tag $REGISTRY/$CI_PROJECT_PATH:5.3-$IMAGE_TAG $REGISTRY/$CI_PROJECT_PATH:5.3-latest
+    - cd ..
+    - cd 5.5
+    - IMAGE_TAG=`head -n 1 CHANGELOG.md | awk '{print $2'}`
+    - docker build -t $REGISTRY/$CI_PROJECT_PATH:5.5-$IMAGE_TAG --compress --squash .
+    - docker tag $REGISTRY/$CI_PROJECT_PATH:5.5-$IMAGE_TAG $REGISTRY/$CI_PROJECT_PATH:5.5-latest
+    - cd ..
+    - cd 5.6
+    - IMAGE_TAG=`head -n 1 CHANGELOG.md | awk '{print $2'}`
+    - docker build -t $REGISTRY/$CI_PROJECT_PATH:5.6-$IMAGE_TAG --compress --squash .
+    - docker tag $REGISTRY/$CI_PROJECT_PATH:5.6-$IMAGE_TAG $REGISTRY/$CI_PROJECT_PATH:5.6-latest
+    - cd ..
+    - cd 7.0
+    - IMAGE_TAG=`head -n 1 CHANGELOG.md | awk '{print $2'}`
+    - docker build -t $REGISTRY/$CI_PROJECT_PATH:7.0-$IMAGE_TAG --compress --squash .
+    - docker tag $REGISTRY/$CI_PROJECT_PATH:7.0-$IMAGE_TAG $REGISTRY/$CI_PROJECT_PATH:7.0-latest
+    - cd ..
+    - cd 7.1
+    - IMAGE_TAG=`head -n 1 CHANGELOG.md | awk '{print $2'}`
+    - docker build -t $REGISTRY/$CI_PROJECT_PATH:7.1-$IMAGE_TAG --compress --squash .
+    - docker tag $REGISTRY/$CI_PROJECT_PATH:7.1-$IMAGE_TAG $REGISTRY/$CI_PROJECT_PATH:7.1-latest
+    - cd ..
+    - cd 7.1-ldap
+    - IMAGE_TAG=`head -n 1 CHANGELOG.md | awk '{print $2'}`
+    - docker build -t $REGISTRY/$CI_PROJECT_PATH:7.1-ldap-$IMAGE_TAG --compress --squash .
+    - docker tag $REGISTRY/$CI_PROJECT_PATH:7.1-ldap-$IMAGE_TAG $REGISTRY/$CI_PROJECT_PATH:7.1-ldap-latest
+    - cd ..
+
+
+
+push:
+  stage: push
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $REGISTRY
+    - cd 5.3
+    - IMAGE_TAG=`head -n 1 CHANGELOG.md | awk '{print $2'}`
+    - docker push $REGISTRY/$CI_PROJECT_PATH:5.3-$IMAGE_TAG
+    - docker push $REGISTRY/$CI_PROJECT_PATH:5.3-latest
+    - cd ..
+    - cd 5.5
+    - IMAGE_TAG=`head -n 1 CHANGELOG.md | awk '{print $2'}`
+    - docker push $REGISTRY/$CI_PROJECT_PATH:5.5-$IMAGE_TAG
+    - docker push $REGISTRY/$CI_PROJECT_PATH:5.5-latest
+    - cd ..
+    - cd 5.6
+    - IMAGE_TAG=`head -n 1 CHANGELOG.md | awk '{print $2'}`
+    - docker push $REGISTRY/$CI_PROJECT_PATH:5.6-$IMAGE_TAG
+    - docker push $REGISTRY/$CI_PROJECT_PATH:5.6-latest
+    - cd ..
+    - cd 7.0
+    - IMAGE_TAG=`head -n 1 CHANGELOG.md | awk '{print $2'}`
+    - docker push $REGISTRY/$CI_PROJECT_PATH:7.0-$IMAGE_TAG
+    - docker push $REGISTRY/$CI_PROJECT_PATH:7.0-latest
+    - cd ..
+    - cd 7.1
+    - IMAGE_TAG=`head -n 1 CHANGELOG.md | awk '{print $2'}`
+    - docker push $REGISTRY/$CI_PROJECT_PATH:7.1-$IMAGE_TAG
+    - docker push $REGISTRY/$CI_PROJECT_PATH:7.1-latest
+    - cd ..
+    - cd 7.1-ldap
+    - IMAGE_TAG=`head -n 1 CHANGELOG.md | awk '{print $2'}`
+    - docker push $REGISTRY/$CI_PROJECT_PATH:7.1-ldap-$IMAGE_TAG
+    - docker push $REGISTRY/$CI_PROJECT_PATH:7.1-ldap-latest
+    - cd ..
+
