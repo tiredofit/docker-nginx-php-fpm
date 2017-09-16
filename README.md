@@ -118,6 +118,7 @@ Enabling / Disabling Specific Extensions
 | `PHP_ENABLE_GETTEXT` | gettext extension - Default `FALSE` |
 | `PHP_ENABLE_GMP` |  gmp extension - Default `FALSE` |
 | `PHP_ENABLE_ICONV` | iconv extension - Default `TRUE` |
+| `PHP_ENABLE_IMAGICK` | ImageMagick extension - Default `FALSE` |
 | `PHP_ENABLE_IMAP` | IMAP extension - Default `TRUE` |
 | `PHP_ENABLE_INTL` | INTL extension - Default `TRUE` |
 | `PHP_ENABLE_JSON` | JSON extension - Default `TRUE` |

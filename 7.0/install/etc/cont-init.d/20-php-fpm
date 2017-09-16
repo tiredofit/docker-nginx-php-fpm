@@ -102,7 +102,7 @@
     echo "xdebug.default_enable = 1" >> /etc/php7/conf.d/xdebug.ini
     echo "xdebug.profiler_enable= "$PHP_XDEBUG_PROFILER_ENABLE >> /etc/php7/conf.d/xdebug.ini
     echo "xdebug.profiler_enable_trigger="$PHP_XDEBUG_PROFILER_ENABLE_TRIGGER >> /etc/php7/conf.d/xdebug.ini
-    echo 'xdebug.profiler_output_dir="'$PHP_XDEBUG_PROFILER_DIR'"' >> /usr/local/etc/php/conf.d/xdebug.ini
+    echo 'xdebug.profiler_output_dir="'$PHP_XDEBUG_PROFILER_DIR'"' >> /etc/php7/conf.d/xdebug.ini
     echo "xdebug.remote_autostart = "$PHP_XDEBUG_REMOTE_AUTOSTART >> /etc/php7/conf.d/xdebug.ini
     echo "xdebug.remote_connect_back = "$PHP_XDEBUG_REMOTE_CONNECT_BACK >> /etc/php7/conf.d/xdebug.ini
     echo "xdebug.remote_enable = "$PHP_XDEBUG_REMOTE_ENABLE >> /etc/php7/conf.d/xdebug.ini

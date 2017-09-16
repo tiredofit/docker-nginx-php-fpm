@@ -30,6 +30,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
           php7-gettext \
           php7-gmp \
           php7-iconv \
+          php7-imagick \
           php7-imap \
           php7-intl \
           php7-json \

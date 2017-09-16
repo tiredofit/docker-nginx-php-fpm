@@ -27,6 +27,7 @@
   PHP_ENABLE_GETTEXT=${PHP_ENABLE_GETTEXT:-"FALSE"}
   PHP_ENABLE_GMP=${PHP_ENABLE_GMP:-"FALSE"}
   PHP_ENABLE_ICONV=${PHP_ENABLE_ICONV:-"TRUE"}
+  PHP_ENABLE_IMAGICK=${PHP_ENABLE_IMAGICK:-"FALSE"}
   PHP_ENABLE_IMAP=${PHP_ENABLE_IMAP:-"TRUE"}
   PHP_ENABLE_INTL=${PHP_ENABLE_INTL:-"TRUE"}
   PHP_ENABLE_JSON=${PHP_ENABLE_JSON:-"TRUE"}
@@ -101,7 +102,7 @@
     echo "xdebug.default_enable = 1" >> /etc/php7/conf.d/xdebug.ini
     echo "xdebug.profiler_enable= "$PHP_XDEBUG_PROFILER_ENABLE >> /etc/php7/conf.d/xdebug.ini
     echo "xdebug.profiler_enable_trigger="$PHP_XDEBUG_PROFILER_ENABLE_TRIGGER >> /etc/php7/conf.d/xdebug.ini
-    echo 'xdebug.profiler_output_dir="'$PHP_XDEBUG_PROFILER_DIR'"' >> /usr/local/etc/php/conf.d/xdebug.ini
+    echo 'xdebug.profiler_output_dir="'$PHP_XDEBUG_PROFILER_DIR'"' >> /etc/php7/conf.d/xdebug.ini
     echo "xdebug.remote_autostart = "$PHP_XDEBUG_REMOTE_AUTOSTART >> /etc/php7/conf.d/xdebug.ini
     echo "xdebug.remote_connect_back = "$PHP_XDEBUG_REMOTE_CONNECT_BACK >> /etc/php7/conf.d/xdebug.ini
     echo "xdebug.remote_enable = "$PHP_XDEBUG_REMOTE_ENABLE >> /etc/php7/conf.d/xdebug.ini
@@ -138,6 +139,7 @@
     if [ "$PHP_ENABLE_GETTEXT " != "TRUE" ]; then  rm -rf /etc/php7/00_gettext.ini; fi;
     if [ "$PHP_ENABLE_GMP" != "TRUE" ]; then  rm -rf /etc/php7/00_gmp.ini; fi;
     if [ "$PHP_ENABLE_ICONV" != "TRUE" ]; then rm -rf /etc/php7/00_iconv.ini ; fi;
+    if [ "$PHP_ENABLE_IMAGICK" != "TRUE" ]; then rm -rf /etc/php7/imagick.ini ; fi;
     if [ "$PHP_ENABLE_IMAP" != "TRUE" ]; then rm -rf /etc/php7/00_imap.ini ; fi;
     if [ "$PHP_ENABLE_INTL" != "TRUE" ]; then rm -rf /etc/php7/00_intl.ini ; fi;
     if [ "$PHP_ENABLE_JSON" != "TRUE" ]; then rm -rf /etc/php7/00_json.ini ; fi;
@@ -187,7 +189,7 @@
   if [ "$ENABLE_SMTP" = "TRUE" ] || [ "$ENABLE_SMTP" = "true" ];  then
     echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtp -t "' > /etc/php7/conf.d/smtp.ini
   fi
-  
+
   sed -i -e "s/<PHP_LOG_LEVEL>/$PHP_LOG_LEVEL/g" /etc/php7/php-fpm.conf
   mkdir -p /tmp/state
   touch /tmp/state/20-php-fpm-init

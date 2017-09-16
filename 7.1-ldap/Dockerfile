@@ -163,6 +163,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
           php7-gettext \
           php7-gmp \
           php7-iconv \
+          php7-imagick \
           php7-imap \
           php7-intl \
           php7-json \

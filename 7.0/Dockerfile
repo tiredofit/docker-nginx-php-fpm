@@ -12,6 +12,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
           openssl \
           nginx \
           php7 \
+          php7-apcu \
           php7-bcmath \
           php7-bz2 \
           php7-calendar \

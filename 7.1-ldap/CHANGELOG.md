@@ -1,3 +1,8 @@
+## 2017-09-17 3.1 <dave at tiredofit dot ca>
+
+* Fix Issue with PHP XDebug
+* Added Imagick Extension
+
 ## 2017-08-27 3.0 <dave at tiredofit dot ca>
 
 * Big change (in image size) due to adding all available PHP Extensions
