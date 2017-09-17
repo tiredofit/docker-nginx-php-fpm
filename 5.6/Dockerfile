@@ -2,7 +2,9 @@ FROM tiredofit/alpine:3.4
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Default Runtime Environment Variables
-  ENV ZABBIX_HOSTNAME=nginx-php-fpm-app
+  ENV ZABBIX_HOSTNAME=nginx-php-fpm-app \
+      ENABLE_SMTP=TRUE
+
 
   RUN apk update && \
       apk add \

@@ -2,10 +2,11 @@ FROM tiredofit/alpine:3.6
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Default Runtime Environment Variables
-ENV ZABBIX_HOSTNAME=nginx-php-fpm-ldap-app
-
+ENV ZABBIX_HOSTNAME=nginx-php-fpm-ldap-app \
+    ENABLE_SMTP=TRUE \
+    
 ### Build Nginx
-ENV NGINX_VERSION 1.13.4
+    NGINX_VERSION 1.13.4
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   && CONFIG="\

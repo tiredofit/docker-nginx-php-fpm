@@ -8,8 +8,9 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
      PHP_VERSION=5.5.38 \
      PHP_URL="https://secure.php.net/get/php-5.5.38.tar.gz/from/this/mirror" \
      PHPIZE_DEPS="autoconf file g++ gcc libc-dev make pkgconf re2c" \
-     ZABBIX_HOSTNAME=nginx-php-fpm-app
- 
+     ZABBIX_HOSTNAME=nginx-php-fpm-app \
+     ENABLE_SMTP=TRUE
+
  COPY install/usr/local/bin/docker-* /usr/local/bin/
 
  RUN apk update && \
