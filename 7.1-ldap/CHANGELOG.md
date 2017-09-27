@@ -1,3 +1,8 @@
+## 2017-09-17 3.2 <dave at tiredofit dot ca>
+
+* Fix Build Issues
+* Nginx 1.13.5
+
 ## 2017-09-17 3.1 <dave at tiredofit dot ca>
 
 * Fix Issue with PHP XDebug
