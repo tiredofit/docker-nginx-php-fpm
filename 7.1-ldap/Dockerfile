@@ -6,7 +6,7 @@ ENV ZABBIX_HOSTNAME=nginx-php-fpm-ldap-app \
     ENABLE_SMTP=TRUE \
     
 ### Build Nginx
-    NGINX_VERSION 1.13.5
+    NGINX_VERSION=1.13.5
 
 RUN CONFIG="\
     --prefix=/etc/nginx \
