@@ -1,3 +1,11 @@
+## 2018-02-01 3.3 <dave at tiredofit dot ca>
+
+* Fix PHP Timezone Issue
+
+## 2018-01-29 3.2 <dave at tiredofit dot ca>
+	
+* Update Zabbix Scripts
+
 ## 2017-09-17 3.1 <dave at tiredofit dot ca>
 
 * Fix Issue with PHP XDebug

@@ -1,4 +1,4 @@
-FROM tiredofit/alpine:3.6
+FROM tiredofit/alpine:3.7
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Default Runtime Environment Variables
@@ -6,7 +6,7 @@ ENV ZABBIX_HOSTNAME=nginx-php-fpm-ldap-app \
     ENABLE_SMTP=TRUE \
     
 ### Build Nginx
-    NGINX_VERSION=1.13.5
+    NGINX_VERSION=1.13.8
 
 RUN CONFIG="\
     --prefix=/etc/nginx \
@@ -220,6 +220,8 @@ RUN CONFIG="\
 
 ### Files Addition
   ADD install /
+  RUN chmod +x /etc/zabbix/zabbix_agentd.conf.d/scripts/*
+
 
 ### Networking Configuration
   EXPOSE 80

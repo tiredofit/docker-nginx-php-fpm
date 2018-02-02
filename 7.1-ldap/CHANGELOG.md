@@ -1,3 +1,17 @@
+## 2018-02-01 3.4 <dave at tiredofit dot ca>
+
+* Fix PHP Timezone Issue
+
+## 2017-01-29 3.3 <dave at tiredofit dot ca>
+
+* Update Nginx to 1.13.8
+* Update Zabbix Scripts
+
+## 2017-12-01 3.21 <dave at tiredofit dot ca>
+
+* Change Base to Alpine 3.7
+* Nginx 1.13.7
+
 ## 2017-09-17 3.2 <dave at tiredofit dot ca>
 
 * Fix Build Issues

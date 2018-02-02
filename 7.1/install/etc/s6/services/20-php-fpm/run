@@ -1,17 +1,17 @@
 #!/usr/bin/with-contenv bash
 
-while [ ! -f /tmp/state/10-* ]
+while [ ! -f /tmp/state/99-container-init ]
 do
   sleep 1
 done
 
 if [ ! -f /tmp/state/20-php-fpm ]; then
-### Start php-fpm
-	mkdir -p /www/logs/php-fpm
-	chown -R nginx /www/logs/php-fpm
+	### Start php-fpm
+	mkdir -p /tmp/state/
 	echo 'Initialization Complete' >/tmp/state/20-php-fpm
 fi
 
+
 echo ''
-echo '** Starting php-fpm..'
+echo '** [nginx-php-fpm] Starting php-fpm..'
 exec s6-setuidgid nginx php-fpm7 -F;

@@ -1,3 +1,11 @@
+## 2018-02-01 3.2 <dave at tiredofit dot ca>
+
+* Fix PHP Timezone Issue
+
+## 2018-01-29 3.1 <dave at tiredofit dot ca>
+
+* Update Zabbix Scripts
+
 ## 2017-08-27 3.0 <dave at tiredofit dot ca>
 
 * Big change (in image size) due to adding all available PHP Extensions

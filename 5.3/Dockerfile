@@ -147,6 +147,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Files Addition
   ADD install /
+  RUN chmod +x /etc/zabbix/zabbix_agentd.conf.d/scripts/*
 
 ### Networking Configuration
   EXPOSE 80

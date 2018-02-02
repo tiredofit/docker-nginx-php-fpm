@@ -57,7 +57,7 @@ The following image tags are available:
 * `7.0-latest` - PHP 7.0.x w/Alpine 3.5
 * `7.1-latest` - PHP 7.1.x w/Alpine 3.6
 * `7.1-ldap-latest` - PHP 7.1.x w/LDAP Authentication w/Alpine 3.6
-* `latest` - Most recent release of PHP w/most recent Alpine Linux
+* `edge/latest` - Most recent release of PHP w/most recent Alpine Linux
 
 # Quick Start
 

@@ -84,7 +84,7 @@
   fi
 
 ### Timezone Config
-  echo 'date.timezone='$TIMEZONE >> /etc/php7/conf.d/timezone.ini
+  echo 'date.timezone='`cat /etc/timezone` >> /etc/php7/conf.d/timezone.ini
 
 ### Debug Mode
   if [ "$DEBUG_MODE" = "TRUE" ] || [ "$DEBUG_MODE" = "true" ];  then
@@ -191,5 +191,9 @@
   fi
 
   sed -i -e "s/<PHP_LOG_LEVEL>/$PHP_LOG_LEVEL/g" /etc/php7/php-fpm.conf
+  
+  mkdir -p /www/logs/php-fpm
+  chown -R nginx /www/logs/php-fpm
+  
   mkdir -p /tmp/state
-  touch /tmp/state/20-php-fpm-init
+  touch /tmp/state/init-20-php-fpm

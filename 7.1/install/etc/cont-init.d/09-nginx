@@ -4,9 +4,14 @@
   PHP_TIMEOUT=${PHP_TIMEOUT:-"180"}
   UPLOAD_MAX_SIZE=${UPLOAD_MAX_SIZE:-"2G"}
   
-
 ### Adjust NGINX Runtime Variables  
   sed -i -e "s/<UPLOAD_MAX_SIZE>/$UPLOAD_MAX_SIZE/g" /etc/nginx/nginx.conf
   sed -i -e "s/<PHP_TIMEOUT>/$PHP_TIMEOUT/g" /etc/nginx/conf.d/default.conf
 
+  mkdir -p /www/logs/nginx
+  mkdir -p /tmp/nginx
+  chown -R nginx /www/logs/nginx
+  chown nginx /tmp/nginx
 
+  mkdir -p /tmp/state
+  touch /tmp/state/09-nginx

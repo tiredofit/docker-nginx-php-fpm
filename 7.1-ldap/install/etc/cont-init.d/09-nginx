@@ -21,3 +21,10 @@
 	sed -i -e "s|\$${envVar}|${envValue}|g" /etc/nginx/conf.d/01-ldap.conf;
   done
 
+mkdir -p /www/logs/nginx
+mkdir -p /tmp/nginx
+chown -R nginx /www/logs/nginx
+chown nginx /tmp/nginx
+
+mkdir -p /tmp/state
+touch /tmp/state/09-nginx
