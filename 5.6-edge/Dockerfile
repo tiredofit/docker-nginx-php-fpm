@@ -68,7 +68,8 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
       sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd && \
       sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd- && \
       ln -s /usr/bin/php5 /usr/bin/php && \
-
+      ln -s /usr/bin/php-fpm5 /usr/bin/php-fpm && \
+ 
 ### Install PHP Composer
       curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
 
