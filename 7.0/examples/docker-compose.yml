@@ -2,7 +2,7 @@ version: '2'
 
 services:
   nginx-php-fpm-app:
-    image: tiredofit/nginx-php-fpm
+    image: registry.selfdesign.org/docker/nginx-php-fpm
     container_name: nginx-php-fpm-app
     volumes:
     - ./data/:/www/html

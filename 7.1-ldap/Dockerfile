@@ -226,5 +226,3 @@ RUN CONFIG="\
 ### Networking Configuration
   EXPOSE 80
 
-### Entrypoint Configuration
-  ENTRYPOINT ["/init"]

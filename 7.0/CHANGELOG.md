@@ -1,3 +1,8 @@
+## 2018-02-14 3.4 <dave at tiredofit dot ca>
+
+* Remove Redundant Entrypoint
+* Fix Paths for enabled php modules
+
 ## 2018-02-01 3.3 <dave at tiredofit dot ca>
 
 * Fix PHP Timezone Issue

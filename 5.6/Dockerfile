@@ -82,6 +82,3 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Networking Configuration
   EXPOSE 80
-
-### Entrypoint Configuration
-  ENTRYPOINT ["/init"]

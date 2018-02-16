@@ -1,3 +1,8 @@
+## 2018-02-14 3.4 <dave at tiredofit dot ca>
+
+* Remove Redundant Entrypoint
+* Fix Paths for enabled php modules
+
 ## 2018-02-03 3.3 <dave at tiredofit dot ca>
 
 * Build PHP5 based on alpine:edge
