@@ -1,17 +1,38 @@
 #!/usr/bin/with-contenv bash
 
 ### Set Defaults
+  MAINTENANCE=${MAINTENANCE:-"FALSE"}
   PHP_TIMEOUT=${PHP_TIMEOUT:-"180"}
   UPLOAD_MAX_SIZE=${UPLOAD_MAX_SIZE:-"2G"}
-  
+  STAGE=${STAGE:-"DEVELOP"}
+
 ### Adjust NGINX Runtime Variables  
   sed -i -e "s/<UPLOAD_MAX_SIZE>/$UPLOAD_MAX_SIZE/g" /etc/nginx/nginx.conf
   sed -i -e "s/<PHP_TIMEOUT>/$PHP_TIMEOUT/g" /etc/nginx/conf.d/default.conf
 
+### Set Stage for Future Development and Production Purposes
+   case "$STAGE" in
+        "DEVELOP" | "develop" )
+        echo 'fastcgi_param STAGE "DEVELOP";' >> /etc/nginx/fastcgi_params
+        ;;
+        "PRODUCTION" | "production" | "STAGING" | "staging")
+        echo 'fastcgi_param STAGE "PRODUCTION";' >> /etc/nginx/fastcgi_params
+        ;;
+        *)
+        echo 'fastcgi_param STAGE "DEVELOP";' >> /etc/nginx/fastcgi_params
+        ;;
+   esac
+   
+  if [ "$MAINTENANCE" = "TRUE" ] || [ "$MAINTENANCE" = "true" ];  then
+    echo '** MAINTENANCE MODE ACTIVATED - THIS IMAGE WILL NOT SERVE PAGES'
+    mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.orig
+    mv /etc/nginx/conf.d/maintenance.conf.maint /etc/nginx.conf.d/maintenance.conf
+  fi
+
   mkdir -p /www/logs/nginx
   mkdir -p /tmp/nginx
   chown -R nginx /www/logs/nginx
-  chown nginx /tmp/nginx
+  chown -R nginx /tmp/nginx
 
   mkdir -p /tmp/state
-  touch /tmp/state/09-nginx
+  touch /tmp/state/09-nginx-init

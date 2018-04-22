@@ -180,16 +180,8 @@
     if [ "$PHP_ENABLE_ZMQ" != "TRUE" ]; then  rm -rf /etc/php7/conf.d/50_xmq.ini; fi;
  fi
 
- if [ "$DEBUG_SMTP" = "TRUE" ] || [ "DEBUG_SMTP" = "true" ] || [ "DEBUG_MODE" = "true" ] || [ "DEBUG_MODE" = "TRUE" ];  then
-    ENABLE_SMTP=FALSE
-    echo 'sendmail_path="/usr/local/bin/mhsendmail"' > /etc/php7/conf.d/smtp.ini
- fi
+  echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtp -t "' > /etc/php7/conf.d/smtp.ini
  
-### SMTP Config
-  if [ "$ENABLE_SMTP" = "TRUE" ] || [ "$ENABLE_SMTP" = "true" ];  then
-    echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtp -t "' > /etc/php7/conf.d/smtp.ini
-  fi
-
   sed -i -e "s/<PHP_LOG_LEVEL>/$PHP_LOG_LEVEL/g" /etc/php7/php-fpm.conf
   
   mkdir -p /www/logs/php-fpm

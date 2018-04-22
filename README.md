@@ -1,16 +1,10 @@
 # hub.docker.com/tiredofit/nginx-php-fpm
 
-[![Build Status](https://img.shields.io/docker/build/tiredofit/nginx-php-fpm.svg)](https://hub.docker.com/r/tiredofit/nginx-php-fpm)
-[![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/nginx-php-fpm.svg)](https://hub.docker.com/r/tiredofit/nginx-php-fpm)
-[![Docker Stars](https://img.shields.io/docker/stars/tiredofit/nginx-php-fpm.svg)](https://hub.docker.com/r/tiredofit/nginx-php-fpm)
-[![Docker Layers](https://images.microbadger.com/badges/image/tiredofit/nginx-php-fpm.svg)](https://microbadger.com/images/tiredofit/nginx-php-fpm)
-[![Image Size](https://img.shields.io/microbadger/image-size/tiredofit/nginx-php-fpm.svg)](https://microbadger.com/images/tiredofit/nginx-php-fpm)
-
 # Introduction
 
 Dockerfile to build a [Nginx](https://www.nginx.org) w/[PHP-FPM](https://php.net) container image.
 
-* This Container uses a [customized Alpine Linux base](https://hub.docker.com/r/tiredofit/alpine) which includes [s6 overlay](https://github.com/just-containers/s6-overlay) enabled for PID 1 Init capabilities, [zabbix-agent](https://zabbix.org) based on TRUNK compiled for individual container monitoring, Cron also installed along with other tools (bash,curl, less, logrotate, mariadb-client, nano, vim) for easier management. It also supports sending to external SMTP servers..
+* This Container uses a [customized Alpine Linux base](https://hub.docker.com/r/tiredofit/alpine) which includes [s6 overlay](https://github.com/just-containers/s6-overlay) enabled for PID 1 Init capabilities, [zabbix-agent](https://zabbix.org) based on 3.4 Packages for individual container monitoring, Cron also installed along with other tools (bash,curl, less, logrotate, mariadb-client, nano, vim) for easier management. It also supports sending to external SMTP servers..
 * Debug Mode to Enable XDebug
 * Caching is provided with w/ APC, OpCache
 * All available PHP Extensions included
@@ -95,7 +89,9 @@ Along with the Environment Variables from the [Base image](https://hub.docker.co
 
 | Parameter | Description |
 |-----------|-------------|
-| `PHP_MEMORY_LIMIT` |Amount of memory php-fpm process should use - Default: `128M`) |
+| `MAINTENANCE` | Display an Under Maintenance Page - Default: `FALSE` |
+| `PHP_MEMORY_LIMIT` | Amount of memory php-fpm process should use - Default: `128M`) |
+| `STAGE` | What Stage this Image is running in `DEVELOP` or `PRODUCTION` - Passes ENV Var to PHP - Default `DEVELOP` 
 | `PHP_LOG_LEVEL` | Define verbosity: (e.g `debug`, `info`, `notice`, `warning`, `error`, `critical`, and `alert` - Default: `info`)
 | `PHP_TIMEOUT`   | Sets Read and Write Timeouts for Nginx FastCGI - Default `300`) |
 | `UPLOAD_MAX_SIZE` | Maximum Upload Size - Default `2G` |
@@ -133,7 +129,7 @@ Enabling / Disabling Specific Extensions
 | `PHP_ENABLE_MBSTRING` | mbstring extension - Default `TRUE` |
 | `PHP_ENABLE_MCRYPT` | mcrypt extension - Default `TRUE` |
 | `PHP_ENABLE_MEMCACHED` | MemCached extension - Default `FALSE` |
-| `PHP_ENABLE_MYSQLND` | MySQLND extension - Default `FALSE` |
+| `PHP_ENABLE_MYSQLND` | MySQLND extension - Default `TRUE` |
 | `PHP_ENABLE_ODBC` |  ODBC extension - Default `FALSE` |
 | `PHP_ENABLE_OPCACHE` | OPCACHE extension - Default `TRUE` |
 | `PHP_ENABLE_OPENSSL` | OpenSSL extension - Default `TRUE` |
@@ -188,6 +184,8 @@ The following ports are exposed.
 
 # Maintenance
 #### Shell Access
+
+If you wish to turn the web server into maintenance mode showing a single page screen outlining that the service is being worked on, you can also enter into the container and type `maintenance ARG`, where ARG is either `ON`,`OFF`, or `SLEEP (seconds)` which will temporarily place the site in maintenance mode and then restore it back to normal after time has passed. 
 
 For debugging and maintenance purposes you may want access the containers shell. 
 

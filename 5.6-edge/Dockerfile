@@ -1,23 +1,23 @@
-FROM tiredofit/alpine:edge
+FROM registry.selfdesign.org/docker/alpine:edge
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Default Runtime Environment Variables
   ENV ZABBIX_HOSTNAME=nginx-php-fpm-app \
       ENABLE_SMTP=TRUE
 
-
-  RUN apk update && \
+  RUN set -x ; \
+      apk update ; \
+      apk add php5-cli ; \
       apk add \
+          libressl \
           mariadb-client \
           nginx \
-          openssl \
           php5-apcu \
           php5-bcmath \
           php5-bz2 \
           php5-calendar \
           php5-ctype \
           php5-curl \
-          php5-cli \
           php5-dba \
           php5-dom \
           php5-embed \
@@ -59,19 +59,18 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
           php5-xml \
           php5-zip \
           php5-zlib \
-          && \
-      apk add -u musl && \
-      rm -rf /var/cache/apk/* && \
-
+          ; \
+      rm -rf /var/cache/apk/* ; \
+      \
 ### Nginx and PHP5 Setup
-      sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php5/php.ini && \
-      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd && \
-      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd- && \
-      ln -s /usr/bin/php5 /usr/bin/php && \
-
+      sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php5/php.ini ; \
+      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd ; \
+      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd- ; \
+      ln -s /usr/bin/php5 /usr/bin/php ; \
+      \
 ### Install PHP Composer
-      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
-
+      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer ; \
+      \
 ### WWW  Installation
       mkdir -p /www/logs
 

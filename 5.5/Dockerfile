@@ -1,4 +1,4 @@
-FROM tiredofit/alpine:3.4
+FROM registry.selfdesign.org/docker/alpine:3.4
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Default Runtime Environment Variables
@@ -13,22 +13,23 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
  COPY install/usr/local/bin/docker-* /usr/local/bin/
 
- RUN apk update && \
+ RUN set -x ; \
+     apk update ; \
      apk add \
        ca-certificates \
        mysql-client \
        openssl \
        nginx \
-       && \
-     apk add -u musl && \
-     rm -rf /var/cache/apk/* && \
-
+       ; \
+     \
+     rm -rf /var/cache/apk/* ; \
+     \
 ### Nginx Setup
-     sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd && \
-     sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd- && \
-
-     apk update && \
-         apk add --no-cache --virtual .persistent-deps \
+     sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd ; \
+     sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd- ; \
+     \
+     apk update ; \
+         apk add --no-cache --virtual .nginx-php-runtime-deps \
          openldap-dev \
          bzip2 \
          bzip2-dev \
@@ -42,25 +43,25 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
          libmcrypt-dev \
          curl \
          tar \
-         xz && \
-
-     mkdir -p /etc/php5/conf.d && \
-     set -xe && \
+         xz ; \
+     \
+     mkdir -p /etc/php5/conf.d ; \
+     set -xe ; \
     
       apk add --no-cache --virtual .fetch-deps \
       gnupg \
       openssl \
-      && \
+      ; \
 
-      mkdir -p /usr/src && \
-      cd /usr/src && \
+      mkdir -p /usr/src ; \
+      cd /usr/src ; \
      
-      wget -O php.tar.gz "$PHP_URL" && \
+      wget -O php.tar.gz "$PHP_URL" ; \
      
-      apk del .fetch-deps && \
+      apk del .fetch-deps ; \
 
-      set -xe \
-    && apk add --no-cache --virtual .build-deps \
+      set -xe ; \
+    apk add --no-cache --virtual .build-deps \
       $PHPIZE_DEPS \
       curl-dev \
       db-dev \
@@ -68,16 +69,14 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
       libxml2-dev \
       openssl-dev \
       sqlite-dev \
-    \
-    && docker-php-source extract \
-    && cd /usr/src/php \
+      ; \
+    docker-php-source extract ; \
+    cd /usr/src/php ; \
 
-    &&  ./configure \
+    ./configure \
       --with-config-file-path=/etc/php5 \
       --with-config-file-scan-dir=/etc/php5/conf.d \
-      \
       --disable-cgi \
-      \
       --enable-ftp \
       --enable-bcmath \
       --enable-exif \
@@ -100,32 +99,31 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
       --with-mysqli=mysqlnd \
       --with-xmlrpc \
       --with-xsl \
-  #    --with-tidy \
       --with-gettext \
-      $PHP_EXTRA_CONFIGURE_ARGS \
-    && make -j "$(getconf _NPROCESSORS_ONLN)" \
-    && make install \
-    && { find /usr/local/bin /usr/local/sbin -type f -perm +0111 -exec strip --strip-all '{}' + || true; } \
-    && make clean \
-    && docker-php-source delete \
+      $PHP_EXTRA_CONFIGURE_ARGS ; \
+    make -j "$(getconf _NPROCESSORS_ONLN)" ; \
+    make install ; \
+    { find /usr/local/bin /usr/local/sbin -type f -perm +0111 -exec strip --strip-all '{}' + || true; } ; \
+    make clean ; \
+    docker-php-source delete ; \
     \
-    && runDeps="$( \
+    runDeps="$( \
       scanelf --needed --nobanner --recursive /usr/local \
         | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
         | sort -u \
         | xargs -r apk info --installed \
         | sort -u \
-    )" \
-    && apk add --no-cache --virtual .php-rundeps $runDeps \
+    )" ; \
+    apk add --no-cache --virtual .php-rundeps $runDeps ; \
     \
-    && apk del .build-deps && \
+    apk del .build-deps ; \
 
-      rm -rf /usr/local/etc && \
-      cd /usr/local && \
-      ln -s /etc/php5 etc && \
+      rm -rf /usr/local/etc ; \
+      cd /usr/local ; \
+      ln -s /etc/php5 etc ; \
 
   #RUN docker-php-ext-install mysqli
-      apk upgrade --update && \
+      apk upgrade --update ; \
       apk add \
           coreutils \
           freetype-dev \
@@ -133,21 +131,21 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
           libltdl \
           libmcrypt-dev \
           libpng-dev \
-          && \
-      docker-php-ext-configure ldap --with-libdir=lib/ && \
-      docker-php-ext-install ldap && \
-      docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
-      docker-php-ext-install -j$(nproc) gd && \
-      docker-php-ext-install zlib && \
-      rm -rf /usr/src/* /var/cache/apk/* && \
-
-
+          ; \
+      docker-php-ext-configure ldap --with-libdir=lib/ ; \
+      docker-php-ext-install ldap ; \
+      docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ ; \
+      docker-php-ext-install -j$(nproc) gd ; \
+      docker-php-ext-install zlib ; \
+      rm -rf /usr/src/* /var/cache/apk/* ; \
+      \
+      \
 ### WWW  Installation
       mkdir -p /www/logs
+
+### Networking Configuration
+  EXPOSE 80
 
 ### Files Addition
   ADD install /
   RUN chmod +x /etc/zabbix/zabbix_agentd.conf.d/scripts/*
-
-### Networking Configuration
-  EXPOSE 80

@@ -22,15 +22,8 @@
   sed -i -e "s/<PHP_MEMORY_LIMIT>/$PHP_MEMORY_LIMIT/g" /etc/php5/php-fpm.conf
   sed -i -e "s/<UPLOAD_MAX_SIZE>/$UPLOAD_MAX_SIZE/g" /etc/php5/php-fpm.conf
 
- if [ "$DEBUG_SMTP" = "TRUE" ] || [ "DEBUG_SMTP" = "true" ] || [ "DEBUG_MODE" = "true" ] || [ "DEBUG_MODE" = "TRUE" ];  then
-    ENABLE_SMTP=FALSE
-    echo 'sendmail_path="/usr/local/bin/mhsendmail"' > /etc/php5/conf.d/smtp.ini
- fi
- 
 ### SMTP Config
-  if [ "$ENABLE_SMTP" = "TRUE" ] || [ "$ENABLE_SMTP" = "true" ];  then
-    echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtp -t "' > /etc/php5/conf.d/smtp.ini
-  fi
+  echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtp -t "' > /etc/php5/conf.d/smtp.ini
 
   mkdir -p /www/logs/php-fpm
   chown -R nginx /www/logs/php-fpm

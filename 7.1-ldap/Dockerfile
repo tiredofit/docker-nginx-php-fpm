@@ -1,4 +1,4 @@
-FROM tiredofit/alpine:3.7
+FROM registry.selfdesign.org/docker/alpine:3.7
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Default Runtime Environment Variables
@@ -6,9 +6,10 @@ ENV ZABBIX_HOSTNAME=nginx-php-fpm-ldap-app \
     ENABLE_SMTP=TRUE \
     
 ### Build Nginx
-    NGINX_VERSION=1.13.8
+    NGINX_VERSION=1.14.0
 
-RUN CONFIG="\
+RUN set -x ; \
+    CONFIG="\
     --prefix=/etc/nginx \
     --sbin-path=/usr/sbin/nginx \
     --modules-path=/usr/lib/nginx/modules \
@@ -54,87 +55,84 @@ RUN CONFIG="\
     --with-file-aio \
     --with-http_v2_module \
     --add-module=/usr/src/nginx-auth-ldap \
-
-  " \
-  && addgroup -S www-data \
-  && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G www-data nginx \
-  && apk add --no-cache --virtual .build-deps \
+  " ; \
+  addgroup -S www-data ; \
+  adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G www-data nginx ; \
+  apk add --no-cache --virtual .nginx-build-deps \
     gcc \
-    libc-dev \
-    make \
-    libressl-dev \
-    pcre-dev \
-    zlib-dev \
-    linux-headers \
-    tar \
-    gnupg \
-    libxslt-dev \
     gd-dev \
     geoip-dev \
+    gnupg \
+    libc-dev \
+    libressl-dev \
+    libxslt-dev \
+    linux-headers \
+    make \
+    openldap-dev \
+    pcre-dev \
     perl-dev \
     tar \
-    openldap-dev \
-
-  && mkdir -p /usr/src/nginx-auth-ldap /www /www/logs/nginx \
-  && curl https://codeload.github.com/kvspb/nginx-auth-ldap/tar.gz/master | tar xz --strip=1 -C /usr/src/nginx-auth-ldap \
-  && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
-  && mkdir -p /usr/src \
-  && tar -zxC /usr/src -f nginx.tar.gz \
-  && rm nginx.tar.gz \
-  && cd /usr/src/nginx-$NGINX_VERSION \
-  && ./configure $CONFIG --with-debug \
-  && make -j$(getconf _NPROCESSORS_ONLN) \
-  && mv objs/nginx objs/nginx-debug \
-  && mv objs/ngx_http_xslt_filter_module.so objs/ngx_http_xslt_filter_module-debug.so \
-  && mv objs/ngx_http_image_filter_module.so objs/ngx_http_image_filter_module-debug.so \
-  && mv objs/ngx_http_geoip_module.so objs/ngx_http_geoip_module-debug.so \
-  && mv objs/ngx_http_perl_module.so objs/ngx_http_perl_module-debug.so \
-  && mv objs/ngx_stream_geoip_module.so objs/ngx_stream_geoip_module-debug.so \
-  && ./configure $CONFIG \
-  && make -j$(getconf _NPROCESSORS_ONLN) \
-  && make install \
-  && rm -rf /etc/nginx/html/ \
-  && mkdir /etc/nginx/conf.d/ \
-  && mkdir -p /usr/share/nginx/html/ \
-  && install -m644 html/index.html /usr/share/nginx/html/ \
-  && install -m644 html/50x.html /usr/share/nginx/html/ \
-  && install -m755 objs/nginx-debug /usr/sbin/nginx-debug \
-  && install -m755 objs/ngx_http_xslt_filter_module-debug.so /usr/lib/nginx/modules/ngx_http_xslt_filter_module-debug.so \
-  && install -m755 objs/ngx_http_image_filter_module-debug.so /usr/lib/nginx/modules/ngx_http_image_filter_module-debug.so \
-  && install -m755 objs/ngx_http_geoip_module-debug.so /usr/lib/nginx/modules/ngx_http_geoip_module-debug.so \
-  && install -m755 objs/ngx_http_perl_module-debug.so /usr/lib/nginx/modules/ngx_http_perl_module-debug.so \
-  && install -m755 objs/ngx_stream_geoip_module-debug.so /usr/lib/nginx/modules/ngx_stream_geoip_module-debug.so \
-  && ln -s ../../usr/lib/nginx/modules /etc/nginx/modules \
-  && strip /usr/sbin/nginx* \
-  && strip /usr/lib/nginx/modules/*.so \
-  && rm -rf /usr/src/nginx-$NGINX_VERSION \
+    zlib-dev \
+    ; \
+    \
+  mkdir -p /usr/src/nginx-auth-ldap /www /www/logs/nginx ; \
+  curl https://codeload.github.com/kvspb/nginx-auth-ldap/tar.gz/master | tar xz --strip=1 -C /usr/src/nginx-auth-ldap ; \
+  curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz ; \
+  mkdir -p /usr/src ; \
+  tar -zxC /usr/src -f nginx.tar.gz ; \
+  rm nginx.tar.gz ; \
+  cd /usr/src/nginx-$NGINX_VERSION ; \
+  ./configure $CONFIG --with-debug ; \
+  make -j$(getconf _NPROCESSORS_ONLN) ; \
+  mv objs/nginx objs/nginx-debug ; \
+  mv objs/ngx_http_xslt_filter_module.so objs/ngx_http_xslt_filter_module-debug.so ; \
+  mv objs/ngx_http_image_filter_module.so objs/ngx_http_image_filter_module-debug.so ; \
+  mv objs/ngx_http_geoip_module.so objs/ngx_http_geoip_module-debug.so ; \
+  mv objs/ngx_http_perl_module.so objs/ngx_http_perl_module-debug.so ; \
+  mv objs/ngx_stream_geoip_module.so objs/ngx_stream_geoip_module-debug.so ; \
+  ./configure $CONFIG ; \
+  make -j$(getconf _NPROCESSORS_ONLN) ; \
+  make install ; \
+  rm -rf /etc/nginx/html/ ; \
+  mkdir -p /etc/nginx/conf.d/ ; \
+  mkdir -p /usr/share/nginx/html/ ; \
+  install -m644 html/index.html /usr/share/nginx/html/ ; \
+  install -m644 html/50x.html /usr/share/nginx/html/ ; \
+  install -m755 objs/nginx-debug /usr/sbin/nginx-debug ; \
+  install -m755 objs/ngx_http_xslt_filter_module-debug.so /usr/lib/nginx/modules/ngx_http_xslt_filter_module-debug.so ; \
+  install -m755 objs/ngx_http_image_filter_module-debug.so /usr/lib/nginx/modules/ngx_http_image_filter_module-debug.so ; \
+  install -m755 objs/ngx_http_geoip_module-debug.so /usr/lib/nginx/modules/ngx_http_geoip_module-debug.so ; \
+  install -m755 objs/ngx_http_perl_module-debug.so /usr/lib/nginx/modules/ngx_http_perl_module-debug.so ; \
+  install -m755 objs/ngx_stream_geoip_module-debug.so /usr/lib/nginx/modules/ngx_stream_geoip_module-debug.so ; \
+  ln -s ../../usr/lib/nginx/modules /etc/nginx/modules ; \
+  strip /usr/sbin/nginx* ; \
+  strip /usr/lib/nginx/modules/*.so ; \
+  rm -rf /usr/src/nginx-$NGINX_VERSION ; \
   \
   # Bring in gettext so we can get `envsubst`, then throw
   # the rest away. To do this, we need to install `gettext`
   # then move `envsubst` out of the way so `gettext` can
   # be deleted completely, then move `envsubst` back.
-  && apk add --no-cache --virtual .gettext gettext \
-  && mv /usr/bin/envsubst /tmp/ \
+  apk add --no-cache --virtual .gettext gettext ; \
+  mv /usr/bin/envsubst /tmp/ ; \
   \
-  && runDeps="$( \
+  runDeps="$( \
     scanelf --needed --nobanner /usr/sbin/nginx /usr/lib/nginx/modules/*.so /tmp/envsubst \
       | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
       | sort -u \
       | xargs -r apk info --installed \
       | sort -u \
-  )" \
-  && apk add --no-cache --virtual .nginx-rundeps $runDeps \
-  && apk add --no-cache bash vim openldap nano less\
-  && apk del .build-deps \
-  && apk del .gettext \
-  && mv /tmp/envsubst /usr/local/bin/ \
+  )" ; \
+  apk add --no-cache --virtual .nginx-rundeps $runDeps ; \
+  apk add --no-cache openldap ; \
+  apk del .nginx-build-deps ; \
+  apk del .gettext ; \
+  mv /tmp/envsubst /usr/local/bin/ ; \
   \
-  # forward request and error logs to docker log collector
-  && rm -rf /usr/src/* /var/tmp/* /var/cache/apk/*
-
-
+  rm -rf /usr/src/* /var/tmp/* /var/cache/apk/* ; \
+  \
 ### Dependency Installation
-  RUN apk update && \
+      apk update ; \
       apk add \
           ca-certificates \
           mariadb-client \
@@ -202,27 +200,25 @@ RUN CONFIG="\
           php7-zip \
           php7-zlib \
           php7-zmq \
-          && \
-      apk add -u musl && \
-      rm -rf /var/cache/apk/* && \
-
+          ; \
+      \
+      rm -rf /var/cache/apk/* ; \
+      \
 ### Nginx and PHP7 Setup
-      sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini && \
-      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd && \
-      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd- && \
-      ln -s /sbin/php-fpm7 /sbin/php-fpm && \
-
+      sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini ; \
+      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd ; \
+      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd- ; \
+      ln -s /sbin/php-fpm7 /sbin/php-fpm ; \
+      \
 ### Install PHP Composer
-      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
-
+      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer ; \
+      \
 ### WWW  Installation
       mkdir -p /www/logs
-
-### Files Addition
-  ADD install /
-  RUN chmod +x /etc/zabbix/zabbix_agentd.conf.d/scripts/*
-
 
 ### Networking Configuration
   EXPOSE 80
 
+### Files Addition
+  ADD install /
+  RUN chmod +x /etc/zabbix/zabbix_agentd.conf.d/scripts/*

@@ -1,4 +1,4 @@
-FROM tiredofit/alpine:edge
+FROM registry.selfdesign.org/docker/alpine:edge
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Default Runtime Environment Variables
@@ -6,8 +6,9 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
       ENABLE_SMTP=TRUE
 
 ### Dependency Installation
-  RUN echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
-      apk update && \
+  RUN set -x ; \
+      echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories ; \
+      apk update ; \
       apk add \
           ca-certificates \
           mariadb-client \
@@ -76,28 +77,24 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
           php7-zip \
           php7-zlib \
           php7-zmq \
-          && \
-      apk add -u musl && \
-      rm -rf /var/cache/apk/* && \
+          ; \
+      \
+      rm -rf /var/cache/apk/* ; \
 
 ### Nginx and PHP7 Setup
-      sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini && \
-      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd && \
-      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd- && \
-      ln -s /sbin/php-fpm7 /sbin/php-fpm && \
-
+      sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini ; \
+      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd ; \
+      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd- ; \
+      ln -s /sbin/php-fpm7 /sbin/php-fpm ; \
+      \
 ### Install PHP Composer
-      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
-
+      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer ; \
+      \
 ### WWW  Installation
       mkdir -p /www/logs
-
-### Files Addition
-  ADD install /
 
 ### Networking Configuration
   EXPOSE 80
 
-### Entrypoint Configuration
-  ENTRYPOINT ["/init"]
-
+### Files Addition
+  ADD install /

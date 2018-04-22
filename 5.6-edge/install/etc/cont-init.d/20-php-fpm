@@ -141,15 +141,8 @@
     if [ "$PHP_ENABLE_ZLIB" != "TRUE" ]; then rm -rf /etc/php5/00_zlib.ini ; fi;
  fi
 
-  if [ "$DEBUG_SMTP" = "TRUE" ] || [ "DEBUG_SMTP" = "true" ] || [ "DEBUG_MODE" = "true" ] || [ "DEBUG_MODE" = "TRUE" ];  then
-    ENABLE_SMTP=FALSE
-    echo 'sendmail_path="/usr/local/bin/mhsendmail"' > /etc/php5/conf.d/smtp.ini
- fi
- 
 ### SMTP Config
-  if [ "$ENABLE_SMTP" = "TRUE" ] || [ "$ENABLE_SMTP" = "true" ];  then
-    echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtp -t "' > /etc/php5/conf.d/smtp.ini
-  fi
+  echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtp -t "' > /etc/php5/conf.d/smtp.ini
 
   sed -i -e "s/<PHP_LOG_LEVEL>/$PHP_LOG_LEVEL/g" /etc/php5/php-fpm.conf
   

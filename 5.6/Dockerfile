@@ -1,4 +1,4 @@
-FROM tiredofit/alpine:3.4
+FROM registry.selfdesign.org/docker/alpine:3.4
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Default Runtime Environment Variables
@@ -6,7 +6,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
       ENABLE_SMTP=TRUE
 
 
-  RUN apk update && \
+  RUN apk update ; \
       apk add \
           bash \
           ca-certificates \
@@ -61,24 +61,24 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
           php5-xml \
           php5-zip \
           php5-zlib \
-          && \
-      apk add -u musl && \
-      rm -rf /var/cache/apk/* && \
-
+          ; \
+          \
+      rm -rf /var/cache/apk/* ; \
+      \
 ### Nginx and PHP5 Setup
-      sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php5/php.ini && \
-      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd && \
-      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd- && \
-
+      sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php5/php.ini ; \
+      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd ; \
+      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd- ; \
+      \
 ### Install PHP Composer
-      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
-
+      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer ; \
+      \
 ### WWW  Installation
       mkdir -p /www/logs
+
+### Networking Configuration
+  EXPOSE 80
 
 ### Files Addition
   ADD install /
   RUN chmod +x /etc/zabbix/zabbix_agentd.conf.d/scripts/*
-
-### Networking Configuration
-  EXPOSE 80
