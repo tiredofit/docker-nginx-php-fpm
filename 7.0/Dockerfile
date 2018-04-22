@@ -1,4 +1,4 @@
-FROM registry.selfdesign.org/docker/alpine:3.5
+FROM tiredofit/alpine:3.5
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Default Runtime Environment Variables
