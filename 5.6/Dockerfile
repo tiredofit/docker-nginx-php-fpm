@@ -9,6 +9,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
   RUN apk update ; \
       apk add \
           bash \
+          apache2-utils \
           ca-certificates \
           mariadb-client \
           nginx \

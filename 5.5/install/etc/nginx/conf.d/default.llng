@@ -1,0 +1,89 @@
+  server {
+     listen       80;
+
+    root /www/html;
+    index  index.php index.html index.htm;
+    access_log /www/logs/nginx/access.log specialLog;
+    error_log /www/logs/nginx/error.log;
+    
+    disable_symlinks off;
+    
+    location = /robots.txt {
+      allow all;
+      log_not_found off;
+      access_log off;
+    }
+    
+    # deny dot-files
+    location ~ /\. { 
+      deny all;
+      access_log off;
+      log_not_found off; 
+    }
+
+    # LemonLDAP:NG authentication request
+    location = /lmauth {
+      internal;
+      include /etc/nginx/fastcgi_params;
+      fastcgi_pass <LLNG_HANDLER_HOST>:<LLNG_HANDLER_PORT>;
+      fastcgi_param REMOTE_PORT <LLNG_HANDLER_PORT>;
+      fastcgi_pass_request_body  off;
+      fastcgi_param CONTENT_LENGTH "";
+      fastcgi_param HOST $http_host;
+      fastcgi_param X_ORIGINAL_URI  $request_uri;
+    }
+
+    location / {
+      auth_request /lmauth;
+      auth_request_set $lmremote_user $upstream_http_lm_remote_user;
+      auth_request_set $lmlocation $upstream_http_location;
+      auth_request_set $cookie_value $upstream_http_set_cookie;
+      add_header Set-Cookie $cookie_value;
+      error_page 401 $lmlocation;
+      try_files $uri $uri/ /index.php?$args;
+    }
+    
+    location ~ \.php(/|$) {
+      fastcgi_split_path_info ^(.+?\.php)(/.+)$;
+      fastcgi_param PATH_INFO $fastcgi_path_info;
+      fastcgi_pass 127.0.0.1:9000;
+      fastcgi_index index.php;
+      include fastcgi_params;
+      fastcgi_read_timeout <PHP_TIMEOUT>;
+      fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+      fastcgi_param HTTP_AUTH_USER;
+    }
+
+    # Deny access to any files with a .php extension in the uploads directory
+    # Works in sub-directory installs and also in multisite network
+    # Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
+    location ~* /(?:uploads|files)/.*\.php$ {
+   	deny all;
+    }
+    
+    location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml)$ {
+        access_log        on;
+        log_not_found     on;
+        expires           360d;
+    }    
+
+    ## Block SQL injections
+    location ~* union.*select.*\( { access_log /www/logs/nginx/blocked.log blocked; deny all; }
+    location ~* union.*all.*select.* { access_log /www/logs/nginx/blocked.log blocked; deny all; }
+    location ~* concat.*\( { access_log /www/logs/nginx/blocked.log blocked; deny all; }
+    
+    ## Block common exploits
+    location ~* (<|%3C).*script.*(>|%3E) { access_log /www/logs/nginx/blocked.log blocked; deny all; }
+    location ~* base64_(en|de)code\(.*\) { access_log /www/logs/nginx/blocked.log blocked; deny all; }
+    location ~* (%24&x) { access_log /www/logs/nginx/blocked.log blocked; deny all; }
+    location ~* (%0|%A|%B|%C|%D|%E|%F|127\.0) { access_log /www/logs/nginx/blocked.log blocked; deny all; }
+    location ~* \.\.\/  { access_log /www/logs/nginx/blocked.log blocked; deny all; }
+    location ~* ~$ { access_log /www/logs/nginx/blocked.log blocked; deny all; }
+    location ~* proc/self/environ { access_log /www/logs/nginx/blocked.log blocked; deny all; }
+    location ~* /\.(htaccess|htpasswd|svn) { access_log /www/logs/nginx/blocked.log blocked; deny all; }
+    
+    ## Block file injections
+    location ~* [a-zA-Z0-9_]=(\.\.//?)+ { access_log /www/logs/nginx/blocked.log blocked; deny all; }
+    location ~* [a-zA-Z0-9_]=/([a-z0-9_.]//?)+ { access_log /www/logs/nginx/blocked.log blocked; deny all; }
+    
+}

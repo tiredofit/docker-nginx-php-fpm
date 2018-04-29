@@ -16,6 +16,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
  RUN set -x ; \
      apk update ; \
      apk add \
+       apache2-utils \
        ca-certificates \
        mysql-client \
        openssl \

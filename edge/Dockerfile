@@ -10,6 +10,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
       echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories ; \
       apk update ; \
       apk add \
+          apache2-utils \
           ca-certificates \
           mariadb-client \
           openssl \

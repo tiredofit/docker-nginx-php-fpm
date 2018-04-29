@@ -9,6 +9,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
       apk update ; \
       apk add php5-cli ; \
       apk add \
+          apache2-utils \
           libressl \
           mariadb-client \
           nginx \

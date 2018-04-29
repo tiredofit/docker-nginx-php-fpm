@@ -6,6 +6,7 @@ Dockerfile to build a [Nginx](https://www.nginx.org) w/[PHP-FPM](https://php.net
 
 * This Container uses a [customized Alpine Linux base](https://hub.docker.com/r/tiredofit/alpine) which includes [s6 overlay](https://github.com/just-containers/s6-overlay) enabled for PID 1 Init capabilities, [zabbix-agent](https://zabbix.org) based on 3.4 Packages for individual container monitoring, Cron also installed along with other tools (bash,curl, less, logrotate, mariadb-client, nano, vim) for easier management. It also supports sending to external SMTP servers..
 * Debug Mode to Enable XDebug
+* Ability to Password Protect (Basic) or use LemonLDAP:NG Handler
 * All available PHP Extensions included
 * Enabled by default extensions are: apcu, bcmath, ctype, curl, dom, gd, iconv, intl, json, ldap, mbstring, mcrypt, opcache, openssl, pdo, pdo_mysql, pdo_sqlite, pgsql, phar, redis, session, xml, xmlreader, zlib
 
@@ -85,6 +86,20 @@ No Database Required - MariaDB Client is located within the image.
 ### Environment Variables
 
 Along with the Environment Variables from the [Base image](https://hub.docker.com/r/tiredofit/alpine), below is the complete list of available options that can be used to customize your installation.
+
+Authentication Options
+
+| Parameter | Description |
+|-----------|-------------|
+| `AUTHENTICATION_TYPE` | Protect site - `NONE`,`BASIC`,`LLNG` - Default `NONE` |
+| `WEB_USER` | If `BASIC` chosen enter this for the username to protect site |
+| `WEB_PASS` | If `BASIC` chosen enter this for the password to protect site |
+| `LLNG_HANDLER_HOST` | If `LLNG` chosen use hostname of handler - Default `llng-handler`
+| `LLNG_HANDLER_PORT` | If `LLNG` chosen use this port for handler - Default `2884` |
+
+The `LLNG` option is for when using LemonLDAP:NG Handlers to protect your application and require modification to the `/etc/nginx/conf.d/default.llng` file to fully work properly! 
+
+General Options 
 
 | Parameter | Description |
 |-----------|-------------|

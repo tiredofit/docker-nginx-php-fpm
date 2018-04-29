@@ -1,3 +1,8 @@
+## 4.0 2018-04-28 <dave at tiredofit dot ca>
+
+* Ability to protect service via basic authentication or using LemonLDAP:NG Handlers
+
+
 ## 3.9 2018-04-22 <dave at tiredofit dot ca>
 
 * Tweak SMTP to always route through msmtp based on new Base Image Changes

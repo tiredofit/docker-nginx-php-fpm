@@ -8,6 +8,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 ### Dependency Installation
   RUN apk update ; \
       apk add \
+          apache2-utils \
           ca-certificates \
           mariadb-client \
           openssl \
