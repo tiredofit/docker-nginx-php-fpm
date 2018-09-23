@@ -5,9 +5,8 @@
 Dockerfile to build a [Nginx](https://www.nginx.org) w/[PHP-FPM](https://php.net) container image.
 
 * This Container uses a [customized Alpine Linux base](https://hub.docker.com/r/tiredofit/alpine) which includes [s6 overlay](https://github.com/just-containers/s6-overlay) enabled for PID 1 Init capabilities, [zabbix-agent](https://zabbix.org) based on 3.4 Packages for individual container monitoring, Cron also installed along with other tools (bash,curl, less, logrotate, mariadb-client, nano, vim) for easier management. It also supports sending to external SMTP servers..
-* Debug Mode to Enable XDebug
-* Caching is provided with w/ APC, OpCache
 * All available PHP Extensions included
+* Ability to Password Protect (Basic) or use LemonLDAP:NG Handler
 * Enabled by default extensions are: apcu, bcmath, ctype, curl, dom, gd, iconv, intl, json, ldap, mbstring, mcrypt, opcache, openssl, pdo, pdo_mysql, pdo_sqlite, pgsql, phar, redis, session, xml, xmlreader, zlib
 
 
@@ -54,10 +53,10 @@ The following image tags are available:
 * `5.3-latest` - PHP 5.3.29 w/Alpine 3.4
 * `5.5-latest` - PHP 5.5..38 w/Alpine 3.4
 * `5.6-latest` - PHP 5.6.x w/Alpine 3.5
-* `7.0-latest` - PHP 7.0.x w/Alpine 3.5
-* `7.1-latest` - PHP 7.1.x w/Alpine 3.6
-* `7.1-ldap-latest` - PHP 7.1.x w/LDAP Authentication w/Alpine 3.6
-* `edge/latest` - Most recent release of PHP w/most recent Alpine Linux
+* `7.0-latest` - PHP 7.0.x w/Alpine 3.6
+* `7.1-latest` - PHP 7.1.x w/Alpine 3.7
+* `7.1-ldap-latest` - PHP 7.1.x w/LDAP Authentication w/Alpine 3.7
+* `latest` - Most recent release of PHP w/most recent Alpine Linux
 
 # Quick Start
 
@@ -87,9 +86,22 @@ No Database Required - MariaDB Client is located within the image.
 
 Along with the Environment Variables from the [Base image](https://hub.docker.com/r/tiredofit/alpine), below is the complete list of available options that can be used to customize your installation.
 
+Authentication Options
+
 | Parameter | Description |
 |-----------|-------------|
-| `MAINTENANCE` | Display an Under Maintenance Page - Default: `FALSE` |
+| `AUTHENTICATION_TYPE` | Protect site - `NONE`,`BASIC`,`LLNG` - Default `NONE` |
+| `WEB_USER` | If `BASIC` chosen enter this for the username to protect site |
+| `WEB_PASS` | If `BASIC` chosen enter this for the password to protect site |
+| `LLNG_HANDLER_HOST` | If `LLNG` chosen use hostname of handler - Default `llng-handler`
+| `LLNG_HANDLER_PORT` | If `LLNG` chosen use this port for handler - Default `2884` |
+
+The `LLNG` option is for when using LemonLDAP:NG Handlers to protect your application and require modification to the `/etc/nginx/conf.d/default.llng` file to fully work properly! 
+
+General Options 
+
+| Parameter | Description |
+|-----------|-------------|
 | `PHP_MEMORY_LIMIT` | Amount of memory php-fpm process should use - Default: `128M`) |
 | `STAGE` | What Stage this Image is running in `DEVELOP` or `PRODUCTION` - Passes ENV Var to PHP - Default `DEVELOP` 
 | `PHP_LOG_LEVEL` | Define verbosity: (e.g `debug`, `info`, `notice`, `warning`, `error`, `critical`, and `alert` - Default: `info`)
@@ -120,7 +132,6 @@ Enabling / Disabling Specific Extensions
 | `PHP_ENABLE_GETTEXT` | gettext extension - Default `FALSE` |
 | `PHP_ENABLE_GMP` |  gmp extension - Default `FALSE` |
 | `PHP_ENABLE_ICONV` | iconv extension - Default `TRUE` |
-| `PHP_ENABLE_IMAGICK` | ImageMagick extension - Default `FALSE` |
 | `PHP_ENABLE_IMAP` | IMAP extension - Default `TRUE` |
 | `PHP_ENABLE_INTL` | INTL extension - Default `TRUE` |
 | `PHP_ENABLE_JSON` | JSON extension - Default `TRUE` |
@@ -184,8 +195,6 @@ The following ports are exposed.
 
 # Maintenance
 #### Shell Access
-
-If you wish to turn the web server into maintenance mode showing a single page screen outlining that the service is being worked on, you can also enter into the container and type `maintenance ARG`, where ARG is either `ON`,`OFF`, or `SLEEP (seconds)` which will temporarily place the site in maintenance mode and then restore it back to normal after time has passed. 
 
 For debugging and maintenance purposes you may want access the containers shell. 
 
