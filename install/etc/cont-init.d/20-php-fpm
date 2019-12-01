@@ -65,7 +65,8 @@
   PHP_ENABLE_ZIP=${PHP_ENABLE_ZIP:-"FALSE"}
   PHP_ENABLE_ZLIB=${PHP_ENABLE_ZLIB:-"TRUE"}
   PHP_ENABLE_ZMQ=${PHP_ENABLE_ZMQ:-"FALSE"}
-
+  FPM_MAX_CHILDREN=${FPM_MAX_CHILDREN:-75}
+  FPM_MAX_REQUESTS=${FPM_MAX_REQUESTS:-500}
 
 ### Adjust PHP Runtime Variables
   sed -i -e "s/<APC_SHM_SIZE>/$APC_SHM_SIZE/g" /etc/php7/conf.d/apcu.ini
@@ -75,6 +76,10 @@
   sed -i -e "s/<PHP_TIMEOUT>/$PHP_TIMEOUT/g" /etc/php7/php.ini
   sed -i -e "s/<UPLOAD_MAX_SIZE>/$UPLOAD_MAX_SIZE/g" /etc/php7/php-fpm.conf
   sed -i -e "s/<UPLOAD_MAX_SIZE>/$UPLOAD_MAX_SIZE/g" /etc/php7/php.ini
+
+### FPM Runtime Variables
+  sed -i -e "s/<MAX_CHILDREN>/$FPM_MAX_CHILDREN/g" /etc/php7/php-fpm.conf
+  sed -i -e "s/<MAX_REQUESTS>/$FPM_MAX_REQUESTS/g" /etc/php7/php-fpm.conf
 
 ### Disable Modules
   if [ "$OPCACHE_MEM_SIZE" = "0" ]; then
