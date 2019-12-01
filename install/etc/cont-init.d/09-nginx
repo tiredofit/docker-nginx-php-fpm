@@ -10,7 +10,28 @@
   LLNG_HANDLER_PORT=${LLNG_HANDLER_PORT="2884"}
   WEB_USER=${WEB_USER:-admin}
   WEB_PASS=${WEB_PASS:-password}
-  
+  ENABLE_GZIP_COMPRESSION=${ENABLE_GZIP_COMPRESSION:-"true"}
+  GZIP_COMPRESSION_PARAMS='gzip on;               # enable gzip\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_http_version 1.1; # turn on gzip for http 1.1 and higher\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_disable “MSIE [1-6]\.(?!.*SV1)”;\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_disable "msie6";  # IE 6 had issues with gzip\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_comp_level 5;     # inc compresion level, and CPU usage\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_min_length 100;   # minimal weight to gzip file\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_proxied any;      # enable gzip for proxied requests (e.g. CDN)\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_buffers 16 8k;    # compression buffers (if we exceed this value, disk will be used instead of RAM)\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_vary on;          # add header Vary Accept-Encoding (more on that in Caching section)\n'
+  GZIP_COMPRESSION_PARAMS+='    # define files which should be compressed\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_types application/xml;\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_types text/plain;\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_types text/css;\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_types application/javascript;\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_types application/json;\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_types application/vnd.ms-fontobject;\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_types application/x-font-ttf;\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_types font/opentype;\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_types image/svg+xml;\n'
+  GZIP_COMPRESSION_PARAMS+='    gzip_types image/x-icon;\n'
+
 ### Map Authentication
   case "$AUTHENTICATION_TYPE" in
       "BASIC")
@@ -41,6 +62,13 @@
 ### Adjust NGINX Runtime Variables  
   sed -i -e "s/<UPLOAD_MAX_SIZE>/$UPLOAD_MAX_SIZE/g" /etc/nginx/nginx.conf
   sed -i -e "s/<PHP_TIMEOUT>/$PHP_TIMEOUT/g" /etc/nginx/conf.d/default.conf
+
+### Enable gzip compression
+if [ "$ENABLE_GZIP_COMPRESSION" = "TRUE" ] || [ "$ENABLE_GZIP_COMPRESSION" = "true" ]; then
+  sed -i -e "s|<GZIP_COMPRESSION>|$GZIP_COMPRESSION_PARAMS|g" /etc/nginx/conf.d/default.conf
+else
+  sed -i -e "s/<GZIP_COMPRESSION>/ /g" /etc/nginx/conf.d/default.conf
+fi
 
 ### Set Stage for Future Development and Production Purposes
    case "$STAGE" in
