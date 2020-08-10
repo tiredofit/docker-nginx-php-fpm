@@ -197,9 +197,9 @@ fi
 
 if [ "$NGINX_AUTHENTICATION_TYPE" = "LLNG" ]; then
     print_notice "Adding LLNG Authentication parameters to nginx configuration"
-    sed -i '/ fastcgi_index/a\ \ \ \ \ \ \ \ \ \ include \/etc\/nginx\/nginx.conf.d\/authentication\/llng_auth_request;' /etc/nginx/conf.d/*.conf
-    sed -i '/ fastcgi_index/a\ \ \ \ \ \ \ \ \ \ include \/etc\/nginx\/nginx.conf.d\/authentication\/llng_params;' /etc/nginx/conf.d/default.conf
-    sed -i '/ fastcgi_index/a\ \ \ \ \ \ \ \ \ \ ### LLNG Authentication handler' /etc/nginx/conf.d/default.conf
+    sed -i '/fastcgi_index.*;/a\ \ \ \ \ \ \ \ \ \ include \/etc\/nginx\/nginx.conf.d\/authentication\/llng_auth_request;' /etc/nginx/conf.d/*.conf
+    sed -i '/fastcgi_index.*;/a\ \ \ \ \ \ \ \ \ \ include \/etc\/nginx\/nginx.conf.d\/authentication\/llng_params;' /etc/nginx/conf.d/default.conf
+    sed -i '/fastcgi_index.*;/a\ \ \ \ \ \ \ \ \ \ ### LLNG Authentication handler' /etc/nginx/conf.d/default.conf
 fi
 
 
