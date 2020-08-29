@@ -1,3 +1,9 @@
+## 5.5.3 2020-08-29 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add ENABLE_PHP_FPM environment variable
+
+
 ## 5.5.2 2020-08-10 <dave at tiredofit dot ca>
 
    ### Changed

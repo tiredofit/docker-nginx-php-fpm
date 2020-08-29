@@ -12,13 +12,17 @@ RUN set -x && \
     apt-get upgrade -y && \
     apt-get install -y \
                ca-certificates \
+               git \
                mariadb-client \
+               openssl \
+               libssl-dev \
                php7.3 \
                php7.3-bcmath \
                php7.3-bz2 \
                php7.3-cli \
                php7.3-common \
                php7.3-curl \
+               php7.3-dev \
                php7.3-enchant \
                php7.3-fpm \
                php7.3-gd \
@@ -41,8 +45,19 @@ RUN set -x && \
                php7.3-xmlrpc \
                php7.3-xsl \
                php7.3-zip \
-               postgresql-client \
-               && \
+               postgresql-client
+               
+    
+    ### Fetch Additional Modules
+    #### php-kopano-smime
+RUN    git clone https://stash.kopano.io/scm/~jvanderwaa/php-kopano-smime.git /usr/src/php-kopano-smime && \
+    cd /usr/src/php-kopano-smime && \
+    git checkout v1.0.0 && \
+    phpize && \
+    ./configure --enable-kopano-smime && \
+    make && \
+    make install && \
+    cd / && \
     \
     ### PHP7 Setup
     sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php/7.3/cli/php.ini && \
@@ -53,8 +68,18 @@ RUN set -x && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
     \
     ### Cleanup
+    apt-get purge -y \
+                  libssl-dev \
+                  php7-dev \
+                  && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    \
     mkdir -p /var/log/nginx && \
-    rm -rf /var/lib/apt/lists/* /root/.gnupg /var/log/* 
+    rm -rf /var/lib/apt/lists/* \
+           /usr/src/* && \ 
+           /root/.gnupg \
+           /var/log/* 
 
 ### Networking Configuration
 EXPOSE 9000
