@@ -10,6 +10,7 @@ if var_false "${ENABLE_PHP_FPM}" ; then
     rm -rf /etc/logrotate.d/php-fpm
     rm -rf /etc/zabbix/php*.conf
     liftoff
+    exit 0
 fi
 
 case "$CONTAINER_MODE" in
