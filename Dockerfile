@@ -45,19 +45,8 @@ RUN set -x && \
                php7.3-xmlrpc \
                php7.3-xsl \
                php7.3-zip \
-               postgresql-client
-               
-    
-    ### Fetch Additional Modules
-    #### php-kopano-smime
-RUN    git clone https://stash.kopano.io/scm/~jvanderwaa/php-kopano-smime.git /usr/src/php-kopano-smime && \
-    cd /usr/src/php-kopano-smime && \
-    git checkout v1.0.0 && \
-    phpize && \
-    ./configure --enable-kopano-smime && \
-    make && \
-    make install && \
-    cd / && \
+               postgresql-client && \
+               && \
     \
     ### PHP7 Setup
     sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php/7.3/cli/php.ini && \
