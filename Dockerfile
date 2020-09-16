@@ -15,14 +15,12 @@ RUN set -x && \
                git \
                mariadb-client \
                openssl \
-               libssl-dev \
                php7.3 \
                php7.3-bcmath \
                php7.3-bz2 \
                php7.3-cli \
                php7.3-common \
                php7.3-curl \
-               php7.3-dev \
                php7.3-enchant \
                php7.3-fpm \
                php7.3-gd \
@@ -45,7 +43,7 @@ RUN set -x && \
                php7.3-xmlrpc \
                php7.3-xsl \
                php7.3-zip \
-               postgresql-client && \
+               postgresql-client \
                && \
     \
     ### PHP7 Setup
@@ -57,10 +55,6 @@ RUN set -x && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
     \
     ### Cleanup
-    apt-get purge -y \
-                  libssl-dev \
-                  php7-dev \
-                  && \
     apt-get autoremove -y && \
     apt-get clean && \
     \
