@@ -61,7 +61,7 @@ RUN set -x && \
     mkdir -p /var/log/nginx && \
     rm -rf /var/lib/apt/lists/* \
            /usr/src/* && \ 
-           /root/.gnupg \
+           /root/.gnupg && \
            /var/log/* 
 
 ### Networking Configuration
