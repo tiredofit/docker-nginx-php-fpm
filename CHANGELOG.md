@@ -1,3 +1,11 @@
+## 6.0.1 2021-04-16 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix PHP Extension script
+      - Opcache seems to want to load twice for some reason, dirty hack enabled
+      - Composer wasn't installing properly
+
+
 ## 6.0.0 2021-04-16 <dave at tiredofit dot ca>
 
    ### Added

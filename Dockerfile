@@ -140,7 +140,6 @@ RUN export PHP_7_3_RUN_DEPS=" \
     \
     ### Install PHP Composer
     curl -sSLk https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
-    ls -l /etc/php/8.0/fpm/conf.d/* && \
     \
     ### PHP Setup
     sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php/${PHP_BASE}/cli/php.ini && \
@@ -154,8 +153,6 @@ RUN export PHP_7_3_RUN_DEPS=" \
     if [ "$PHP_BASE" = "7.3" ] || [ "$PHP_BASE" = "7.4" ]; then phpenmod json ; fi ; \
     set -x && \
     \
-    ls -l /etc/php/8.0/fpm/conf.d/* && \
-
     ### Cleaning up all the other PHP version configs
     cd /etc/php && \
     find . -mindepth 1 -maxdepth 1 -type d -not -name ${PHP_BASE} -exec rm -rf '{}' \; && \
