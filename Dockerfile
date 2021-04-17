@@ -140,7 +140,7 @@ RUN export PHP_7_3_RUN_DEPS=" \
                 && \
     \
     ### Install PHP Composer
-    curl -sSLK https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} && \
+    curl -sSLk https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} && \
     \
     ### PHP Setup
     sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php/${PHP_BASE}/cli/php.ini && \
