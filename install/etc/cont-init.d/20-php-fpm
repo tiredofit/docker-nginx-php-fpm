@@ -186,6 +186,7 @@ if [ "${NGINX_AUTHENTICATION_TYPE}" = "LLNG" ]; then
     sed -i '/fastcgi_index.*;/a\ \ \ \ \ \ \ \ \ \ ### LLNG Authentication handler' /etc/nginx/conf.d/default.conf
 fi
 
+if [ -f "/etc/php/${PHP_BASE}/conf.d/10-opcache" ] && [ -f "/etc/php/${PHP_BASE}/conf.d/20-opcache" ] ; then rm -rf /etc/php/${PHP_BASE}/conf.d/10-opcache ; fi ;
 chmod -R 0755 /etc/php
 chown -R root:"${NGINX_GROUP}" /etc/php
 

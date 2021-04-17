@@ -35,11 +35,11 @@ enable_module () {
                     done
                 ;;
                 * )
-                    if [ -f "/etc/php/${PHP_BASE}/mods-available/${module}.ini" ]; then
-                        echo "Enabling $(basename $module .ini)"
-                        phpenmod $(basename $module .ini)
+                    if [ -f "/etc/php/${PHP_BASE}/mods-available/$1.ini" ]; then
+                        echo "Enabling $1"
+                        phpenmod "$1"
                     else
-                        echo "** Requested enabling ${module} however it doesn't exist!"
+                        echo "** Requested enabling ${1} however it doesn't exist!"
                     fi
                 ;;
         esac
@@ -83,11 +83,11 @@ disable_module(){
                 done
             ;;
             * )
-                if [ -f "/etc/php/${PHP_BASE}/mods-available/${module}.ini" ]; then
-                    echo "Disabling $(basename $module .ini)"
-                    phpdismod $(basename $module .ini)
+                if [ -f "/etc/php/${PHP_BASE}/mods-available/$1.ini" ]; then
+                    echo "Disabling $1"
+                    phpdismod $1
                 else
-                    echo "** Requested disabling $(basename $module .ini) however it doesn't exist!"
+                    echo "** Requested disabling $1 however it doesn't exist!"
                 fi
             ;;
         esac
@@ -155,7 +155,6 @@ if [ -n "$1" ] ; then
     case "$1" in
         "enable" | "ENABLE" )
             enable_module "$2"
-            pgrep -f "php-fpm: master process"
             if [[ "$(pgrep -f 'php-fpm: master process')" -ge "1" ]] ; then
                 kill -1 $(pgrep -f "php-fpm: master process")
             fi
