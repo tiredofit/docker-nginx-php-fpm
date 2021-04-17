@@ -1,0 +1,179 @@
+#!/bin/bash
+
+enable_module () {
+    if [ -n "$1" ]; then
+        case "$1" in
+                "all" )
+                    echo "** Enabling All Modules"
+                    for module in /etc/php/${PHP_BASE}/mods-available/*.ini; do
+                        echo "Enabling ${module}"
+                        phpenmod $(basename $module .ini)
+                    done
+                ;;
+                "core" )
+                    php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
+                    for module in $php_env_plugins_enabled ; do
+                        if [ -f "/etc/php/${PHP_BASE}/mods-available/${module}.ini" ]; then
+                            echo "Enabling $(basename $module .ini)"
+                            phpenmod "$(basename $module .ini)"
+                            if [ "${PHP_BASE:1:0}" = "7" ] ; then phpenmod json ; fi
+                            php_script_plugins_enabled="${php_actual_plugins_enabled} $(basename $module .ini)"
+                        else
+                            echo "** Requested enabling $(basename $module .ini) however it doesn't exist!"
+                        fi
+                    done
+                ;;
+                "optional" )
+                    php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
+                    echo "** Activating Optional Plugins"
+                    for module in /etc/php/${PHP_BASE}/mods-available/*.ini; do
+                        if ! grep -w -i -q "$(basename $module .ini)" "${php_env_pluugins_enabled}"; then
+                            echo "Enabling $(basename $module .ini)"
+                            phpenmod $(basename $module .ini)
+                            php_script_plugins_enabled="${php_actual_plugins_enabled} $(basename $module .ini)"
+                        fi
+                    done
+                ;;
+                * )
+                    if [ -f "/etc/php/${PHP_BASE}/mods-available/${module}.ini" ]; then
+                        echo "Enabling $(basename $module .ini)"
+                        phpenmod $(basename $module .ini)
+                    else
+                        echo "** Requested enabling ${module} however it doesn't exist!"
+                    fi
+                ;;
+        esac
+    else
+       echo "** Enable Module"
+       echo "Commands: all | core | optional | (modulename)"
+    fi
+}
+
+disable_module(){
+    if [ -n "$1" ]; then
+        case "$1" in
+            "all" )
+                echo "** Disabled All Modules"
+                for module in /etc/php/${PHP_BASE}/mods-available/*.ini; do
+                    echo "**Disabling ${module}" All Modules""
+                    phpdismod $(basename $module .ini)
+                done
+            ;;
+            "core" )
+                php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
+                for module in $php_env_plugins_enabled ; do
+                    if [ -f "/etc/php/${PHP_BASE}/mods-available/${module}.ini" ]; then
+                        echo "Enabling $(basename $module .ini)"
+                        phpdismod $(basename $module .ini)
+                        if [ "${PHP_BASE:1:0}" = "7" ] ; then phpdismod json ; fi
+                        php_script_plugins_disabled="${php_actual_plugins_disabled} $(basename $module .ini)"
+                    else
+                        echo "** Requested disabling ${module} however it doesn't exist!"
+                    fi
+                done
+            ;;
+            "optional" )
+                echo "** Disabling Optional Plugins"
+                for module in /etc/php/${PHP_BASE}/mods-available/*.ini; do
+                    if ! grep -w -i -q "$(basename $module .ini)" "${php_env_pluugins_enabled}"; then
+                        echo "Disabling $(basename $module .ini)"
+                        phpdismod $(basename $module .ini)
+                        php_script_plugins_disabled="${php_actual_plugins_enabled} $(basename $module .ini)"
+                    fi
+                done
+            ;;
+            * )
+                if [ -f "/etc/php/${PHP_BASE}/mods-available/${module}.ini" ]; then
+                    echo "Disabling $(basename $module .ini)"
+                    phpdismod $(basename $module .ini)
+                else
+                    echo "** Requested disabling $(basename $module .ini) however it doesn't exist!"
+                fi
+            ;;
+        esac
+    else
+       echo "** Disable Module"
+       echo "Commands: all | core | optional | (modulename)"
+    fi
+}
+
+list_module() {
+    if [ -n "$1" ]; then
+        case "$1" in
+            "all" )
+                echo "** Listing All Modules"
+                for f in /etc/php/${PHP_BASE}/mods-available/*.ini; do
+                    echo $(basename $f .ini);
+                done;
+            ;;
+            "core"  )
+                echo "** Listing Core Modules"
+                php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
+                for module in $php_env_plugins_enabled ; do
+                    if [ -f "/etc/php/${PHP_BASE}/mods-available/${module}.ini" ]; then
+                        echo "${module}"
+                    else
+                        echo "** ERROR: ${module} enabled but doesn't exist"
+                    fi
+                done
+            ;;
+            "optional" )
+                echo "** Listing Optional Plugins"
+                for module in /etc/php/${PHP_BASE}/mods-available/*.ini; do
+                    if ! grep -w -i -q "$(basename $module .ini)" "${php_env_pluugins_enabled}"; then
+                        echo "$(basename $module .ini)"
+                    fi
+                done
+            ;;
+        esac
+    else
+       echo "** List Modules"
+       echo "Commands: all | core | optional"
+    fi
+}
+
+display_help() {
+    echo "PHP Module Tool - Use this to "
+    echo "Syntax: $(basename $0) <command> <argument>"
+    echo ""
+    echo "Command: enable | disable | list | help"
+    echo "enable - Enable a module for usage"
+    echo "disable - Disable a mdule fr usage"
+    echo "list - List available modules"
+    echo "help - This is it"
+    echo ""
+    echo "Argument all | core | optional | <module_name>"
+    echo ""
+    echo "all - Every Module"
+    echo "core - Modules set via environment variable PHP_ENABLE_*=TRUE"
+    echo "optional - All other modules not explicitly set with PHP_ENABLE_*=TRUE"
+    echo "module_name - The PHP Extension name ie 'redis'"
+
+}
+
+if [ -n "$1" ] ; then
+    case "$1" in
+        "enable" | "ENABLE" )
+            enable_module "$2"
+            pgrep -f "php-fpm: master process"
+            if [[ "$(pgrep -f 'php-fpm: master process')" -ge "1" ]] ; then
+                kill -1 $(pgrep -f "php-fpm: master process")
+            fi
+        ;;
+        "disable" | "DISABLE" )
+            disable_module "$2"
+            if [[ "$(pgrep -f 'php-fpm: master process')" -ge "1" ]] ; then
+                kill -1 $(pgrep -f "php-fpm: master process")
+            fi
+        ;;
+        "list" | "LIST" )
+            list_module "$2"
+        ;;
+        "help" | "HELP" )
+            display_help "$2"
+        ;;
+    esac
+else
+    echo "PHP Module Tool"
+    echo "Commands: enable | disable | list | help"
+fi

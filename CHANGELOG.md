@@ -1,3 +1,12 @@
+## 6.0.0 2021-04-16 <dave at tiredofit dot ca>
+
+   ### Added
+      - Merged Debian branches into one - Use Build Argument of PHP_BASE to build `7.3` `7.4` or `8.0`
+      - Composer 2.x
+      - Massively revamped module loading. Try `php-env` from the command line to enable, disable, see modules available per version
+      - Building for Stretch and Buster, ready for Bullseye
+      - Building and amd64, arm7, arm64
+
 ## 5.6.0 2020-10-26 <dave at tiredofit dot ca>
 
    ### Added
@@ -68,7 +77,7 @@
 
    ### Added
       - Update image to support new tiredofit/alpine:4.4.0 base image
-      
+
 ## 5.3.1 2020-01-20 <dave at tiredofit dot ca>
 
    ### Changed
@@ -151,7 +160,7 @@
 
 ## 4.4 2019-06-19 <dave at tiredofit dot ca>
 
-* PHP 7.3 
+* PHP 7.3
 * Alpine 3.10
 
 ## 4.3 2019-03-03 <dave at tiredofit dot ca>

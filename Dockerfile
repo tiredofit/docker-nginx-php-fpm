@@ -1,59 +1,162 @@
 FROM tiredofit/nginx:debian
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
-### Default Runtime Environment Variables
-ENV COMPOSER_VERSION=1.10.16 \
+ARG PHP_BASE
+
+ENV PHP_BASE=${PHP_BASE:-"8.0"} \
+    COMPOSER_VERSION=2.0.12 \
+    PHP_ENABLE_APCU=TRUE \
+    PHP_ENABLE_BCMATH=TRUE \
+    PHP_ENABLE_BZ2=TRUE \
+    PHP_ENABLE_CTYPE=TRUE \
+    PHP_ENABLE_CURL=TRUE \
+    PHP_ENABLE_DOM=TRUE \
+    PHP_ENABLE_EXIF=TRUE \
+    PHP_ENABLE_FILEINFO=TRUE \
+    PHP_ENABLE_GD=TRUE \
+    PHP_ENABLE_ICONV=TRUE \
+    PHP_ENABLE_IMAP=TRUE \
+    PHP_ENABLE_INTL=TRUE \
+    PHP_ENABLE_MBSTRING=TRUE \
+    PHP_ENABLE_MYSQLI=TRUE \
+    PHP_ENABLE_MYSQLND=TRUE \
+    PHP_ENABLE_OPCACHE=TRUE \
+    PHP_ENABLE_PDO=TRUE \
+    PHP_ENABLE_PDO_MYSQL=TRUE \
+    PHP_ENABLE_PGSQL=TRUE \
+    PHP_ENABLE_PHAR=TRUE \
+    PHP_ENABLE_SIMPLEXML=TRUE \
+    PHP_ENABLE_TOKENIZER=TRUE \
+    PHP_ENABLE_XML=TRUE \
+    PHP_ENABLE_XMLREADER=TRUE \
+    PHP_ENABLE_XMLWRITER=TRUE \
     ZABBIX_HOSTNAME=nginx-php-fpm-app \
     ENABLE_SMTP=TRUE \
     NGINX_ENABLE_CREATE_SAMPLE_HTML=FALSE
 
 ### Dependency Installation
-RUN set -x && \
+RUN export PHP_7_3_RUN_DEPS=" \
+                php7.3-json \
+                php7.3-apcu-bc \
+                php7.3-recode \
+                " && \
+    \
+    export PHP_7_4_RUN_DEPS=" \
+                php7.4-apcu-bc \
+                php7.4-json \
+                " && \
+    \
+    export PHP_8_0_RUN_DEPS=" \
+                php-zstd \
+                " && \
+    \
+    export PHP_ADDITIONAL_MODULES=" \
+                php-apcu \
+                php-apcu-bc \
+                php-ast \
+                php-decimal \
+                php-gearman \
+                php-grpc \
+                php-imagick \
+                php-inotify \
+                php-lua \
+                php-lz4 \
+                php-mailparse \
+                php-maxminddb \
+                php-mcrypt \
+                php-memcache \
+                php-memcached \
+                php-mongo \
+                php-mongodb \
+                php-msgpack \
+                php-oauth \
+                php-pcov \
+                php-pear \
+                php-pecl-http \
+                php-propro \
+                php-protobuf \
+                php-radius \
+                php-smbclient \
+                php-sodium \
+                php-uuid \
+                php-xmlrpc \
+                " && \
+    \
+    export PHP_RUN_DEPS=" \
+                php$PHP_BASE \
+                php$PHP_BASE-apcu \
+                php$PHP_BASE-bcmath \
+                php$PHP_BASE-bz2 \
+                php$PHP_BASE-cli \
+                php$PHP_BASE-common \
+                php$PHP_BASE-curl \
+                php$PHP_BASE-dba \
+                php$PHP_BASE-dev \
+                php$PHP_BASE-embed \
+                php$PHP_BASE-enchant \
+                php$PHP_BASE-fpm \
+                php$PHP_BASE-gd \
+                php$PHP_BASE-gmp \
+                php$PHP_BASE-imap \
+                php$PHP_BASE-interbase \
+                php$PHP_BASE-intl \
+                php$PHP_BASE-ldap \
+                php$PHP_BASE-mbstring \
+                php$PHP_BASE-mysql \
+                php$PHP_BASE-odbc \
+                php$PHP_BASE-opcache \
+                php$PHP_BASE-pgsql \
+                php$PHP_BASE-pspell \
+                php$PHP_BASE-readline \
+                php$PHP_BASE-snmp \
+                php$PHP_BASE-soap \
+                php$PHP_BASE-sqlite3 \
+                php$PHP_BASE-tidy \
+                php$PHP_BASE-xdebug \
+                php$PHP_BASE-xml \
+                php$PHP_BASE-xmlrpc \
+                php$PHP_BASE-xsl \
+                php$PHP_BASE-zip \
+                " && \
+    set -x && \
+    curl -sSLk https://mariadb.org/mariadb_release_signing_key.asc | apt-key add - && \
+    mariadb_client_ver="$(curl -sSLk https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | grep "mariadb_server_version=mariadb-" | head -n 1 | cut -d = -f 2 | cut -d - -f 2)" && \
+    echo "deb https://mirror.its.dal.ca/mariadb/repo/${mariadb_client_ver}/debian $(lsb_release -cs) buster main" > /etc/apt/sources.list.d/mariadb.list && \
+    curl -sSLk https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+    echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/postgres.list && \
+    curl -sSLk https://packages.sury.org/php/apt.gpg | apt-key add - && \
+    echo "deb https://packages.sury.org/php/ $(lsb_release -cs) main" > /etc/apt/sources.list.d/php.list && \
     apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y \
-               ca-certificates \
-               git \
-               mariadb-client \
-               openssl \
-               php7.3 \
-               php7.3-bcmath \
-               php7.3-bz2 \
-               php7.3-cli \
-               php7.3-common \
-               php7.3-curl \
-               php7.3-enchant \
-               php7.3-fpm \
-               php7.3-gd \
-               php7.3-imap \
-               php7.3-intl \
-               php7.3-json \
-               php7.3-ldap \
-               php7.3-mbstring \
-               php7.3-mysql \
-               php7.3-odbc \
-               php7.3-opcache \
-               php7.3-pspell \
-               php7.3-readline \
-               php7.3-recode \
-               php7.3-soap \
-               php7.3-sqlite3 \
-               php7.3-tidy \
-               php7.3-xdebug \
-               php7.3-xml \
-               php7.3-xmlrpc \
-               php7.3-xsl \
-               php7.3-zip \
-               postgresql-client \
-               && \
-    \
-    ### PHP7 Setup
-    sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php/7.3/cli/php.ini && \
-    ln -s /usr/sbin/php-fpm7.3 /usr/sbin/php-fpm && \
-    rm -rf /etc/logrotate.d/php7.3-fpm && \
+    apt-get install --no-install-recommends -y \
+                ca-certificates \
+                git \
+                mariadb-client \
+                openssl \
+                postgresql-client \
+                ${PHP_RUN_DEPS} \
+                $(printenv PHP$(echo ${PHP_BASE} | sed 's|\.|_|g')_RUN_DEPS) \
+                ${PHP_ADDITIONAL_MODULES} \
+                && \
     \
     ### Install PHP Composer
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} && \
+    curl -sSLK https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} && \
+    \
+    ### PHP Setup
+    sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php/${PHP_BASE}/cli/php.ini && \
+    ln -s /usr/sbin/php-fpm${PHP_BASE} /usr/sbin/php-fpm && \
+    rm -rf /etc/logrotate.d/php* && \
+    #### Disabling any but core extensions - When using this image as a base for other images, you'll want to turn turn them on before running composer with the inverse of phpdisomd (phpenmod) to keep things clean
+    set +x && \
+    for f in /etc/php/${PHP_BASE}/mods-available/*.ini; do phpdismod $(basename $f .ini); done; \
+    php_env_plugins_enabled="$(set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)" && \
+    for module in $php_env_plugins_enabled ; do phpenmod ${module} ; done ; \
+    if [ "$PHP_BASE" = "7.3" ] || [ "$PHP_BASE" = "7.4" ]; then phpenmod json ; fi ; \
+    set -x && \
+    \
+    ### Cleaning up all the other PHP version configs
+    cd /etc/php && \
+    find . -mindepth 1 -maxdepth 1 -type d -not -name ${PHP_BASE} -exec rm -rf '{}' \; && \
     \
     ### Cleanup
     apt-get autoremove -y && \
