@@ -148,6 +148,7 @@ Enable extensions by using the PHP extension name ie redis as `PHP_ENABLE_REDIS=
 | `PHP_ENABLE_ICONV`     | Default Enabled |
 | `PHP_ENABLE_IMAP`      | Default Enabled |
 | `PHP_ENABLE_INTL`      | Default Enabled |
+| `PHP_ENABLE_JSON`      | Default Enabled |
 | `PHP_ENABLE_MBSTRING`  | Default Enabled |
 | `PHP_ENABLE_MYSQLI`    | Default Enabled |
 | `PHP_ENABLE_MYSQLND`   | Default Enabled |
@@ -162,7 +163,7 @@ Enable extensions by using the PHP extension name ie redis as `PHP_ENABLE_REDIS=
 | `PHP_ENABLE_XMLREADER` | Default Enabled |
 | `PHP_ENABLE_XMLWRITER` | Default Enabled |
 
-If you enable `PHP_ENABLE_KITCHENSINK=TRUE` all extensions in the image will be enabled. Head inside the image and see what extensions are available by typing `php-ext list all`
+If you enable `PHP_KITCHENSINK=TRUE` all extensions in the image will be enabled. Head inside the image and see what extensions are available by typing `php-ext list all`
 
 If enabling PHP_ENABLE_XDEBUG=TRUE` the following are the environment variables are available. Visit the [PHP XDebug Documentation](https://xdebug.org/docs/all_settings#remote_connect_back) to understand what these options mean.
 

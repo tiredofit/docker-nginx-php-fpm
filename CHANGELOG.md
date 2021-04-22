@@ -1,3 +1,9 @@
+## 6.1.0 2021-04-22 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Unified Script for Alpine and Debian
+      - Merged all changes up to 6.xx into Alpine build
+
 ## 6.0.1 2021-04-16 <dave at tiredofit dot ca>
 
    ### Changed
