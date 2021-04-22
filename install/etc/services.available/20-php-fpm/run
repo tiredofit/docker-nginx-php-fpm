@@ -1,0 +1,12 @@
+#!/usr/bin/with-contenv bash
+
+source /assets/functions/00-container
+prepare_service defaults single
+PROCESS_NAME="php-fpm"
+
+check_container_initialized
+check_service_initialized init
+liftoff
+
+print_info "Starting php-fpm ${PHP_VERSION}"
+silent exec s6-setuidgid nginx php-fpm -F;

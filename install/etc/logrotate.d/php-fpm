@@ -1,0 +1,13 @@
+<PHP_LOG_LOCATION>/*.log {
+    daily
+    ifempty
+    rotate 7
+    missingok
+    compress
+    dateext
+    sharedscripts
+    postrotate
+	kill -10 $(pgrep -f "php-fpm: master process")
+    endscript
+}
+

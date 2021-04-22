@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  nginx-php-fpm-app:
+    image: registry.selfdesign.org/docker/nginx-php-fpm/7.3
+    container_name: nginx-php-fpm-app
+    labels:
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:nginx-php-fpm.example.com
+      - traefik.port=80
+      - traefik.protocol=http
+      - traefik.docker.network=proxy
+      - traefik.backend=nginx-php-fpm-app
+    volumes:
+      - ./data/:/www/html
+      - ./logs/:/www/logs
+    environment:
+      - ZABBIX_HOSTNAME=nginx-php-fpm-app-app
+    networks:
+      - services
+      - proxy
+    restart: always
+
+networks:
+  proxy:
+    external: true
+  services:
+    external: true
+
