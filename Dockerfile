@@ -603,8 +603,16 @@ RUN export PHP_8_0_RUN_DEPS=" \
     set -x && \
     apk update && \
     apk upgrade && \
+    apk add -t .php-build-deps \
+                build-base \
+                gpgme-dev \
+                php${PHP_BASE:0:1}-dev \
+                && \
+    \
     apk add -t .php-run-deps \
+                ca-certificates \
                 git \
+                gnupg \
                 mariadb-client \
                 openssl \
                 postgresql-client \
@@ -615,14 +623,18 @@ RUN export PHP_8_0_RUN_DEPS=" \
     ## Temp Fix for graphicsmagick
     if [ -f "/etc/php${PHP_BASE:0:1}/*magick*.ini" ]; then mv /etc/php${PHP_BASE:0:1}/conf.d/*magick*.ini /tmp; fi; \
     sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php${PHP_BASE:0:1}/php.ini && \
-    ln -s /usr/sbin/php-fpm${PHP_BASE:0:1} /usr/sbin/php-fpm && \
-    ln -s /usr/bin/php${PHP_BASE:0:1} /usr/sbin/php && \
+    if [ -f "/usr/sbin/php-fpm${PHP_BASE:0:1}" ] ; then ln -sf /usr/sbin/php-fpm${PHP_BASE:0:1} /usr/sbin/php-fpm ; fi ; \
+    if [ -f "/usr/bin/php${PHP_BASE:0:1}" ] ; then ln -sf /usr/bin/php${PHP_BASE:0:1} /usr/sbin/php ; fi ; \
+    if [ -f "/usr/bin/pecl${PHP_BASE:0:1}" ] ; then echo "pecl" ; ln -sf /usr/bin/pecl${PHP_BASE:0:1} /usr/sbin/pecl; fi ; \
     rm -rf /etc/logrotate.d/php* && \
     \
     ### Install PHP Composer
     if [ "${PHP_BASE:0:1}" = "5" ] ; then echo "suhosin.executor.include.whitelist = phar" >> /etc/php${PHP_BASE:0:1}/php.ini ; fi;  \
     curl -sSLk https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
     if [ -f "/etc/php${PHP_BASE:0:1}/*magick*.ini" ]; then mv /tmp/*magick.ini* /etc/php${PHP_BASE:0:1}/conf.d/ ; fi ; \
+    \
+    ### Build Extra Extensions
+    pecl install gnupg && \
     \
     mkdir -p /etc/php${PHP_BASE:0:1}/mods-available/ && \
     #### Disabling any but core extensions - When using this image as a base for other images, you'll want to turn turn them on before running composer with the inverse of phpdisomd (phpenmod) to keep things clean
@@ -634,6 +646,7 @@ RUN export PHP_8_0_RUN_DEPS=" \
     if [ "${PHP_BASE:0:1}" != "8" ] ; then priority=$(cat /etc/php${PHP_BASE:0:1}/mods-available/json.ini) ; ln -sf "/etc/php${PHP_BASE:0:1}/mods-available/json.ini" /etc/php${PHP_BASE:0:1}/conf.d/${priority}-json.ini ; fi ; \
     set -x && \
     ### Cleanup
+    apk del .php-build-deps && \
     rm -rf /var/cache/apk/*
 
 ### Networking Configuration
