@@ -1,3 +1,9 @@
+## 6.1.1 2021-05-01 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for determining PHP version on runtime
+
+
 ## 6.1.0 2021-04-22 <dave at tiredofit dot ca>
 
    ### Changed

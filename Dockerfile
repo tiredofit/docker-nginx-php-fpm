@@ -653,5 +653,5 @@ RUN export PHP_8_0_RUN_DEPS=" \
 EXPOSE 9000
 
 ### Files Addition
-#ADD install /
+ADD install /
 
