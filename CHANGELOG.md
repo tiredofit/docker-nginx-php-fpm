@@ -1,3 +1,9 @@
+## 6.1.2 2021-05-01 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fixes to php extension script specifically under Alpine
+
+
 ## 6.1.1 2021-05-01 <dave at tiredofit dot ca>
 
    ### Changed

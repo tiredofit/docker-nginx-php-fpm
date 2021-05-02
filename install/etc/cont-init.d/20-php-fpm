@@ -154,7 +154,7 @@ case ${os} in
     "alpine" )
         cp -R /assets/php-fpm/cli/php.ini ${php_prefix}/
         cp -R /assets/php-fpm/mods-available/* ${php_prefix}/mods-available/
-        cp -R /assets/php-fpm/cli/php-fpm.conf ${php_prefix}/
+        cp -R /assets/php-fpm/fpm/php-fpm.conf ${php_prefix}/
         ;;
     "debian" )
         cp -R /assets/php-fpm/* ${php_prefix}

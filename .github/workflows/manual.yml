@@ -142,7 +142,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:latest,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -224,7 +224,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
@@ -364,7 +364,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -446,7 +446,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
@@ -586,7 +586,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -668,7 +668,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
@@ -697,7 +697,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -779,7 +779,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
@@ -808,7 +808,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -890,7 +890,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
@@ -919,7 +919,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1030,7 +1030,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1112,7 +1112,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |

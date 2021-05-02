@@ -165,7 +165,8 @@ RUN export PHP_7_3_RUN_DEPS=" \
     rm -rf /var/lib/apt/lists/* \
            /usr/src/* \
            /root/.gnupg \
-           /var/log/*
+           /var/log/* \
+           /tmp/*
 
 ### Networking Configuration
 EXPOSE 9000

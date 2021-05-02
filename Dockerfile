@@ -635,6 +635,7 @@ RUN export PHP_8_0_RUN_DEPS=" \
     \
     ### Build Extra Extensions
     pecl install gnupg && \
+    echo "extension=gnupg.so" > /etc/php${PHP_BASE:0:1}/conf.d/20-gnupg.ini && \
     \
     mkdir -p /etc/php${PHP_BASE:0:1}/mods-available/ && \
     #### Disabling any but core extensions - When using this image as a base for other images, you'll want to turn turn them on before running composer with the inverse of phpdisomd (phpenmod) to keep things clean
@@ -647,7 +648,7 @@ RUN export PHP_8_0_RUN_DEPS=" \
     set -x && \
     ### Cleanup
     apk del .php-build-deps && \
-    rm -rf /var/cache/apk/*
+    rm -rf /var/cache/apk/* /usr/src/* /tmp/*
 
 ### Networking Configuration
 EXPOSE 9000
