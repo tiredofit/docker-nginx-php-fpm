@@ -1,79 +1,107 @@
-# hub.docker.com/r/tiredofit/nginx-php-fpm
+# github.com/tiredofit/docker-nginx-php-fpm
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/nginx-php-fpm.svg)](https://hub.docker.com/r/tiredofit/nginx-php-fpm)
-[![Docker Stars](https://img.shields.io/docker/stars/tiredofit/nginx-php-fpm.svg)](https://hub.docker.com/r/tiredofit/nginx-php-fpm)
-[![Docker
-Layers](https://images.microbadger.com/badges/image/tiredofit/nginx-php-fpm.svg)](https://microbadger.com/images/tiredofit/nginx-php-fpm)
+[![GitHub release](https://img.shields.io/github/v/tag/tiredofit/docker-nginx-php-fpm?style=flat-square)](https://github.com/tiredofit/docker-nginx-php-fpm/releases/latest)
+[![Build Status](https://img.shields.io/github/workflow/status/tiredofit/docker-nginx-php-fpm/build?style=flat-square)](https://github.com/tiredofit/docker-nginx-php-fpm/actions?query=workflow%3Abuild)
+[![Docker Stars](https://img.shields.io/docker/stars/tiredofit/nginx-php-fpm.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/nginx-php-fpm/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/nginx-php-fpm.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/nginx-php-fpm/)
+[![Become a sponsor](https://img.shields.io/badge/sponsor-tiredofit-181717.svg?logo=github&style=flat-square)](https://github.com/sponsors/tiredofit)
+[![Paypal Donate](https://img.shields.io/badge/donate-paypal-00457c.svg?logo=paypal&style=flat-square)](https://www.paypal.me/tiredofit)
+
+* * *
 
 
-# Introduction
+## About
 
-Dockerfile to build a [Nginx](https://www.nginx.org) w/[PHP-FPM](https://php.net) container image.
+This repository will build a [Nginx](https://www.nginx.org) w/[PHP-FPM](https://php.net) docker image, suitable for serving PHP scripts, or utilizing as a base image for installing additional software.
 
-* This Container uses a customized [Alpine Linux](https://hub.docker.com/r/tiredofit/alpine) or [Debian Linux](https://hub.docker.com/r/tiredofit/debian) which includes [s6 overlay](https://github.com/just-containers/s6-overlay) enabled for PID 1 Init capabilities, [zabbix-agent](https://zabbix.org) for individual container monitoring, Cron also installed along with other tools (bash,curl, less, logrotate, mariadb-client, nano, vim) for easier management. It also supports sending to external SMTP servers..
-* Debug Mode to Enable XDebug
-* Caching is provided with w/ APC, OpCache
-* Enabled by default extensions are: apcu, bcmath, ctype, curl, dom, gd, iconv, intl, json, ldap, mbstring, mcrypt, mysqlnd. opcache, pdo,  pgsql, phar, session, tokenizer, xml, xmlreader
+* Tracking PHP 5.3-8.0
+* Easily enable / disable extensions based on your use case
+* Automatic Log rotation
+* Composer Included
+* XDebug capability
+* Caching via APC, opcache
+* Includes client libraries for [MariaDB](https://www.mariadb.org) and [Postgresql](https://www.postgresql.org)
 
-[Changelog](CHANGELOG.md)
-
-# Authors
+## Maintainer
 
 - [Dave Conroy](http://github/tiredofit/)
 
-# Table of Contents
+## Table of Contents
 
-- [Introduction](#introduction)
-    - [Changelog](CHANGELOG.md)
-- [Prerequisites](#prerequisites)
+- [About](#about)
+- [Maintainer](#maintainer)
+- [Table of Contents](#table-of-contents)
+- [Prerequisites and Assumptions](#prerequisites-and-assumptions)
 - [Installation](#installation)
-- [Quick Start](#quick-start)
+  - [Build from Source](#build-from-source)
+  - [Prebuilt Images](#prebuilt-images)
+    - [Multi Archictecture](#multi-archictecture)
 - [Configuration](#configuration)
-    - [Database](#database)
-    - [Data Volumes](#data-volumes)
-    - [Environment Variables](#environmentvariables)
-    - [Networking](#networking)
+  - [Quick Start](#quick-start)
+  - [Data-Volumes](#data-volumes)
+  - [Environment Variables](#environment-variables)
+    - [Base Images used](#base-images-used)
+    - [Container Options](#container-options)
+    - [Enabling / Disabling Specific Extensions](#enabling--disabling-specific-extensions)
+    - [Debug Options](#debug-options)
+  - [Networking](#networking)
 - [Maintenance](#maintenance)
-    - [Shell Access](#shell-access)
-   - [References](#references)
+  - [Shell Access](#shell-access)
+  - [PHP Extensions](#php-extensions)
+  - [Maintenance Mode](#maintenance-mode)
+- [Contributions](#contributions)
+- [Support](#support)
+  - [Usage](#usage)
+  - [Bugfixes](#bugfixes)
+  - [Feature Requests](#feature-requests)
+  - [Updates](#updates)
+- [License](#license)
+- [References](#references)
 
-# Prerequisites
 
-This image assumes that you are using a reverse proxy such as [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy) and optionally the [Let's Encrypt Proxy Companion @ https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion) or [tiredofit/traefik](https://github.com/tiredofit/docker-traefik) in order to serve your pages. However, it will run just fine on it's own if you map appropriate ports.
+## Prerequisites and Assumptions
+*  Assumes you are using some sort of SSL terminating reverse proxy such as:
+   *  [Traefik](https://github.com/tiredofit/docker-traefik)
+   *  [Nginx](https://github.com/jc21/nginx-proxy-manager)
+   *  [Caddy](https://github.com/caddyserver/caddy)
 
-# Installation
+## Installation
 
-Automated builds of the image are available on [Registry](https://hub.docker.com/tiredofit/nginx-php-fpm) and is the recommended method of installation.
-
+### Build from Source
+Clone this repository and build the image with `docker build <arguments> (imagename) .`
+### Prebuilt Images
+Builds of the image are available on [Docker Hub](https://hub.docker.com/r/tiredofit/nginx-php-fpm) and is the recommended method of installation.
 
 ```bash
-docker pull hub.docker.com/tiredofit/nginx-php-fpm:(imagetag)
+docker pull tiredofit/nginx-php-fpm:(imagetag)
 ```
 
-The following image tags are available:
+The following image tags are available along with their taged release based on what's written in the [Changelog](CHANGELOG.md):
 
-* `edge-latest` - Most recent release of PHP w/most recent Alpine Linux
-* `8.0-latest` - PHP 8.0.x w/Alpine 3.13
-* `7.4-latest` - PHP 7.4.x w/Alpine 3.13
-* `7.3-latest` - PHP 7.3.x w/Alpine 3.12
-* `7.2-latest` - PHP 7.2.x w/Alpine 3.9
-* `7.1-latest` - PHP 7.1.x w/Alpine 3.7
-* `7.0-latest` - PHP 7.0.x w/Alpine 3.6
-* `5.6-latest` - PHP 5.6.x w/Alpine 3.5
-* `5.5-latest` - PHP 5.5.38 w/Alpine 3.4
-* `5.3-latest` - PHP 5.3.29 w/Alpine 3.4
-* `debian-8.0` - PHP 7.4 w/Debian Buster
-* `debian-7.4` - PHP 7.4 w/Debian Buster
-* `debian-7.3` - PHP 7.3 w/Debian Buster
+| PHP version | Alpine Base | Tag            | Debian Base | Tag           |
+| ----------- | ----------- | -------------- | ----------- | ------------- |
+| latest      | edge        | `:alpine-edge` |             |               |
+| 8.0.x       | 3.13        | `:alpine-8.0`  | Buster      | `:debian-8.0` |
+| 7.4.x       | 3.13        | `:alpine-7.4`  | Buster      | `:debian-7.3` |
+| 7.3.x       | 3.12        | `:alpine-7.3`  | Buster      | `:debian-7.3` |
+| 7.2.x       | 3.9         | `:alpine-8.0`  |             |               |
+| 7.1.x       | 3.7         | `:alpine-7.4`  |             |               |
+| 7.0.x       | 3.5         | `:alpine-7.3`  |             |               |
+| 5.6.x       | 3.8         | `:alpine-5.6`  |             |               |
+| 5.5.x       | 3.4         | `:5.5-latest`  |             |               |
+| 5.3.x       | 3.4         | `:5.3-latest`  |             |               |
 
-# Quick Start
+#### Multi Archictecture
+Images are built primarily for `amd64` architecture, and may also include builds for `arm/v6`, `arm/v7`, `arm64` and others. These variants are all unsupported. Consider [sponsoring](https://github.com/sponsors/tiredofit) my work so that I can work with various hardware. To see if this image supports multiple architecures, type `docker manifest (image):(tag)`
+
+## Configuration
+
+### Quick Start
 
 * The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/). See the examples folder for a working [docker-compose.yml](examples/docker-compose.yml) that can be modified for development or production use.
 
 * Set various [environment variables](#environment-variables) to understand the capabilities of this image.
 * Map [persistent storage](#data-volumes) for access to configuration and data files for backup.
-
-# Configuration
 
 ### Data-Volumes
 
@@ -86,15 +114,21 @@ The following directories are used for configuration and can be mapped for persi
 | `/www/html` | Root Directory             |
 | `/www/logs` | Nginx and php-fpm logfiles |
 
-### Database
-
-No Database Required - MariaDB Client is located within the image.
-
+* * *
 ### Environment Variables
 
-Along with the Environment Variables from the [Base image](https://hub.docker.com/r/tiredofit/alpine) and the [Nginx Base](https://hub.docker.com/r/tiredofit/nginx), below is the complete list of available options that can be used to customize your installation.
+#### Base Images used
 
-*Container Options*
+This image relies on an [Alpine Linux](https://hub.docker.com/r/tiredofit/alpine) or [Debian Linux](https://hub.docker.com/r/tiredofit/debian) base image that relies on an [init system](https://github.com/just-containers/s6-overlay) for added capabilities. Outgoing SMTP capabilities are handlded via `msmtp`. Individual container performance monitoring is performed by [zabbix-agent](https://zabbix.org). Additional tools include: `bash`,`curl`,`less`,`logrotate`, `nano`,`vim`.
+Be sure to view the following repositories to understand all the customizable options:
+
+| Image                                                  | Description                            |
+| ------------------------------------------------------ | -------------------------------------- |
+| [OS Base](https://github.com/tiredofit/docker-alpine/) | Customized Image based on Alpine Linux |
+| [Nginx](https://github.com/tiredofit/docker-nginx/)    | Nginx webserver                        |
+
+
+#### Container Options
 
 The container has an ability to work in 3 modes, `nginx-php-fpm` (default) is an All in One image with nginx and php-fpm working together, `nginx` will only utilize nginx however not the included php-fpm instance, allowing for connecting to multiple remote php-fpm backends, and finally `php-fpm` to operate PHP-FPM in standalone mode.
 
@@ -104,11 +138,9 @@ The container has an ability to work in 3 modes, `nginx-php-fpm` (default) is an
 | `CONTAINER_MODE` | Mode of running container `nginx-php-fpm`, `nginx`, `php-fpm` | `nginx-php-fpm` |
 
 When `CONTAINER_MODE` set to `nginx` the `PHP_FPM_LISTEN_PORT` environment variable is ignored and the `PHP_FPM_HOST` variable defined below changes. You can add multiple PHP-FPM hosts to the backend in this syntax
-<host>:<port> seperated by commas e.g.
+<host>:<port> seperated by commas e.g `php-fpm-container1:9000,php-fpm-container2:9000`
 
-    `php-fpm-container1:9000,php-fpm-container2:9000`
-
-Note: You can also pass arguments to each server as defined in the [Nginx Upstream Documentation](https://nginx.org/en/docs/http/ngx_http_upstream_module.html)
+*You can also pass arguments to each server as defined in the [Nginx Upstream Documentation](https://nginx.org/en/docs/http/ngx_http_upstream_module.html)*
 
 | Parameter                   | Description                                                    | Default                                   |
 | --------------------------- | -------------------------------------------------------------- | ----------------------------------------- |
@@ -131,41 +163,43 @@ Note: You can also pass arguments to each server as defined in the [Nginx Upstre
 | `PHP_UPLOAD_MAX_SIZE`       | Maximum Input Size for Uploads                                 | `2G`                                      |
 | `PHP_WEBROOT`               | Used with `CONTAINER_MODE=php-fpm`                             | `/www/html`                               |
 
-*Enabling / Disabling Specific Extensions*
+#### Enabling / Disabling Specific Extensions
+
 Enable extensions by using the PHP extension name ie redis as `PHP_ENABLE_REDIS=TRUE`. Core extensions are enabled by default are:
 
-| Parameter              | Description     |
-| ---------------------- | --------------- |
-| `PHP_ENABLE_APCU`      | Default Enabled |
-| `PHP_ENABLE_BCMATH`    | Default Enabled |
-| `PHP_ENABLE_BZ2`       | Default Enabled |
-| `PHP_ENABLE_CTYPE`     | Default Enabled |
-| `PHP_ENABLE_CURL`      | Default Enabled |
-| `PHP_ENABLE_DOM`       | Default Enabled |
-| `PHP_ENABLE_EXIF`      | Default Enabled |
-| `PHP_ENABLE_FILEINFO`  | Default Enabled |
-| `PHP_ENABLE_GD`        | Default Enabled |
-| `PHP_ENABLE_ICONV`     | Default Enabled |
-| `PHP_ENABLE_IMAP`      | Default Enabled |
-| `PHP_ENABLE_INTL`      | Default Enabled |
-| `PHP_ENABLE_JSON`      | Default Enabled |
-| `PHP_ENABLE_MBSTRING`  | Default Enabled |
-| `PHP_ENABLE_MYSQLI`    | Default Enabled |
-| `PHP_ENABLE_MYSQLND`   | Default Enabled |
-| `PHP_ENABLE_OPCACHE`   | Default Enabled |
-| `PHP_ENABLE_PDO`       | Default Enabled |
-| `PHP_ENABLE_PDO_MYSQL` | Default Enabled |
-| `PHP_ENABLE_PGSQL`     | Default Enabled |
-| `PHP_ENABLE_PHAR`      | Default Enabled |
-| `PHP_ENABLE_SIMPLEXML` | Default Enabled |
-| `PHP_ENABLE_TOKENIZER` | Default Enabled |
-| `PHP_ENABLE_XML`       | Default Enabled |
-| `PHP_ENABLE_XMLREADER` | Default Enabled |
-| `PHP_ENABLE_XMLWRITER` | Default Enabled |
+| Parameter              | Default |
+| ---------------------- | ------- |
+| `PHP_ENABLE_APCU`      | `TRUE`  |
+| `PHP_ENABLE_BCMATH`    | `TRUE`  |
+| `PHP_ENABLE_BZ2`       | `TRUE`  |
+| `PHP_ENABLE_CTYPE`     | `TRUE`  |
+| `PHP_ENABLE_CURL`      | `TRUE`  |
+| `PHP_ENABLE_DOM`       | `TRUE`  |
+| `PHP_ENABLE_EXIF`      | `TRUE`  |
+| `PHP_ENABLE_FILEINFO`  | `TRUE`  |
+| `PHP_ENABLE_GD`        | `TRUE`  |
+| `PHP_ENABLE_ICONV`     | `TRUE`  |
+| `PHP_ENABLE_IMAP`      | `TRUE`  |
+| `PHP_ENABLE_INTL`      | `TRUE`  |
+| `PHP_ENABLE_JSON`      | `TRUE`  |
+| `PHP_ENABLE_MBSTRING`  | `TRUE`  |
+| `PHP_ENABLE_MYSQLI`    | `TRUE`  |
+| `PHP_ENABLE_MYSQLND`   | `TRUE`  |
+| `PHP_ENABLE_OPCACHE`   | `TRUE`  |
+| `PHP_ENABLE_PDO`       | `TRUE`  |
+| `PHP_ENABLE_PDO_MYSQL` | `TRUE`  |
+| `PHP_ENABLE_PGSQL`     | `TRUE`  |
+| `PHP_ENABLE_PHAR`      | `TRUE`  |
+| `PHP_ENABLE_SIMPLEXML` | `TRUE`  |
+| `PHP_ENABLE_TOKENIZER` | `TRUE`  |
+| `PHP_ENABLE_XML`       | `TRUE`  |
+| `PHP_ENABLE_XMLREADER` | `TRUE`  |
+| `PHP_ENABLE_XMLWRITER` | `TRUE`  |
 
-If you enable `PHP_KITCHENSINK=TRUE` all extensions in the image will be enabled. Head inside the image and see what extensions are available by typing `php-ext list all`
+To enable all extensions in image use `PHP_KITCHENSINK=TRUE`. Head inside the image and see what extensions are available by typing `php-ext list all`
 
-If enabling PHP_ENABLE_XDEBUG=TRUE` the following are the environment variables are available. Visit the [PHP XDebug Documentation](https://xdebug.org/docs/all_settings#remote_connect_back) to understand what these options mean.
+#### Debug Options
+To enable XDebug set `PHP_ENABLE_XDEBUG=TRUE`. Visit the [PHP XDebug Documentation](https://xdebug.org/docs/all_settings#remote_connect_back) to understand what these options mean.
 
 | Parameter                            | Description                                |
 | ------------------------------------ | ------------------------------------------ |
@@ -179,6 +213,8 @@ If enabling PHP_ENABLE_XDEBUG=TRUE` the following are the environment variables 
 | `PHP_XDEBUG_REMOTE_HOST`             | Set this to your IP Address                | `127.0.0.1`         |
 | `PHP_XDEBUG_REMOTE_PORT`             | XDebug Remote Port                         | `9090`              |
 
+* * *
+
 ### Networking
 
 The following ports are exposed.
@@ -187,22 +223,45 @@ The following ports are exposed.
 | ------ | ----------- |
 | `9000` | PHP-FPM     |
 
-# Maintenance
 
-#### Shell Access
+## Maintenance
+Inside the image are tools to perform modification on how the image runs.
+
+### Shell Access
 For debugging and maintenance purposes you may want access the containers shell.
 
 ```bash
 docker exec -it (whatever your container name is e.g. nginx-php-fpm) bash
 ```
-#### PHP Extensions
-If you want to enable or disable PHP Extensions, type `php-ext help` to get information on how to enable, disable, or list available extensions in the image.
-#### Maintenance Mode
+### PHP Extensions
+If you want to enable or disable or list what PHP extensions are available, type `php-ext help`
+
+### Maintenance Mode
 If you wish to turn the web server into maintenance mode showing a single page screen outlining that the service is being worked on, you can also enter into the container and type `maintenance ARG`, where ARG is either `ON`,`OFF`, or `SLEEP (seconds)` which will temporarily place the site in maintenance mode and then restore it back to normal after time has passed.
+## Contributions
+Welcomed. Please fork the repository and submit a [pull request](../../pulls) for any bug fixes, features or additions you propose to be included in the image. If it does not impact my intended usage case, it will be merged into the tree, tagged as a release and credit to the contributor in the [CHANGELOG](CHANGELOG).
 
+## Support
 
-# References
+These images were built to serve a specific need in a production environment and gradually have had more functionality added based on requests from the community.
+### Usage
+- The [Discussions board](../../discussions) is a great place for working with the community on tips and tricks of using this image.
+- Consider [sponsoring me](https://github.com/sponsors/tiredofit) personalized support.
+### Bugfixes
+- Please, submit a [Bug Report](issues/new) if something isn't working as expected. I'll do my best to issue a fix in short order.
 
-* https://www.nginx.org
+### Feature Requests
+- Feel free to submit a feature request, however there is no guarantee that it will be added, or at what timeline.
+- Consider [sponsoring me](https://github.com/sponsors/tiredofit) regarding development of features.
+
+### Updates
+- Best effort to track upstream changes, More priority if I am actively using the image in a production environment.
+- Consider [sponsoring me](https://github.com/sponsors/tiredofit) for up to date releases.
+
+## License
+MIT. See [LICENSE](LICENSE) for more details.
+
+## References
+
 * http://www.php.org
 * https://xdebug.org

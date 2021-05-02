@@ -1,7 +1,7 @@
 ### Application Level Image CI
 ### Dave Conroy <dave at tiredofit dot ca>
 
-name: 'Build Images'
+name: 'build'
 
 on:
   schedule:
@@ -145,7 +145,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:latest,${DOCKER_IMAGE}:${RELEASE}:${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:latest,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -367,7 +367,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE}:${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -589,7 +589,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE}:${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -700,7 +700,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE}:${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -811,7 +811,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE}:${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -922,7 +922,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE}:${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1033,7 +1033,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE}:${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"

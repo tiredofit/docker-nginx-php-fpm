@@ -1,5 +1,5 @@
 # Manual Workflow tiredofit/docker-nginx-php-fpm
-name: Manual
+name: manual
 
 on:
   workflow_dispatch:
