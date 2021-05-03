@@ -59,7 +59,7 @@ This repository will build a [Nginx](https://www.nginx.org) w/[PHP-FPM](https://
 - [References](#references)
 
 
-## Prerequisites and Assumptions
+## Prerequisites and Assumptions and Assumptions
 *  Assumes you are using some sort of SSL terminating reverse proxy such as:
    *  [Traefik](https://github.com/tiredofit/docker-traefik)
    *  [Nginx](https://github.com/jc21/nginx-proxy-manager)
@@ -68,7 +68,7 @@ This repository will build a [Nginx](https://www.nginx.org) w/[PHP-FPM](https://
 ## Installation
 
 ### Build from Source
-Clone this repository and build the image with `docker build <arguments> (imagename) .`
+Clone this repository and build the image with `docker build -t (imagename) .`
 ### Prebuilt Images
 Builds of the image are available on [Docker Hub](https://hub.docker.com/r/tiredofit/nginx-php-fpm) and is the recommended method of installation.
 
@@ -103,7 +103,7 @@ Images are built primarily for `amd64` architecture, and may also include builds
 * Set various [environment variables](#environment-variables) to understand the capabilities of this image.
 * Map [persistent storage](#data-volumes) for access to configuration and data files for backup.
 
-### Data-Volumes
+### Persistent Storage
 
 The container starts up and reads from `/etc/nginx/nginx.conf` for some basic configuration and to listen on port 73 internally for Nginx Status responses. `/etc/nginx/conf.d` contains a sample configuration file that can be used to customize a nginx server block.
 
@@ -190,6 +190,7 @@ Enable extensions by using the PHP extension name ie redis as `PHP_ENABLE_REDIS=
 | `PHP_ENABLE_PDO_MYSQL` | `TRUE`  |
 | `PHP_ENABLE_PGSQL`     | `TRUE`  |
 | `PHP_ENABLE_PHAR`      | `TRUE`  |
+| `PHP_ENABLE_SESSION`   | `TRUE`  |
 | `PHP_ENABLE_SIMPLEXML` | `TRUE`  |
 | `PHP_ENABLE_TOKENIZER` | `TRUE`  |
 | `PHP_ENABLE_XML`       | `TRUE`  |

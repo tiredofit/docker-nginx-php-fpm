@@ -1,3 +1,10 @@
+## 6.1.3 2021-05-03 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Add PHP_ENABLE_SESSION=TRUE to defaults
+      - Set PHP_ENABLE_IGBINARY=TRUE when PHP_ENABLE_REDIS=TRUE
+
+
 ## 6.1.2 2021-05-01 <dave at tiredofit dot ca>
 
    ### Changed
