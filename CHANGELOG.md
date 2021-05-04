@@ -1,3 +1,9 @@
+## 6.1.6 2021-05-04 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for opcache being loaded twice in some scenarios
+
+
 ## 6.1.5 2021-05-03 <dave at tiredofit dot ca>
 
    ### Changed

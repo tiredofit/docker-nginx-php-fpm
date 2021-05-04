@@ -41,6 +41,12 @@ enable_module () {
                                 "debian" )
                                     phpenmod $(basename $module .ini)
                                     if [ "${PHP_BASE:1:0}" != "8" ] ; then phpenmod json ; fi
+                                    if [[ "$( ls -l ${php_prefix}/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] ; then
+                                       rm -f "$(ls ${php_prefix}/fpm/conf.d/*-opcache.ini | tail -1 )"
+                                    fi
+                                    if [[ "$( ls -l ${php_prefix}/cli/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] ; then
+                                       rm -f "$(ls ${php_prefix}/cli/conf.d/*-opcache.ini | tail -1 )"
+                                    fi
                                 ;;
                             esac
                             php_script_plugins_enabled="${php_actual_plugins_enabled} $(basename $module .ini)"
@@ -141,6 +147,12 @@ disable_module() {
                             "debian" )
                                 phpdismod $(basename $module .ini)
                                 if [ "${PHP_BASE:1:0}" != "8" ] ; then phpdismod json ; fi
+                                if [[ "$( ls -l ${php_prefix}/fpm/conf.d/*-opcache.ini |  wc -l )" -ge 1 ]] ; then
+                                    rm -f "$(ls ${php_prefix}/fpm/conf.d/*-opcache.ini | tail -1 )"
+                                fi
+                                if [[ "$( ls -l ${php_prefix}/cli/conf.d/*-opcache.ini |  wc -l )" -ge 1 ]] ; then
+                                    rm -f "$(ls ${php_prefix}/cli/conf.d/*-opcache.ini | tail -1 )"
+                                fi
                             ;;
                         esac
                         php_script_plugins_disabled="${php_actual_plugins_disabled} $(basename $module .ini)"
