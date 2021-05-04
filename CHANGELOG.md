@@ -1,3 +1,9 @@
+## 6.1.5 2021-05-03 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for enabling json warning under php8
+
+
 ## 6.1.4 2021-05-03 <dave at tiredofit dot ca>
 
    ### Changed

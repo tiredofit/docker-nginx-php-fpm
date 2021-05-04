@@ -29,14 +29,14 @@ enable_module () {
                     done
                 ;;
                 "core" )
-                    php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
+                    php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z | sed "/^json/d")
                     for module in $php_env_plugins_enabled ; do
                         if [ -f "${php_prefix}mods-available/${module}.ini" ]; then
                             echo "Enabling $(basename $module .ini)"
                             case ${os} in
                                 "alpine" )
                                     ln -sf "${php_prefix}mods-available/${module}.ini" ${php_prefix}/conf.d/$(cat ${php_prefix}mods-available/${module}.ini | grep ";priority" | cut -d = -f 2)-${module}.ini
-
+                                    if [ "${PHP_BASE:1:0}" != "8" ] ; then ln -sf "${php_prefix}mods-available/json.ini" ${php_prefix}/conf.d/$(cat ${php_prefix}mods-available/json.ini | grep ";priority" | cut -d = -f 2)-json.ini ; fi ;
                                 ;;
                                 "debian" )
                                     phpenmod $(basename $module .ini)
