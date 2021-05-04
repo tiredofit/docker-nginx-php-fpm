@@ -1,3 +1,9 @@
+## 6.1.4 2021-05-03 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for JSON for <php7
+
+
 ## 6.1.3 2021-05-03 <dave at tiredofit dot ca>
 
    ### Changed

@@ -3,7 +3,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE
 
-ENV PHP_BASE=${PHP_BASE:-"8.0"} \
+ENV PHP_BASE=${PHP_BASE:-"7.4"} \
     PHP_ENABLE_APCU=TRUE \
     PHP_ENABLE_BCMATH=TRUE \
     PHP_ENABLE_BZ2=TRUE \
@@ -645,7 +645,7 @@ RUN export PHP_8_0_RUN_DEPS=" \
     rm -rf /etc/php${PHP_BASE:0:1}/conf.d/* && \
     php_env_plugins_enabled="$(set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr [A-Z] [a-z])" && \
     for module in $php_env_plugins_enabled ; do if [ -f "/etc/php${PHP_BASE:0:1}/mods-available/${module}.ini" ] ; then priority=$(cat /etc/php${PHP_BASE:0:1}/mods-available/${module}.ini | grep ";priority" | cut -d = -f2) ; ln -sf "/etc/php${PHP_BASE:0:1}/mods-available/${module}.ini" /etc/php${PHP_BASE:0:1}/conf.d/${priority}-${module}.ini ; fi ; done ; \
-    if [ "${PHP_BASE:0:1}" != "8" ] ; then priority=$(cat /etc/php${PHP_BASE:0:1}/mods-available/json.ini) ; ln -sf "/etc/php${PHP_BASE:0:1}/mods-available/json.ini" /etc/php${PHP_BASE:0:1}/conf.d/${priority}-json.ini ; fi ; \
+    if [ "${PHP_BASE:0:1}" != "8" ] ; then priority=$(cat /etc/php${PHP_BASE:0:1}/mods-available/json.ini | grep ";priority" | cut -d = -f2) ; ln -sf "/etc/php${PHP_BASE:0:1}/mods-available/json.ini" /etc/php${PHP_BASE:0:1}/conf.d/${priority}-json.ini ; fi ; \
     set -x && \
     ### Cleanup
     apk del .php-build-deps && \
