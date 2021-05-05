@@ -1,3 +1,9 @@
+## 6.1.7 2021-05-05 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Force OPENSSL extension to be activated by default to fix composer errors
+
+
 ## 6.1.6 2021-05-04 <dave at tiredofit dot ca>
 
    ### Changed

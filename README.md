@@ -186,6 +186,7 @@ Enable extensions by using the PHP extension name ie redis as `PHP_ENABLE_REDIS=
 | `PHP_ENABLE_MYSQLI`    | `TRUE`  |
 | `PHP_ENABLE_MYSQLND`   | `TRUE`  |
 | `PHP_ENABLE_OPCACHE`   | `TRUE`  |
+| `PHP_ENABLE_OPENSSL`   | `TRUE`  |
 | `PHP_ENABLE_PDO`       | `TRUE`  |
 | `PHP_ENABLE_PDO_MYSQL` | `TRUE`  |
 | `PHP_ENABLE_PGSQL`     | `TRUE`  |
