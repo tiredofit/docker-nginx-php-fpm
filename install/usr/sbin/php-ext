@@ -1,5 +1,6 @@
 #!/bin/bash
 
+php_major_version="$(echo ${PHP_BASE} | cut -c 1-1)"
 os=$(cat /etc/os-release |grep ^ID= | cut -d = -f2)
 
 case ${os} in
@@ -36,11 +37,11 @@ enable_module () {
                             case ${os} in
                                 "alpine" )
                                     ln -sf "${php_prefix}mods-available/${module}.ini" ${php_prefix}/conf.d/$(cat ${php_prefix}mods-available/${module}.ini | grep ";priority" | cut -d = -f 2)-${module}.ini
-                                    if [ "${PHP_BASE:1:0}" != "8" ] ; then ln -sf "${php_prefix}mods-available/json.ini" ${php_prefix}/conf.d/$(cat ${php_prefix}mods-available/json.ini | grep ";priority" | cut -d = -f 2)-json.ini ; fi ;
+                                    if [ "${php_major_version}" != "8" ] ; then ln -sf "${php_prefix}mods-available/json.ini" ${php_prefix}/conf.d/$(cat ${php_prefix}mods-available/json.ini | grep ";priority" | cut -d = -f 2)-json.ini ; fi ;
                                 ;;
                                 "debian" )
                                     phpenmod $(basename $module .ini)
-                                    if [ "${PHP_BASE:1:0}" != "8" ] ; then phpenmod json ; fi
+                                    if [ "${php_major_version}" != "8" ] ; then phpenmod json ; fi
                                     if [[ "$( ls -l ${php_prefix}/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] ; then
                                        rm -f "$(ls ${php_prefix}/fpm/conf.d/*-opcache.ini | tail -1 )"
                                     fi
@@ -146,7 +147,7 @@ disable_module() {
                             ;;
                             "debian" )
                                 phpdismod $(basename $module .ini)
-                                if [ "${PHP_BASE:1:0}" != "8" ] ; then phpdismod json ; fi
+                                if [ "${php_major_version}" != "8" ] ; then phpdismod json ; fi
                                 if [[ "$( ls -l ${php_prefix}/fpm/conf.d/*-opcache.ini |  wc -l )" -ge 1 ]] ; then
                                     rm -f "$(ls ${php_prefix}/fpm/conf.d/*-opcache.ini | tail -1 )"
                                 fi

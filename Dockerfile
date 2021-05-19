@@ -3,7 +3,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE
 
-ENV PHP_BASE=${PHP_BASE:-"7.4"} \
+ENV PHP_BASE=${PHP_BASE:-"8.0"} \
     PHP_ENABLE_APCU=TRUE \
     PHP_ENABLE_BCMATH=TRUE \
     PHP_ENABLE_BZ2=TRUE \
@@ -615,6 +615,7 @@ RUN export PHP_8_0_RUN_DEPS=" \
                 ca-certificates \
                 git \
                 gnupg \
+                gpgme \
                 mariadb-client \
                 openssl \
                 postgresql-client \

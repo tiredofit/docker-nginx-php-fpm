@@ -1,3 +1,13 @@
+## 6.1.8 2021-05-19 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add gpgme package (Alpine)
+
+   ### Changed
+      - Fix for php-ext enable script to stop loading json if PHP > 8
+      - GPG extension loading fix
+
+
 ## 6.1.7 2021-05-05 <dave at tiredofit dot ca>
 
    ### Changed
