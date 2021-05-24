@@ -1,3 +1,10 @@
+## 6.1.9 2021-05-24 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Update msmtprc file with nginx user/group permissions to allow php-fpm to send
+      - Shuffle XDebug environment variables and configuraiton around
+
+
 ## 6.1.8 2021-05-19 <dave at tiredofit dot ca>
 
    ### Added

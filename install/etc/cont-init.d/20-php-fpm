@@ -101,27 +101,19 @@ if [ "${PHP_BASE:0:1}" = "5" ] ; then echo "suhosin.executor.include.whitelist =
 
 ### Debug Mode
 if var_true "$PHP_ENABLE_XDEBUG" ; then
-  PHP_XDEBUG_PROFILER_DIR=${PHP_XDEBUG_PROFILER_DIR:-"${PHP_LOG_DIR}/xdebug/"}
-  PHP_XDEBUG_PROFILER_ENABLE=${PHP_XDEBUG_PROFILER_ENABLE:-"0"}
-  PHP_XDEBUG_PROFILER_ENABLE_TRIGGER=${PHP_XDEBUG_PROFILER_ENABLE_TRIGGER:-"0"}
-  PHP_XDEBUG_REMOTE_AUTOSTART=${PHP_XDEBUG_REMOTE_AUTOSTART:-"1"}
-  PHP_XDEBUG_REMOTE_CONNECT_BACK=${PHP_XDEBUG_REMOTE_CONNECT_BACK:-"0"}
-  PHP_XDEBUG_REMOTE_ENABLE=${PHP_XDEBUG_REMOTE_ENABLE:-"1"}
-  PHP_XDEBUG_REMOTE_HANDLER=${PHP_XDEBUG_REMOTE_HANDLER:-"dbgp"}
-  PHP_XDEBUG_REMOTE_HOST=${PHP_XDEBUG_REMOTE_HOST:-"127.0.0.1"}
-  PHP_XDEBUG_REMOTE_PORT=${PHP_XDEBUG_REMOTE_PORT:-"9090"}
-
-  echo "zend_extension=xdebug.so" >> ${php_prefix}mods-available/xdebug.ini
-  echo "xdebug.default_enable = 1" >> ${php_prefix}mods-available/xdebug.ini
-  echo "xdebug.profiler_enable= ${PHP_XDEBUG_PROFILER_ENABLE}" >> ${php_prefix}mods-available/xdebug.ini
-  echo "xdebug.profiler_enable_trigger= ${PHP_XDEBUG_PROFILER_ENABLE_TRIGGER}" >> ${php_prefix}mods-available/xdebug.ini
-  echo "xdebug.profiler_output_dir='${PHP_XDEBUG_PROFILER_DIR}'" >> ${php_prefix}mods-available/xdebug.ini
-  echo "xdebug.remote_autostart = ${PHP_XDEBUG_REMOTE_AUTOSTART}" >> ${php_prefix}mods-available/xdebug.ini
-  echo "xdebug.remote_connect_back = ${PHP_XDEBUG_REMOTE_CONNECT_BACK}" >> ${php_prefix}mods-available/xdebug.ini
-  echo "xdebug.remote_enable = ${PHP_XDEBUG_REMOTE_ENABLE}" >> ${php_prefix}mods-available/xdebug.ini
-  echo "xdebug.remote_handler = ${PHP_XDEBUG_REMOTE_HANDLER}" >> ${php_prefix}mods-available/xdebug.ini
-  echo "xdebug.remote_host = ${PHP_XDEBUG_REMOTE_HOST}" >> ${php_prefix}mods-available/xdebug.ini
-  echo "xdebug.remote_port = ${PHP_XDEBUG_REMOTE_PORT}" >> ${php_prefix}mods-available/xdebug.ini
+  cat <<EOF >> ${php_prefix}mods-available/xdebug.ini
+zend_extension=xdebug.so
+xdebug.default_enable = 1
+xdebug.profiler_enable= ${PHP_XDEBUG_PROFILER_ENABLE}
+xdebug.profiler_enable_trigger= ${PHP_XDEBUG_PROFILER_ENABLE_TRIGGER}
+xdebug.profiler_output_dir='${PHP_XDEBUG_PROFILER_DIR}'
+xdebug.remote_autostart = ${PHP_XDEBUG_REMOTE_AUTOSTART}
+xdebug.remote_connect_back = ${PHP_XDEBUG_REMOTE_CONNECT_BACK}
+xdebug.remote_enable = ${PHP_XDEBUG_REMOTE_ENABLE}
+xdebug.remote_handler = ${PHP_XDEBUG_REMOTE_HANDLER}
+xdebug.remote_host = ${PHP_XDEBUG_REMOTE_HOST}
+xdebug.remote_port = ${PHP_XDEBUG_REMOTE_PORT}
+EOF
   PHP_LOG_LEVEL=debug
   print_notice "DEBUGGING MODE ACTIVATED: Please use your IDE to connect to: ${PHP_XDEBUG_REMOTE_HOST}:${PHP_XDEBUG_REMOTE_PORT}"
   if [ "$PHP_XDEBUG_PROFILER_ENABLE" = "1" ]; then
@@ -143,6 +135,8 @@ case ${os} in
         echo "date.timezone="$(cat /etc/timezone) >> ${php_prefix}fpm/conf.d/99-timezone.ini
         ;;
 esac
+
+chown -R ${NGINX_USER}${NGINX_GROUP} /etc/msmtprc
 
 ### PHP Log Level
 sed -i -e "s/<PHP_LOG_LEVEL>/${PHP_LOG_LEVEL}/g" /assets/php-fpm/fpm/php-fpm.conf
