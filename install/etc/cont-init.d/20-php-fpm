@@ -136,7 +136,8 @@ case ${os} in
         ;;
 esac
 
-chown -R ${NGINX_USER}${NGINX_GROUP} /etc/msmtprc
+chown ${NGINX_USER}${NGINX_GROUP} /etc/msmtprc
+chown 0600 /etc/msmtprc
 
 ### PHP Log Level
 sed -i -e "s/<PHP_LOG_LEVEL>/${PHP_LOG_LEVEL}/g" /assets/php-fpm/fpm/php-fpm.conf

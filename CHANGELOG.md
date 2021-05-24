@@ -1,3 +1,9 @@
+## 6.1.10 2021-05-24 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for 6.1.9 permissions
+
+
 ## 6.1.9 2021-05-24 <dave at tiredofit dot ca>
 
    ### Changed
