@@ -1,3 +1,9 @@
+## 6.1.11 2021-05-25 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change the way that LLNG authentication gets loaded
+
+
 ## 6.1.10 2021-05-24 <dave at tiredofit dot ca>
 
    ### Changed
