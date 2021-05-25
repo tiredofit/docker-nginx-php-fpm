@@ -125,26 +125,32 @@ fi
 
 case ${os} in
     "alpine" )
-        echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > ${php_prefix}/conf.d/99-smtp.ini
+        if var_true "${ENABLE_SMTP}" ; then
+          echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > ${php_prefix}/conf.d/99-smtp.ini
+        fi
         echo "date.timezone="$(cat /etc/timezone) >> ${php_prefix}/conf.d/99-timezone.ini
         ;;
     "debian" )
         ### SMTP Config
-        echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > ${php_prefix}cli/conf.d/99-smtp.ini
-        echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > ${php_prefix}fpm/conf.d/99-smtp.ini
+        if var_true "${ENABLE_SMTP}" ; then
+          echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > ${php_prefix}cli/conf.d/99-smtp.ini
+          echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > ${php_prefix}fpm/conf.d/99-smtp.ini
+        fi
         echo "date.timezone="$(cat /etc/timezone) >> ${php_prefix}fpm/conf.d/99-timezone.ini
         ;;
 esac
 
-chown ${NGINX_USER}${NGINX_GROUP} /etc/msmtprc
-chown 0600 /etc/msmtprc
+if var_true "${ENABLE_SMTP}" ; then
+  chown ${NGINX_USER}:${NGINX_GROUP} /etc/msmtprc
+  chown 0600 /etc/msmtprc
+fi
 
 ### PHP Log Level
 sed -i -e "s/<PHP_LOG_LEVEL>/${PHP_LOG_LEVEL}/g" /assets/php-fpm/fpm/php-fpm.conf
 sed -i -e "s#date.timezone = .*#date.timezone = $(cat /etc/timezone)#g" /assets/php-fpm/cli/php.ini
 sed -i -e "s#date.timezone = .*#date.timezone = $(cat /etc/timezone)#g" /assets/php-fpm/fpm/php.ini
-### Copy Bootstrap Config overtop of running conf
 
+### Copy Bootstrap Config overtop of running conf
 case ${os} in
     "alpine" )
         cp -R /assets/php-fpm/cli/php.ini ${php_prefix}/

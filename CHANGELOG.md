@@ -1,3 +1,9 @@
+## 6.1.12 2021-05-25 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Additional checks for msmtp usage - If ENABLE_SMTP=FALSE then don't execute permissions settings
+
+
 ## 6.1.11 2021-05-25 <dave at tiredofit dot ca>
 
    ### Changed
