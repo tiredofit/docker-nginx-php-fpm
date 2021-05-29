@@ -142,7 +142,7 @@ esac
 
 if var_true "${ENABLE_SMTP}" ; then
   chown ${NGINX_USER}:${NGINX_GROUP} /etc/msmtprc
-  chown 0600 /etc/msmtprc
+  chmod 0600 /etc/msmtprc
 fi
 
 ### PHP Log Level

@@ -1,3 +1,9 @@
+## 6.1.13 2021-05-29 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Final permissions fix for MSMTP
+
+
 ## 6.1.12 2021-05-25 <dave at tiredofit dot ca>
 
    ### Changed
