@@ -1,3 +1,9 @@
+## 6.1.14 2021-06-04 <dave at tiredofit dot ca>
+
+   ### Added
+      - Enable APC Caching for CLI
+
+
 ## 6.1.13 2021-05-29 <dave at tiredofit dot ca>
 
    ### Changed
