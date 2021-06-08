@@ -1,3 +1,9 @@
+## 6.1.15 2021-06-08 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add Hook to load IGBINARY when PHP_ENABLE_MEMCACHED=TRUE
+
+
 ## 6.1.14 2021-06-04 <dave at tiredofit dot ca>
 
    ### Added
