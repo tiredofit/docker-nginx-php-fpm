@@ -1,5 +1,5 @@
-FROM tiredofit/nginx:alpine-3.13
-LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
+FROM tiredofit/nginx:alpine-3.14
+LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ARG PHP_BASE
 
