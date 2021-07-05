@@ -1,3 +1,8 @@
+## 6.1.16 2021-07-05 <dave at tiredofit dot ca>
+
+   ### Added
+      - Support upstream image changes
+
 ## 6.1.15 2021-06-08 <dave at tiredofit dot ca>
 
    ### Added

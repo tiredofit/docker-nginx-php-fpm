@@ -8,5 +8,5 @@ check_container_initialized
 check_service_initialized init
 liftoff
 
-print_info "Starting php-fpm ${PHP_VERSION}"
-silent exec s6-setuidgid nginx php-fpm -F;
+print_start "Starting php-fpm ${PHP_VERSION}"
+silent s6-setuidgid nginx php-fpm -F;
