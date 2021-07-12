@@ -214,6 +214,21 @@ fi
 
 if [ "${NGINX_AUTHENTICATION_TYPE}" = "LLNG" ]; then
     print_notice "Adding LLNG Authentication parameters to nginx configuration"
+
+    header_num=$(printenv | sort | grep -c '\NGINX_AUTHENTICATION_LLNG_ATTRIBUTE.*')
+    for ((i = 1; i <= header_num; i++)); do
+      headers=NGINX_AUTHENTICATION_LLNG_ATTRIBUTE${i}
+      IFS=',' read -r -a array <<<"${!headers}"
+
+      print_notice "Updating Nginx to support recieving attribute from LLNG: '${array[0]}'"
+
+      echo "fastcgi_param ${array[0]} \$${array[1]};" >>/etc/nginx/nginx.conf.d/authentication/llng_params
+      echo "auth_request_set \$${array[1]} \$${array[2]};" >>/etc/nginx/nginx.conf.d/authentication/llng_auth_request
+    done
+
+    sed -i '/server {/a\ \ \ \ \  include /etc/nginx/nginx.conf.d/authentication/llng;' /etc/nginx/conf.d/*.conf
+    sed -i '/server {/a\ \ \ \ \  ### LLNG Authentication handler' /etc/nginx/conf.d/*.conf
+
     cat <<EOF >> /etc/nginx/nginx.conf.d/php-fpm.conf
 ### LLNG Authentication handler
 include /etc/nginx/nginx.conf.d/authentication/llng_auth_request;

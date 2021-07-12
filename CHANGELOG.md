@@ -1,3 +1,9 @@
+## 6.1.17 2021-07-12 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Move around some LLNG Authentication blocks
+
+
 ## 6.1.16 2021-07-05 <dave at tiredofit dot ca>
 
    ### Added
