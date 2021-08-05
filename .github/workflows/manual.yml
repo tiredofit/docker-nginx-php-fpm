@@ -82,7 +82,7 @@ jobs:
       - name: Label
         id: Label
         run: |
-          if [ -f "Dockerfile" ] ; then
+          if [ -f "Dockerfile.debian" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${RELEASE}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile.debian
@@ -306,7 +306,7 @@ jobs:
       - name: Label
         id: Label
         run: |
-          if [ -f "Dockerfile" ] ; then
+          if [ -f "Dockerfile.debian" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${RELEASE}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile.debian
@@ -1127,3 +1127,4 @@ jobs:
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
              PHP_BASE=${{ env.RELEASE }}
+
