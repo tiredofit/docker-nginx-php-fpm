@@ -91,7 +91,7 @@ jobs:
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
             if [ -f "CHANGELOG.md" ] ; then
               sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
-              echo "COPY CHANGELOG.md /assets/.${{ secrets.DOCKER_USERNAME }}/CHANGELOG_${GITHUB_REPOSITORY}.md" >> Dockerfile.debian
+              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
             fi
 
             if [[ $GITHUB_REF == refs/tags/* ]]; then
@@ -203,7 +203,7 @@ jobs:
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
             if [ -f "CHANGELOG.md" ] ; then
               sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              echo "COPY CHANGELOG.md /assets/.${{ secrets.DOCKER_USERNAME }}/CHANGELOG_${GITHUB_REPOSITORY}.md" >> Dockerfile
+              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
             fi
 
             if [[ $GITHUB_REF == refs/tags/* ]]; then
@@ -315,7 +315,7 @@ jobs:
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
             if [ -f "CHANGELOG.md" ] ; then
               sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
-              echo "COPY CHANGELOG.md /assets/.${{ secrets.DOCKER_USERNAME }}/CHANGELOG_${GITHUB_REPOSITORY}.md" >> Dockerfile.debian
+              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
             fi
 
             if [[ $GITHUB_REF == refs/tags/* ]]; then
@@ -427,7 +427,7 @@ jobs:
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
             if [ -f "CHANGELOG.md" ] ; then
               sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              echo "COPY CHANGELOG.md /assets/.${{ secrets.DOCKER_USERNAME }}/CHANGELOG_${GITHUB_REPOSITORY}.md" >> Dockerfile
+              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
             fi
 
             if [[ $GITHUB_REF == refs/tags/* ]]; then
@@ -539,7 +539,7 @@ jobs:
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
             if [ -f "CHANGELOG.md" ] ; then
               sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
-              echo "COPY CHANGELOG.md /assets/.${{ secrets.DOCKER_USERNAME }}/CHANGELOG_${GITHUB_REPOSITORY}.md" >> Dockerfile.debian
+              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
             fi
 
             if [[ $GITHUB_REF == refs/tags/* ]]; then
@@ -651,7 +651,7 @@ jobs:
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
             if [ -f "CHANGELOG.md" ] ; then
               sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              echo "COPY CHANGELOG.md /assets/.${{ secrets.DOCKER_USERNAME }}/CHANGELOG_${GITHUB_REPOSITORY}.md" >> Dockerfile
+              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
             fi
 
             if [[ $GITHUB_REF == refs/tags/* ]]; then
@@ -763,7 +763,7 @@ jobs:
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
             if [ -f "CHANGELOG.md" ] ; then
               sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              echo "COPY CHANGELOG.md /assets/.${{ secrets.DOCKER_USERNAME }}/CHANGELOG_${GITHUB_REPOSITORY}.md" >> Dockerfile
+              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
             fi
 
             if [[ $GITHUB_REF == refs/tags/* ]]; then
@@ -875,7 +875,7 @@ jobs:
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
             if [ -f "CHANGELOG.md" ] ; then
               sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              echo "COPY CHANGELOG.md /assets/.${{ secrets.DOCKER_USERNAME }}/CHANGELOG_${GITHUB_REPOSITORY}.md" >> Dockerfile
+              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
             fi
 
             if [[ $GITHUB_REF == refs/tags/* ]]; then
@@ -987,7 +987,7 @@ jobs:
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
             if [ -f "CHANGELOG.md" ] ; then
               sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              echo "COPY CHANGELOG.md /assets/.${{ secrets.DOCKER_USERNAME }}/CHANGELOG_${GITHUB_REPOSITORY}.md" >> Dockerfile
+              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
             fi
 
             if [[ $GITHUB_REF == refs/tags/* ]]; then
@@ -1099,7 +1099,7 @@ jobs:
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
             if [ -f "CHANGELOG.md" ] ; then
               sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              echo "COPY CHANGELOG.md /assets/.${{ secrets.DOCKER_USERNAME }}/CHANGELOG_${GITHUB_REPOSITORY}.md" >> Dockerfile
+              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
             fi
 
             if [[ $GITHUB_REF == refs/tags/* ]]; then

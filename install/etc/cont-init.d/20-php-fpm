@@ -36,7 +36,6 @@ case "$CONTAINER_MODE" in
             echo "upstream php-pool {" >> /etc/nginx/nginx.conf.d/php-pool.conf
             for host in $php_fpm_hosts
             do
-              echo $host
               echo "    server $host;" >> /etc/nginx/nginx.conf.d/php-pool.conf
             done
             echo "}" >> /etc/nginx/nginx.conf.d/php-pool.conf
@@ -97,11 +96,11 @@ if var_true "${PHP_DISPLAY_ERRORS}" ; then
 fi
 
 ### Allow composer to work
-if [ "${PHP_BASE:0:1}" = "5" ] ; then echo "suhosin.executor.include.whitelist = phar" >> /etc/php${PHP_BASE:0:1}/php.ini ; fi;  \
+if [ "${PHP_BASE:0:1}" = "5" ] ; then echo "suhosin.executor.include.whitelist = phar" >> /etc/php"${PHP_BASE:0:1}"/php.ini ; fi;  \
 
 ### Debug Mode
 if var_true "$PHP_ENABLE_XDEBUG" ; then
-  cat <<EOF >> ${php_prefix}mods-available/xdebug.ini
+  cat <<EOF >> "${php_prefix}"mods-available/xdebug.ini
 zend_extension=xdebug.so
 xdebug.default_enable = 1
 xdebug.profiler_enable= ${PHP_XDEBUG_PROFILER_ENABLE}
@@ -119,29 +118,29 @@ EOF
   if [ "$PHP_XDEBUG_PROFILER_ENABLE" = "1" ]; then
     print_notice "PROFILING MODE ACTIVATED: Please find the profiler logs at: ${PHP_XDEBUG_PROFILER_DIR}"
     mkdir -p "$PHP_XDEBUG_PROFILER_DIR"
-    chown -R ${NGINX_USER}:"${NGINX_GROUP}" "$PHP_XDEBUG_PROFILER_DIR"
+    chown -R "${NGINX_USER}":"${NGINX_GROUP}" "$PHP_XDEBUG_PROFILER_DIR"
   fi
 fi
 
 case ${os} in
     "alpine" )
         if var_true "${ENABLE_SMTP}" ; then
-          echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > ${php_prefix}/conf.d/99-smtp.ini
+          echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"/conf.d/99-smtp.ini
         fi
-        echo "date.timezone="$(cat /etc/timezone) >> ${php_prefix}/conf.d/99-timezone.ini
+        echo "date.timezone="$(cat /etc/timezone) >> "${php_prefix}"/conf.d/99-timezone.ini
         ;;
     "debian" )
         ### SMTP Config
         if var_true "${ENABLE_SMTP}" ; then
-          echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > ${php_prefix}cli/conf.d/99-smtp.ini
-          echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > ${php_prefix}fpm/conf.d/99-smtp.ini
+          echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"cli/conf.d/99-smtp.ini
+          echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"fpm/conf.d/99-smtp.ini
         fi
-        echo "date.timezone="$(cat /etc/timezone) >> ${php_prefix}fpm/conf.d/99-timezone.ini
+        echo "date.timezone="$(cat /etc/timezone) >> "${php_prefix}"fpm/conf.d/99-timezone.ini
         ;;
 esac
 
 if var_true "${ENABLE_SMTP}" ; then
-  chown ${NGINX_USER}:${NGINX_GROUP} /etc/msmtprc
+  chown "${NGINX_USER}":"${NGINX_GROUP}" /etc/msmtprc
   chmod 0600 /etc/msmtprc
 fi
 
@@ -153,12 +152,12 @@ sed -i -e "s#date.timezone = .*#date.timezone = $(cat /etc/timezone)#g" /assets/
 ### Copy Bootstrap Config overtop of running conf
 case ${os} in
     "alpine" )
-        cp -R /assets/php-fpm/cli/php.ini ${php_prefix}/
-        cp -R /assets/php-fpm/mods-available/* ${php_prefix}/mods-available/
-        cp -R /assets/php-fpm/fpm/php-fpm.conf ${php_prefix}/
+        cp -R /assets/php-fpm/cli/php.ini "${php_prefix}"/
+        cp -R /assets/php-fpm/mods-available/* "${php_prefix}"/mods-available/
+        cp -R /assets/php-fpm/fpm/php-fpm.conf "${php_prefix}"/
         ;;
     "debian" )
-        cp -R /assets/php-fpm/* ${php_prefix}
+        cp -R /assets/php-fpm/* "${php_prefix}"
         ;;
 esac
 
@@ -239,13 +238,13 @@ fi
 case ${os} in
     "debian" )
         ### Weird Opcache issue
-        if [ -f "/etc/php/${PHP_BASE}/fpm/conf.d/10-opcache.ini" ] && [ -f "/etc/php/${PHP_BASE}/fpm/conf.d/20-opcache.ini" ] ; then
-          rm -rf /etc/php/${PHP_BASE}/*/conf.d/10-opcache.ini
+        if [ -f "/etc/php/${PHP_BASE}/fpm/conf.d/10-opcache.ini" ] && [ -f "/etc/php/${PHP_BASE}/fpm/conf.d/00-opcache.ini" ] ; then
+          rm -rf /etc/php/"${PHP_BASE}"/*/conf.d/00-opcache.ini
         fi
         ;;
 esac
 
-chmod -R 0755 ${php_prefix}
-chown -R root:"${NGINX_GROUP}" ${php_prefix}
+chmod -R 0755 "${php_prefix}"
+chown -R root:"${NGINX_GROUP}" "${php_prefix}"
 
 liftoff

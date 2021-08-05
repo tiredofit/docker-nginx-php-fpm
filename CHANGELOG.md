@@ -1,3 +1,10 @@
+## 6.1.18 2021-08-05 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add another value for socket timeout
+      - Cleanup some opcache console annoyances
+
+
 ## 6.1.17 2021-07-12 <dave at tiredofit dot ca>
 
    ### Changed
