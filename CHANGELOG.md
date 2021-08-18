@@ -1,3 +1,9 @@
+## 6.1.19 2021-08-18 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change to PHP Memcached plugin for debian
+
+
 ## 6.1.18 2021-08-05 <dave at tiredofit dot ca>
 
    ### Added

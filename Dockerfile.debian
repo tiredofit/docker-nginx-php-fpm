@@ -1,4 +1,4 @@
-FROM tiredofit/nginx:debian
+FROM tiredofit/nginx:debian-buster
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE
@@ -97,10 +97,12 @@ RUN export PHP_7_3_RUN_DEPS=" \
                 php$PHP_BASE-fpm \
                 php$PHP_BASE-gd \
                 php$PHP_BASE-gmp \
+                php$PHP_BASE-igbinary \
                 php$PHP_BASE-imap \
                 php$PHP_BASE-interbase \
                 php$PHP_BASE-intl \
                 php$PHP_BASE-ldap \
+                php$PHP_BASE-memcached \
                 php$PHP_BASE-mbstring \
                 php$PHP_BASE-mysql \
                 php$PHP_BASE-odbc \
