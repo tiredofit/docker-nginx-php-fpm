@@ -1,3 +1,9 @@
+## 6.1.20 2021-08-18 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change to PECL http package
+
+
 ## 6.1.19 2021-08-18 <dave at tiredofit dot ca>
 
    ### Changed

@@ -72,7 +72,6 @@ RUN export PHP_7_3_RUN_DEPS=" \
                 php-oauth \
                 php-pcov \
                 php-pear \
-                php-pecl-http \
                 php-propro \
                 php-protobuf \
                 php-radius \
@@ -97,6 +96,7 @@ RUN export PHP_7_3_RUN_DEPS=" \
                 php$PHP_BASE-fpm \
                 php$PHP_BASE-gd \
                 php$PHP_BASE-gmp \
+                php$PHP_BASE-http \
                 php$PHP_BASE-igbinary \
                 php$PHP_BASE-imap \
                 php$PHP_BASE-interbase \
