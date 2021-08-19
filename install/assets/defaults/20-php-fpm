@@ -4,7 +4,7 @@
 CONTAINER_MODE=${CONTAINER_MODE:-"nginx-php-fpm"}
 ENABLE_PHP_FPM=${ENABLE_PHP_FPM:-"TRUE"}
 PHP_APC_SHM_SIZE=${PHP_APC_SHM_SIZE:-"128M"}
-if [ "$(php -v | head -n 1 | awk '{print $2}' | cut -c 1)" != "8" ] ; then PHP_ENABLE_JSON=${PHP_ENABLE_JSON:-"TRUE"} ; fi
+
 PHP_DISPLAY_ERRORS=${PHP_DISPLAY_ERRORS:-"TRUE"}
 PHP_KITCHENSINK=${PHP_KITCHENSINK:-"FALSE"}
 PHP_FPM_HOST=${PHP_FPM_HOST:-"127.0.0.1"}
@@ -35,10 +35,15 @@ PHP_XDEBUG_REMOTE_HANDLER=${PHP_XDEBUG_REMOTE_HANDLER:-"dbgp"}
 PHP_XDEBUG_REMOTE_HOST=${PHP_XDEBUG_REMOTE_HOST:-"127.0.0.1"}
 PHP_XDEBUG_REMOTE_PORT=${PHP_XDEBUG_REMOTE_PORT:-"9090"}
 
-if var_true "${PHP_ENABLE_REDIS}" || \
-   var_true "${PHP_ENABLE_MEMCACHED}" \
-   ; then \
-    if [ -f "/usr/lib/php$(php -v | head -n 1 | awk '{print $2}' | cut -c 1)/modules/igbinary.so" ] ; then
-        PHP_ENABLE_IGBINARY=${PHP_ENABLE_IGBINARY:-"TRUE"}
-    fi
+if [ "${PHP_BASE:0:1}" != "8" ] ; then
+    PHP_ENABLE_JSON=TRUE
+fi
+
+if var_true "${PHP_ENABLE_REDIS}" ; the
+    PHP_ENABLE_IGBINARY=TRUE
+fi
+
+if var_true "${PHP_ENABLE_MEMCACHED}" ; then
+    PHP_ENABLE_IGBINARY=TRUE
+    PHP_ENABLE_MSGPACK=TRUE
 fi

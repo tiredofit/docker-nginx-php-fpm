@@ -1,3 +1,9 @@
+## 6.1.21 2021-08-19 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change the way dependent modules are loaded in defaults
+
+
 ## 6.1.20 2021-08-18 <dave at tiredofit dot ca>
 
    ### Changed
