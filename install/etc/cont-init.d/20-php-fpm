@@ -8,7 +8,8 @@ if var_false "${ENABLE_PHP_FPM}" ; then
     print_notice "Disabling PHP-FPM Functionality"
     service_stop 20-php-fpm
     rm -rf /etc/logrotate.d/php-fpm
-    rm -rf /etc/zabbix/php*.conf
+    rm -rf /etc/fluent-bit/conf.d/php*
+    rm -rf /etc/zabbix/*/php*.conf
     liftoff
     exit 0
 fi
@@ -56,30 +57,40 @@ case "$CONTAINER_MODE" in
 esac
 
 ### Adjust PHP Runtime Variables
-sed -i -e "s#<PHP_LISTEN_PORT>#$PHP_FPM_LISTEN_PORT#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<MAX_CHILDREN>#$PHP_FPM_MAX_CHILDREN#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<MAX_EXECUTION_TIME>#$PHP_TIMEOUT#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<MAX_REQUESTS>#$PHP_FPM_MAX_REQUESTS#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<MAX_SPARE_SERVERS>#$PHP_FPM_MAX_SPARE_SERVERS#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<MAX_START_SERVERS>#$PHP_FPM_START_SERVERS#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<MIN_SPARE_SERVERS>#$PHP_FPM_MIN_SPARE_SERVERS#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<PHP_HOST>#$PHP_FPM_HOST>#g" /etc/nginx/conf.d/default.conf
+sed -i -e "s#<PHP_LISTEN_PORT>#${PHP_FPM_LISTEN_PORT}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<MAX_CHILDREN>#${PHP_FPM_MAX_CHILDREN}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<MAX_EXECUTION_TIME>#${PHP_TIMEOUT}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<MAX_REQUESTS>#${PHP_FPM_MAX_REQUESTS}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<MAX_SPARE_SERVERS>#${PHP_FPM_MAX_SPARE_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<MAX_START_SERVERS>#${PHP_FPM_START_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<MIN_SPARE_SERVERS>#${PHP_FPM_MIN_SPARE_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<PHP_HOST>#${PHP_FPM_HOST}#g" /etc/nginx/conf.d/default.conf
 sed -i -e "s#<PHP_HOST>#${PHP_FPM_HOST}#g" /etc/nginx/nginx.conf.d/php-fpm.conf
 sed -i -e "s#<PHP_LISTEN_PORT>#${PHP_FPM_LISTEN_PORT}#g" /etc/nginx/nginx.conf.d/php-fpm.conf
-sed -i -e "s#<PHP_LOG_LOCATION>#$PHP_LOG_LOCATION#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<PHP_LOGFILE>#$PHP_LOG_FILE#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<PHP_MEMORY_LIMIT>#$PHP_MEMORY_LIMIT#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<PHP_TIMEOUT>#$PHP_TIMEOUT#g" /etc/nginx/nginx.conf.d/php-fpm.conf
-sed -i -e "s#<POST_MAX_SIZE>#$PHP_POST_MAX_SIZE#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<PROCESS_MANAGER>#$PHP_FPM_PROCESS_MANAGER#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<UPLOAD_MAX_SIZE>#$PHP_UPLOAD_MAX_SIZE#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#apc.shm_size.*#apc.shm_size=$PHP_APC_SHM_SIZE#g" /assets/php-fpm//mods-available/apcu.ini
+sed -i -e "s#<PHP_LOG_LOCATION>#${PHP_LOG_LOCATION}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<PHP_LOG_ACCESS_FILE>#${PHP_LOG_ACCESS_FILE}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<PHP_LOG_ERROR_FILE>#${PHP_LOG_ERROR_FILE}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<PHP_MEMORY_LIMIT>#${PHP_MEMORY_LIMIT}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<PHP_TIMEOUT>#${PHP_TIMEOUT}#g" /etc/nginx/nginx.conf.d/php-fpm.conf
+sed -i -e "s#<POST_MAX_SIZE>#${PHP_POST_MAX_SIZE}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<PROCESS_MANAGER>#${PHP_FPM_PROCESS_MANAGER}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<UPLOAD_MAX_SIZE>#${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#apc.shm_size.*#apc.shm_size=${PHP_APC_SHM_SIZE}#g" /assets/php-fpm//mods-available/apcu.ini
 sed -i -e "s#opcache.memory_consumption.*#opcache.memory_consumption=$PHP_OPCACHE_MEM_SIZE#g" /assets/php-fpm/mods-available/opcache.ini
-sed -i -e "s#memory_limit = .*#memory_limit = $PHP_MEMORY_LIMIT#g" /assets/php-fpm/cli/php.ini
-sed -i -e "s#max_input_time = .*#max_input_time = $PHP_TIMEOUT#g" /assets/php-fpm/cli/php.ini
-sed -i -e "s#default_socket_timeout = .*#default_socket_timeout = $PHP_TIMEOUT#g" /assets/php-fpm/cli/php.ini
-sed -i -e "s#post_max_size = .*#post_max_size = $PHP_UPLOAD_MAX_SIZE#g" /assets/php-fpm/cli/php.ini
-sed -i -e "s#upload_max_filesize = .*#upload_max_filesize = $PHP_UPLOAD_MAX_SIZE#g" /assets/php-fpm/cli/php.ini
+sed -i -e "s#memory_limit = .*#memory_limit = ${PHP_MEMORY_LIMIT}#g" /assets/php-fpm/cli/php.ini
+sed -i -e "s#max_input_time = .*#max_input_time = ${PHP_TIMEOUT}#g" /assets/php-fpm/cli/php.ini
+sed -i -e "s#default_socket_timeout = .*#default_socket_timeout = ${PHP_TIMEOUT}#g" /assets/php-fpm/cli/php.ini
+sed -i -e "s#post_max_size = .*#post_max_size = ${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/cli/php.ini
+sed -i -e "s#upload_max_filesize = .*#upload_max_filesize = ${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/cli/php.ini
+
+case "${PHP_LOG_ACCESS_FORMAT}" in
+  "default" | "DEFAULT" | "standard" | "STANDARD" )
+    cat /assets/php-fpm/default.logformat >> /assets/php-fpm/php-fpm.conf
+  ;;
+  "JSON" | "json" )
+    cat /assets/php-fpm/json.logformat >> /assets/php-fpm/php-fpm.conf
+  ;;
+esac
 
 ### Disable Opcache
 if [ "${PHP_APC_SHM_SIZE}" = "0" ]; then
@@ -164,6 +175,8 @@ esac
 
 ### Create Log Directories
 mkdir -p "${PHP_LOG_LOCATION}"
+touch "${PHP_LOG_LOCATION}"/"${PHP_LOG_ACCESS_FILE}"
+touch "${PHP_LOG_LOCATION}"/"${PHP_LOG_ERROR_FILE}"
 chown -R "${NGINX_USER}":"${NGINX_GROUP}" "${PHP_LOG_LOCATION}"
 
 ### Update Logrotate
@@ -236,12 +249,18 @@ EOF
 fi
 
 case ${os} in
+    "alpine" )
+        ### Weird Opcache issue
+        if [ -f "${php_prefix}/conf.d/10-opcache.ini" ] && [ -f "${php_prefix}/conf.d/00-opcache.ini" ] ; then
+          rm -rf ${php_prefix}/conf.d/00-opcache.ini
+        fi
+    ;;
     "debian" )
         ### Weird Opcache issue
         if [ -f "/etc/php/${PHP_BASE}/fpm/conf.d/10-opcache.ini" ] && [ -f "/etc/php/${PHP_BASE}/fpm/conf.d/00-opcache.ini" ] ; then
           rm -rf /etc/php/"${PHP_BASE}"/*/conf.d/00-opcache.ini
         fi
-        ;;
+    ;;
 esac
 
 chmod -R 0755 "${php_prefix}"

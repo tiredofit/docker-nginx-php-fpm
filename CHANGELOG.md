@@ -1,3 +1,10 @@
+## 6.2.0 2021-08-29 <dave at tiredofit dot ca>
+
+   ### Added
+      - Added Access Log support with standard/default string output or json output
+      - Fluent-Bit Log Parsing support
+
+
 ## 6.1.21 2021-08-19 <dave at tiredofit dot ca>
 
    ### Changed

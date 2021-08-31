@@ -15,7 +15,7 @@ services:
       - ./data/:/www/html
       - ./logs/:/www/logs
     environment:
-      - ZABBIX_HOSTNAME=nginx-php-fpm-app-app
+      - CONTAINER_NAME=nginx-php-fpm-app-app
     networks:
       - services
       - proxy

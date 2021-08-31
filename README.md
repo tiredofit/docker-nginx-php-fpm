@@ -31,14 +31,14 @@ This repository will build a [Nginx](https://www.nginx.org) w/[PHP-FPM](https://
 - [About](#about)
 - [Maintainer](#maintainer)
 - [Table of Contents](#table-of-contents)
-- [Prerequisites and Assumptions](#prerequisites-and-assumptions)
+- [Prerequisites and Assumptions and Assumptions](#prerequisites-and-assumptions-and-assumptions)
 - [Installation](#installation)
   - [Build from Source](#build-from-source)
   - [Prebuilt Images](#prebuilt-images)
     - [Multi Archictecture](#multi-archictecture)
 - [Configuration](#configuration)
   - [Quick Start](#quick-start)
-  - [Data-Volumes](#data-volumes)
+  - [Persistent Storage](#persistent-storage)
   - [Environment Variables](#environment-variables)
     - [Base Images used](#base-images-used)
     - [Container Options](#container-options)
@@ -153,8 +153,10 @@ When `CONTAINER_MODE` set to `nginx` the `PHP_FPM_LISTEN_PORT` environment varia
 | `PHP_FPM_MIN_SPARE_SERVERS` | Minium Spare Servers avaialble                                 | `1`                                       |
 | `PHP_FPM_PROCESS_MANAGER`   | How to handle processes `static`, `ondemand`, `dynamic`        | `dynamic`                                 |
 | `PHP_FPM_START_SERVERS`     | How many FPM servers to start initially                        | `2`                                       |
-| `PHP_LOG_FILE`              | Logfile name                                                   | `php-fpm.log`                             |
+| `PHP_LOG_ACCESS_FILE`       | PHP Access Logfile Name                                        | `access.log`                              |
+| `PHP_LOG_ERROR_FILE`        | Logfile name                                                   | `error.log`                               |
 | `PHP_LOG_LEVEL`             | PHP Log Level                                                  | `notice`                                  |
+| `PHP_LOG_ACCESS_FORMAT`     | Log format - `default` or `json`                               | `default`                                 |
 | `PHP_LOG_LOCATION`          | Log Location for PHP Logs                                      | `/www/logs/php-fpm`                       |
 | `PHP_MEMORY_LIMIT`          | How much memory should PHP use                                 | `128M`                                    |
 | `PHP_OPCACHE_MEM_SIZE`      | OPCache Memory Size - Set `0` to disable or via other env vars | `128`                                     |

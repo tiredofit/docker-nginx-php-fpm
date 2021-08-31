@@ -1,3 +1,5 @@
+# logship: php-fpm,php-fpm-error
+
 <PHP_LOG_LOCATION>/*.log {
     daily
     ifempty
@@ -5,9 +7,5 @@
     missingok
     compress
     dateext
-    sharedscripts
-    postrotate
-	kill -10 $(pgrep -f "php-fpm: master process")
-    endscript
+    copytruncate
 }
-
