@@ -150,7 +150,7 @@ case ${os} in
         ;;
 esac
 
-if var_true "${ENABLE_SMTP}" ; then
+if var_true "${CONTAINER_ENABLE_MESSAGING}" ; then
   chown "${NGINX_USER}":"${NGINX_GROUP}" /etc/msmtprc
   chmod 0600 /etc/msmtprc
 fi

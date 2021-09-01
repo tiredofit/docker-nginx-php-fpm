@@ -1,3 +1,9 @@
+## 6.2.1 2021-09-01 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for msmtp not working due to a change in upstream base images
+
+
 ## 6.2.0 2021-08-29 <dave at tiredofit dot ca>
 
    ### Added
