@@ -85,10 +85,10 @@ sed -i -e "s#upload_max_filesize = .*#upload_max_filesize = ${PHP_UPLOAD_MAX_SIZ
 
 case "${PHP_LOG_ACCESS_FORMAT}" in
   "default" | "DEFAULT" | "standard" | "STANDARD" )
-    cat /assets/php-fpm/default.logformat >> /assets/php-fpm/php-fpm.conf
+    cat /assets/php-fpm/fpm/default.logformat >> /assets/php-fpm/fpm/php-fpm.conf
   ;;
-  "JSON" | "json" )
-    cat /assets/php-fpm/json.logformat >> /assets/php-fpm/php-fpm.conf
+   "json" | "JSON" )
+    cat /assets/php-fpm/fpm/json.logformat >> /assets/php-fpm/fpm/php-fpm.conf
   ;;
 esac
 

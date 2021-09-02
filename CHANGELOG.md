@@ -1,3 +1,9 @@
+## 6.2.2 2021-09-01 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for logformats
+
+
 ## 6.2.1 2021-09-01 <dave at tiredofit dot ca>
 
    ### Changed
