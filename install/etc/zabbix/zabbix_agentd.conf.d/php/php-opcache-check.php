@@ -25,9 +25,9 @@ switch($_GET['item']) {
     case 'validate_timestamps':
         print($configuration['directives']['opcache.validate_timestamps']);
         break;
-    case 'inherited_hack':
-        print($configuration['directives']['opcache.inherited_hack']);
-        break;
+//    case 'inherited_hack':
+//        print($configuration['directives']['opcache.inherited_hack']);
+//        break;
     case 'dups_fix':
         print(($configuration['directives']['opcache.dups_fix'] ? 1 : 0));
         break;
@@ -70,9 +70,9 @@ switch($_GET['item']) {
     case 'load_comments':
         print($configuration['directives']['opcache.load_comments']);
         break;
-    case 'fast_shutdown':
-        print($configuration['directives']['opcache.fast_shutdown']);
-        break;
+//    case 'fast_shutdown':
+//        print($configuration['directives']['opcache.fast_shutdown']);
+//        break;
     case 'enable_file_override':
         print(($configuration['directives']['opcache.enable_file_override'] ? 1 : 0));
         break;

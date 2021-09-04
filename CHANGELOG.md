@@ -1,3 +1,9 @@
+## 6.2.4 2021-09-04 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Opcache key removal for Zabbix monitoring
+
+
 ## 6.2.3 2021-09-04 <dave at tiredofit dot ca>
 
    ### Changed
