@@ -1,3 +1,9 @@
+## 6.2.5 2021-09-04 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Redo how logrotate files were created
+
+
 ## 6.2.4 2021-09-04 <dave at tiredofit dot ca>
 
    ### Changed

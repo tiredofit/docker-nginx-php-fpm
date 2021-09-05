@@ -179,8 +179,9 @@ touch "${PHP_LOG_LOCATION}"/"${PHP_LOG_ACCESS_FILE}"
 touch "${PHP_LOG_LOCATION}"/"${PHP_LOG_ERROR_FILE}"
 chown -R "${NGINX_USER}":"${NGINX_GROUP}" "${PHP_LOG_LOCATION}"
 
-### Update Logrotate
-sed -i -e "s|<PHP_LOG_LOCATION>|${PHP_LOG_LOCATION}|g" /etc/logrotate.d/php-fpm
+### Create Logrotate
+create_logrotate php-fpm-access ${PHP_LOG_LOCATION}/${PHP_LOG_ACCESS_FILE} php-fpm ${NGINX_USER} ${NGINX_GROUP}
+create_logrotate php-fpm-error ${PHP_LOG_LOCATION}/${PHP_LOG_ERROR_FILE} php-fpm-error ${NGINX_USER} ${NGINX_GROUP}
 
 #### Create Sample PHP File if doesn't exist
 if var_true "${PHP_ENABLE_CREATE_SAMPLE_PHP}" ; then
