@@ -70,6 +70,7 @@ sed -i -e "s#<PHP_LISTEN_PORT>#${PHP_FPM_LISTEN_PORT}#g" /etc/nginx/nginx.conf.d
 sed -i -e "s#<PHP_LOG_LOCATION>#${PHP_LOG_LOCATION}#g" /assets/php-fpm/fpm/php-fpm.conf
 sed -i -e "s#<PHP_LOG_ACCESS_FILE>#${PHP_LOG_ACCESS_FILE}#g" /assets/php-fpm/fpm/php-fpm.conf
 sed -i -e "s#<PHP_LOG_ERROR_FILE>#${PHP_LOG_ERROR_FILE}#g" /assets/php-fpm/fpm/php-fpm.conf
+sed -i -e "s#<PHP_LOG_LIMIT>#${PHP_LOG_LIMIT}#g" /assets/php-fpm/fpm/php-fpm.conf
 sed -i -e "s#<PHP_MEMORY_LIMIT>#${PHP_MEMORY_LIMIT}#g" /assets/php-fpm/fpm/php-fpm.conf
 sed -i -e "s#<PHP_TIMEOUT>#${PHP_TIMEOUT}#g" /etc/nginx/nginx.conf.d/php-fpm.conf
 sed -i -e "s#<POST_MAX_SIZE>#${PHP_POST_MAX_SIZE}#g" /assets/php-fpm/fpm/php-fpm.conf

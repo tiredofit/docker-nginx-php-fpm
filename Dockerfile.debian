@@ -1,4 +1,4 @@
-FROM tiredofit/nginx:debian-buster
+FROM docker.io/tiredofit/nginx:debian-buster
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE

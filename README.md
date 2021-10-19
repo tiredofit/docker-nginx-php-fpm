@@ -157,6 +157,7 @@ When `CONTAINER_MODE` set to `nginx` the `PHP_FPM_LISTEN_PORT` environment varia
 | `PHP_LOG_ERROR_FILE`        | Logfile name                                                   | `error.log`                               |
 | `PHP_LOG_LEVEL`             | PHP Log Level                                                  | `notice`                                  |
 | `PHP_LOG_ACCESS_FORMAT`     | Log format - `default` or `json`                               | `default`                                 |
+| `PHP_LOG_LIMIT`             | Characters to log                                              | `2048`                                    |
 | `PHP_LOG_LOCATION`          | Log Location for PHP Logs                                      | `/www/logs/php-fpm`                       |
 | `PHP_MEMORY_LIMIT`          | How much memory should PHP use                                 | `128M`                                    |
 | `PHP_OPCACHE_MEM_SIZE`      | OPCache Memory Size - Set `0` to disable or via other env vars | `128`                                     |

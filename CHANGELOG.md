@@ -1,3 +1,9 @@
+## 6.2.6 2021-10-19 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add PHP_LOG_LIMIT environment variable to ensure single line log levels in access/error.log
+
+
 ## 6.2.5 2021-09-04 <dave at tiredofit dot ca>
 
    ### Changed

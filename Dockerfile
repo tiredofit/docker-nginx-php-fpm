@@ -1,4 +1,4 @@
-FROM tiredofit/nginx:alpine-3.14
+FROM docker.io/tiredofit/nginx:alpine-3.14
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ARG PHP_BASE
