@@ -1,3 +1,9 @@
+## 6.2.7 2021-10-20 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add mariadb-connector-c to fix SHA2 problems with connecting to MariaDB 8.0 systems
+
+
 ## 6.2.6 2021-10-19 <dave at tiredofit dot ca>
 
    ### Added

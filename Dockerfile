@@ -616,8 +616,9 @@ RUN export PHP_8_0_RUN_DEPS=" \
                 git \
                 gnupg \
                 gpgme \
-                mariadb-client \
                 libressl \
+                mariadb-client \
+                mariadb-connector-c \
                 postgresql-client \
                 $(printenv PHP_$(echo ${PHP_BASE} | sed 's|\.|_|g')_RUN_DEPS) \
                 && \
