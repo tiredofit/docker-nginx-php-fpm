@@ -1,3 +1,15 @@
+## 6.2.9 2021-10-28 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Debian: Fix for pulling in MariaDB repository
+
+
+## 6.2.8 2021-10-28 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix with pulling in MariaDB Repository
+
+
 ## 6.2.7 2021-10-20 <dave at tiredofit dot ca>
 
    ### Added
