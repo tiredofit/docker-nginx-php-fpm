@@ -84,6 +84,8 @@ sed -i -e "s#default_socket_timeout = .*#default_socket_timeout = ${PHP_TIMEOUT}
 sed -i -e "s#post_max_size = .*#post_max_size = ${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/cli/php.ini
 sed -i -e "s#upload_max_filesize = .*#upload_max_filesize = ${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/cli/php.ini
 
+sed -i "/access.format=/d" /assets/php-fpm/fpm/php-fpm.conf
+
 case "${PHP_LOG_ACCESS_FORMAT}" in
   "default" | "DEFAULT" | "standard" | "STANDARD" )
     cat /assets/php-fpm/fpm/default.logformat >> /assets/php-fpm/fpm/php-fpm.conf

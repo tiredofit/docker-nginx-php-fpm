@@ -1,3 +1,9 @@
+## 6.2.10 2021-11-10 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change the way that access logs are being configured on startup for those who don't stop and destroy a container completely
+
+
 ## 6.2.9 2021-10-28 <dave at tiredofit dot ca>
 
    ### Changed
