@@ -1,3 +1,9 @@
+## 6.2.12 2021-11-16 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for XDebug Log Path
+
+
 ## 6.2.11 2021-11-16 <dave at tiredofit dot ca>
 
    ### Changed
