@@ -1,3 +1,9 @@
+## 6.2.11 2021-11-16 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Adjustment to Log Level integer
+
+
 ## 6.2.10 2021-11-10 <dave at tiredofit dot ca>
 
    ### Changed
