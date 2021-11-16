@@ -1,3 +1,9 @@
+## 6.2.13 2021-11-16 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for Zabbix PHP-FPM Metrics not functioning when AUTHENTICATION_TYPE=LLNG
+
+
 ## 6.2.12 2021-11-16 <dave at tiredofit dot ca>
 
    ### Changed

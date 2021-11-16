@@ -244,7 +244,8 @@ if [ "${NGINX_AUTHENTICATION_TYPE}" = "LLNG" ]; then
 
     sed -i '/server {/a\ \ \ \ \  include /etc/nginx/nginx.conf.d/authentication/llng;' /etc/nginx/conf.d/*.conf
     sed -i '/server {/a\ \ \ \ \  ### LLNG Authentication handler' /etc/nginx/conf.d/*.conf
-
+    cp -R /etc/nginx/nginx.conf.d/php-fpm.conf /etc/nginx/nginx.conf.d/monitoring-php-fpm.conf
+    sed -i "s|include /etc/nginx/nginx.conf.d/php-fpm.conf;|include /etc/nginx/nginx.conf.d/monitoring-php-fpm.conf;|g" /etc/nginx/nginx.conf.d/monitoring.conf
     cat <<EOF >> /etc/nginx/nginx.conf.d/php-fpm.conf
 ### LLNG Authentication handler
 include /etc/nginx/nginx.conf.d/authentication/llng_auth_request;
