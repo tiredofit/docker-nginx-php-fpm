@@ -238,7 +238,7 @@ jobs:
   v8_0_alpine:
     env:
       RELEASE: "8.0"
-      DISTRIB: "3.14"
+      DISTRIB: "3.15"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -574,7 +574,7 @@ jobs:
   v7_4_alpine:
     env:
       RELEASE: "7.4"
-      DISTRIB: "3.14"
+      DISTRIB: "3.15"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
