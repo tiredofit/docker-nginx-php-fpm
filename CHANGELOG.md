@@ -1,3 +1,9 @@
+## 6.2.14 2021-11-24 <dave at tiredofit dot ca>
+
+   ### Added
+      - Change PHP 7.4 and 8.0 to use Alpine 3.15 as base
+
+
 ## 6.2.13 2021-11-16 <dave at tiredofit dot ca>
 
    ### Changed
