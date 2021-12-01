@@ -14,7 +14,7 @@
 
 This repository will build a [Nginx](https://www.nginx.org) w/[PHP-FPM](https://php.net) docker image, suitable for serving PHP scripts, or utilizing as a base image for installing additional software.
 
-* Tracking PHP 5.3-8.0
+* Tracking PHP 5.3-8.1
 * Easily enable / disable extensions based on your use case
 * Automatic Log rotation
 * Composer Included
@@ -81,6 +81,7 @@ The following image tags are available along with their tagged release based on 
 | PHP version | Alpine Base | Tag            | Debian Base | Tag           |
 | ----------- | ----------- | -------------- | ----------- | ------------- |
 | latest      | edge        | `:alpine-edge` |             |               |
+| 8.1.x       |             |                | Buster      | `:debian-8.1` |
 | 8.0.x       | 3.15        | `:alpine-8.0`  | Buster      | `:debian-8.0` |
 | 7.4.x       | 3.15        | `:alpine-7.4`  | Buster      | `:debian-7.3` |
 | 7.3.x       | 3.12        | `:alpine-7.3`  | Buster      | `:debian-7.3` |

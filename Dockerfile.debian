@@ -30,7 +30,6 @@ ENV PHP_BASE=${PHP_BASE:-"8.0"} \
     PHP_ENABLE_XML=TRUE \
     PHP_ENABLE_XMLREADER=TRUE \
     PHP_ENABLE_XMLWRITER=TRUE \
-    CONTAINER_NAME=nginx-php-fpm-app \
     CONTAINER_ENABLE_MESSAGING=TRUE \
     NGINX_ENABLE_CREATE_SAMPLE_HTML=FALSE
 
@@ -38,15 +37,22 @@ ENV PHP_BASE=${PHP_BASE:-"8.0"} \
 RUN export PHP_7_3_RUN_DEPS=" \
                 php7.3-json \
                 php7.3-apcu-bc \
+                php$PHP_BASE-http \
                 php7.3-recode \
                 " && \
     \
     export PHP_7_4_RUN_DEPS=" \
                 php7.4-apcu-bc \
+                php$PHP_BASE-http \
                 php7.4-json \
                 " && \
     \
     export PHP_8_0_RUN_DEPS=" \
+                php$PHP_BASE-http \
+                php-zstd \
+                " && \
+    \
+    export PHP_8_1_RUN_DEPS=" \
                 php-zstd \
                 " && \
     \
@@ -96,7 +102,6 @@ RUN export PHP_7_3_RUN_DEPS=" \
                 php$PHP_BASE-fpm \
                 php$PHP_BASE-gd \
                 php$PHP_BASE-gmp \
-                php$PHP_BASE-http \
                 php$PHP_BASE-igbinary \
                 php$PHP_BASE-imap \
                 php$PHP_BASE-interbase \
