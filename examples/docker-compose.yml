@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   nginx-php-fpm-app:
-    image: registry.selfdesign.org/docker/nginx-php-fpm/7.3
+    image: registry.selfdesign.org/docker/nginx-php-fpm/8.1
     container_name: nginx-php-fpm-app
     labels:
       - traefik.enable=true
