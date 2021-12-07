@@ -100,9 +100,18 @@ if [ "${PHP_APC_SHM_SIZE}" = "0" ]; then
   sed -i -e "s/apc.enabled=1/apc.enabled=0/g" /assets/php-fpm/mods-available/acpu.ini
 fi
 
-if [ "${PHP_OPCACHE_MEM_SIZE}" = "0" ]; then
+if [ "${PHP_OPCACHE_MEM_SIZE}" = "0" ] || var_false "${PHP_ENABLE_OPCACHE}" ; then
   sed -i -e "s/opcache.enable=1/opcache.enable=0/g" /assets/php-fpm/mods-available/opcache.ini
   sed -i -e "s/opcache.enable_cli=1/opcache.enable_cli=0/g" /assets/php-fpm/mods-available/opcache.ini
+else
+  if var_true "${CONTAINER_ENABLE_MONITORING}" && [ "${CONTAINER_MONITORING_BACKEND,,}" = "zabbix" ]; then
+      source /assets/defaults/03-monitoring
+      cat <<EOF > "${ZABBIX_CONFIG_PATH}"/"${ZABBIX_CONFIG_FILE}.d"/tiredofit-php_opcache.conf
+# Zabbix PHP Opcache Configuration - Automatically Generated
+# Find Companion Zabbix Server Templates at https://github.com/tiredofit/docker-nginx-php-fpm
+# Autoregister=opcache
+EOF
+  fi
 fi
 
 if var_true "${PHP_DISPLAY_ERRORS}" ; then

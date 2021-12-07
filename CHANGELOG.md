@@ -1,3 +1,9 @@
+## 6.3.0 2021-12-07 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Rework Zabbix Monitoring scripts and templates
+
+
 ## 6.2.15 2021-12-01 <dave at tiredofit dot ca>
 
    ### Changed
