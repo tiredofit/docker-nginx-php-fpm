@@ -1,0 +1,1659 @@
+{
+    "zabbix_export": {
+        "version": "5.4",
+        "date": "2021-12-09T00:36:45Z",
+        "groups": [
+            {
+                "uuid": "a571c0d144b14fd4a87a9d9b2aa9fcd6",
+                "name": "Templates/Applications"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "1cbda0970410425684135884d0cb7090",
+                "template": "PHP FPM",
+                "name": "PHP FPM",
+                "description": "Get PHP-FPM metrics using Zabbix agent running on Linux.\n\nThis template is meant to be used with https://github.com/tiredofit/docker-nginx-php-fpm",
+                "groups": [
+                    {
+                        "name": "Templates/Applications"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "9ae9e2a8203a48a7a482ef6d6ae9886c",
+                        "name": "PHP-FPM: Accepted connections per second",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.conn_accepted.rate",
+                        "delay": "0",
+                        "history": "7d",
+                        "value_type": "FLOAT",
+                        "description": "The number of accepted requests per second.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['accepted conn']"
+                                ]
+                            },
+                            {
+                                "type": "CHANGE_PER_SECOND",
+                                "parameters": [
+                                    ""
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "edc6b68194fe429facfb6b22425ff0d4",
+                        "name": "PHP-FPM: Listen queue",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.listen_queue",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The current number of connections that have been initiated, but not yet accepted.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['listen queue']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2ff9f072b06a4b56afb0e0f44b2c83a4",
+                        "name": "PHP-FPM: Listen queue, len",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.listen_queue_len",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "Size of the socket queue of pending connections.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['listen queue len']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2e0a543bee5a46c88085b2aba2f4976f",
+                        "name": "PHP-FPM: Listen queue, max",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.listen_queue_max",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The maximum number of requests in the queue of pending connections since this FPM pool has started.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['max listen queue']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2fabcd55c13449c29a48b70fdce77674",
+                        "name": "PHP-FPM: Queue usage",
+                        "type": "CALCULATED",
+                        "key": "php-fpm.listen_queue_usage",
+                        "history": "7d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "params": "last(//php-fpm.listen_queue)/(last(//php-fpm.listen_queue_len)+(last(//php-fpm.listen_queue_len)=0))*100",
+                        "description": "Queue utilization",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "412264f0e1174b7fb81b457dad1a745f",
+                                "expression": "min(/PHP FPM/php-fpm.listen_queue_usage,15m)  > {$PHP_FPM.QUEUE.WARN.MAX}",
+                                "name": "PHP-FPM: Queue utilization is high (over {$PHP_FPM.QUEUE.WARN.MAX}% for 15m)",
+                                "priority": "WARNING",
+                                "description": "The queue for this pool reached {$PHP_FPM.QUEUE.WARN.MAX}% of its maximum capacity. Items in queue represent the current number of connections that have been initiated on this pool, but not yet accepted."
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e9d89669cf53492a9d5ef7ff997e1a40",
+                        "name": "PHP-FPM: Max children reached",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.max_children",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The number of times that pm.max_children has been reached since the php-fpm pool started",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['max children reached']"
+                                ]
+                            },
+                            {
+                                "type": "SIMPLE_CHANGE",
+                                "parameters": [
+                                    ""
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "830e04be30f03e50ac0fa4783ecdc677",
+                        "name": "PHP-FPM: Pool name",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.name",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "description": "The name of current pool.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.pool"
+                                ]
+                            },
+                            {
+                                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                                "parameters": [
+                                    "3h"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "8ebee5fc8c853a96b34ed743e3dd0154",
+                        "name": "PHP-FPM: Processes, active",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.processes_active",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The total number of active processes.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['active processes']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "11cfd028325232a58d61d9e83aee640b",
+                        "name": "PHP-FPM: Processes, idle",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.processes_idle",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The total number of idle processes.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['idle processes']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3858218f90683bb19cbe27fc9aedf404",
+                        "name": "PHP-FPM: Processes, max active",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.processes_max_active",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The highest value that 'active processes' has reached since the php-fpm server started.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['max active processes']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a79af6cf38ec35518055c64aa7f1f5a2",
+                        "name": "PHP-FPM: Processes, total",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.processes_total",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The total number of server processes currently running.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['total processes']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "5ab12fc9f4ef39e5bbf7b2c6a840879e",
+                        "name": "PHP-FPM: Process manager",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.process_manager",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "description": "The method used by the process manager to control the number of child processes for this pool.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['process manager']"
+                                ]
+                            },
+                            {
+                                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                                "parameters": [
+                                    "3h"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "231e03bfb6e94f34b790576766244602",
+                                "expression": "last(/PHP FPM/php-fpm.process_manager,#1)<>last(/PHP FPM/php-fpm.process_manager,#2)",
+                                "name": "PHP-FPM: Manager  changed (new value received: {ITEM.VALUE})",
+                                "priority": "INFO",
+                                "description": "PHP-FPM manager changed. Ack to close.",
+                                "manual_close": "YES"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4d17b6d89ac93d0880eac6962ebf7347",
+                        "name": "PHP-FPM: Slow requests",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.slow_requests",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The number of requests that exceeded your request_slowlog_timeout value.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['slow requests']"
+                                ]
+                            },
+                            {
+                                "type": "SIMPLE_CHANGE",
+                                "parameters": [
+                                    ""
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "f30143d8e92f48aa8fedc2d28b8d7c70",
+                                "expression": "min(/PHP FPM/php-fpm.slow_requests,#3)>0",
+                                "name": "PHP-FPM: Detected slow requests",
+                                "priority": "WARNING",
+                                "description": "PHP-FPM detected slow request. A slow request means that it took more time to execute than expected (defined in the configuration of your pool)."
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4e4d6eda8fbb4d32ba7f48fba5723473",
+                        "name": "PHP-FPM: Start time",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.start_time",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "unixtime",
+                        "description": "The time when this pool was started.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['start time']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2a19b306712a47939e70d3ec30e39b05",
+                        "name": "PHP-FPM: Uptime",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.uptime",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "s",
+                        "description": "How long has this pool been running.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['start since']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "bdf9962a3e2049a8aec000b037b94d60",
+                                "expression": "nodata(/PHP FPM/php-fpm.uptime,30m)=1",
+                                "name": "PHP-FPM: Failed to fetch info data (or no data for 30m)",
+                                "priority": "INFO",
+                                "description": "Zabbix has not received data for items for the last 30 minutes",
+                                "manual_close": "YES",
+                                "dependencies": [
+                                    {
+                                        "name": "PHP-FPM: Process is not running",
+                                        "expression": "last(/PHP FPM/proc.num[\"{$PHP_FPM.PROCESS_NAME}\"])=0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "c6966a6c33f0452ab4fd112c9299e624",
+                                "expression": "last(/PHP FPM/php-fpm.uptime)<10m",
+                                "name": "PHP-FPM: has been restarted (uptime < 10m)",
+                                "priority": "INFO",
+                                "description": "Uptime is less than 10 minutes",
+                                "manual_close": "YES"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a709eaae52ad4128a139c618db6525d2",
+                        "name": "PHP-FPM: CPU utilization",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "proc.cpu.util[\"{$PHP_FPM.PROCESS_NAME}\"]",
+                        "history": "7d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "description": "Process CPU utilization percentage.",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ef771994ec9e482babf372d9f867d500",
+                        "name": "PHP-FPM: Memory usage, %",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "proc.mem[\"{$PHP_FPM.PROCESS_NAME}\",,,,pmem]",
+                        "history": "7d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "description": "Memory used percentage relative to total memory available.",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "f55a5ef29f864d0a8c1a325df2372f7c",
+                        "name": "PHP-FPM: Memory usage (rss)",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "proc.mem[\"{$PHP_FPM.PROCESS_NAME}\",,,,rss]",
+                        "history": "7d",
+                        "units": "B",
+                        "description": "Resident set size memory used by process in bytes.",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ab8dc0d1ce344fe8ae6a23716a168fbd",
+                        "name": "PHP-FPM: Number of processes running",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "proc.num[\"{$PHP_FPM.PROCESS_NAME}\"]",
+                        "history": "7d",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "21a03d0ada634632ae9089a2cf3b4d70",
+                                "expression": "last(/PHP FPM/proc.num[\"{$PHP_FPM.PROCESS_NAME}\"])=0",
+                                "name": "PHP-FPM: Process is not running",
+                                "priority": "HIGH"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "09ec73291f21417ab8f19f53fda3331f",
+                        "name": "PHP-FPM: Get status page",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]",
+                        "history": "0",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "^[.\\s\\S]*({.+})",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix raw items"
+                            }
+                        ]
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$PHP_FPM.HOST}",
+                        "value": "localhost",
+                        "description": "Hostname or IP of PHP-FPM status host or container."
+                    },
+                    {
+                        "macro": "{$PHP_FPM.PORT}",
+                        "value": "73",
+                        "description": "The port of PHP-FPM status host or container."
+                    },
+                    {
+                        "macro": "{$PHP_FPM.PROCESS_NAME}",
+                        "value": "php-fpm",
+                        "description": "PHP-FPM process name"
+                    },
+                    {
+                        "macro": "{$PHP_FPM.QUEUE.WARN.MAX}",
+                        "value": "80",
+                        "description": "The maximum PHP-FPM queue usage percent for trigger expression."
+                    },
+                    {
+                        "macro": "{$PHP_FPM.STATUS.PAGE}",
+                        "value": "php-fpm_status",
+                        "description": "The path of PHP-FPM status page."
+                    }
+                ],
+                "dashboards": [
+                    {
+                        "uuid": "aa710e8b45a14da582a2e8853a944b23",
+                        "name": "PHP-FPM",
+                        "pages": [
+                            {
+                                "widgets": [
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "Accepted Connections per second",
+                                        "y": "5",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP-FPM: Accepted Connections per second",
+                                                    "host": "PHP FPM"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "CPU Utilization",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP-FPM: CPU Utilization",
+                                                    "host": "PHP FPM"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "Memory Utilization",
+                                        "x": "12",
+                                        "width": "11",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP-FPM: Memory Utilization",
+                                                    "host": "PHP FPM"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "Processes",
+                                        "x": "12",
+                                        "y": "5",
+                                        "width": "11",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP-FPM: Process",
+                                                    "host": "PHP FPM"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "Queue",
+                                        "y": "10",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP-FPM: Queue",
+                                                    "host": "PHP FPM"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "valuemaps": [
+                    {
+                        "uuid": "1caa1e7c41e14c7492ab8112f33ea068",
+                        "name": "Service state",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "Down"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "Up"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "uuid": "1cbda0970410435684135884d0cb7090",
+                "template": "PHP FPM - Passive",
+                "name": "PHP FPM - Passive",
+                "description": "Get PHP-FPM metrics using Zabbix agent running on Linux.\n\nThis template is meant to be used with https://github.com/tiredofit/docker-nginx-php-fpm",
+                "groups": [
+                    {
+                        "name": "Templates/Applications"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "9ae9e2a8003a48a7a482ef6d6ae9886c",
+                        "name": "PHP-FPM: Accepted connections per second",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.conn_accepted.rate",
+                        "delay": "0",
+                        "history": "7d",
+                        "value_type": "FLOAT",
+                        "description": "The number of accepted requests per second.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['accepted conn']"
+                                ]
+                            },
+                            {
+                                "type": "CHANGE_PER_SECOND",
+                                "parameters": [
+                                    ""
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "edc6b68194fe499facfb6b22425ff0d4",
+                        "name": "PHP-FPM: Listen queue",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.listen_queue",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The current number of connections that have been initiated, but not yet accepted.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['listen queue']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "aff9f072b06a4b56afb0e0f44b2c83a4",
+                        "name": "PHP-FPM: Listen queue, len",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.listen_queue_len",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "Size of the socket queue of pending connections.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['listen queue len']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "de0a543bee5a46c88085b2aba2f4976f",
+                        "name": "PHP-FPM: Listen queue, max",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.listen_queue_max",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The maximum number of requests in the queue of pending connections since this FPM pool has started.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['max listen queue']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "dfabcd55c13449c29a48b70fdce77674",
+                        "name": "PHP-FPM: Queue usage",
+                        "type": "CALCULATED",
+                        "key": "php-fpm.listen_queue_usage",
+                        "history": "7d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "params": "last(//php-fpm.listen_queue)/(last(//php-fpm.listen_queue_len)+(last(//php-fpm.listen_queue_len)=0))*100",
+                        "description": "Queue utilization",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "a11264f0e1174b7fb81b457dad1a745f",
+                                "expression": "min(/PHP FPM - Passive/php-fpm.listen_queue_usage,15m)  > {$PHP_FPM.QUEUE.WARN.MAX}",
+                                "name": "PHP-FPM: Queue utilization is high (over {$PHP_FPM.QUEUE.WARN.MAX}% for 15m)",
+                                "priority": "WARNING",
+                                "description": "The queue for this pool reached {$PHP_FPM.QUEUE.WARN.MAX}% of its maximum capacity. Items in queue represent the current number of connections that have been initiated on this pool, but not yet accepted."
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e9d49669cf58492a9d5ef7ff997e1a40",
+                        "name": "PHP-FPM: Max children reached",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.max_children",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The number of times that pm.max_children has been reached since the php-fpm pool started",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['max children reached']"
+                                ]
+                            },
+                            {
+                                "type": "SIMPLE_CHANGE",
+                                "parameters": [
+                                    ""
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "830e04be30f04e50ac0fa4783ecdc677",
+                        "name": "PHP-FPM: Pool name",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.name",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "description": "The name of current pool.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.pool"
+                                ]
+                            },
+                            {
+                                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                                "parameters": [
+                                    "3h"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "8ebee5fc8c854a96b34ed743e3dd0154",
+                        "name": "PHP-FPM: Processes, active",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.processes_active",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The total number of active processes.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['active processes']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "11cfd028325242a58d61d9e83aee640b",
+                        "name": "PHP-FPM: Processes, idle",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.processes_idle",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The total number of idle processes.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['idle processes']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3858218f90684bb19cbe27fc9aedf404",
+                        "name": "PHP-FPM: Processes, max active",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.processes_max_active",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The highest value that 'active processes' has reached since the php-fpm server started.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['max active processes']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a79af6cf38ec45518055c64aa7f1f5a2",
+                        "name": "PHP-FPM: Processes, total",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.processes_total",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The total number of server processes currently running.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['total processes']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "5ab12fc9f4ef49e5bbf7b2c6a840879e",
+                        "name": "PHP-FPM: Process manager",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.process_manager",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "description": "The method used by the process manager to control the number of child processes for this pool.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['process manager']"
+                                ]
+                            },
+                            {
+                                "type": "DISCARD_UNCHANGED_HEARTBEAT",
+                                "parameters": [
+                                    "3h"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "231e0fbfb6e94f34b790576766244602",
+                                "expression": "last(/PHP FPM - Passive/php-fpm.process_manager,#1)<>last(/PHP FPM - Passive/php-fpm.process_manager,#2)",
+                                "name": "PHP-FPM: Manager  changed (new value received: {ITEM.VALUE})",
+                                "priority": "INFO",
+                                "description": "PHP-FPM manager changed. Ack to close.",
+                                "manual_close": "YES"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4d17b6d89ac94d0880eac6962ebf7347",
+                        "name": "PHP-FPM: Slow requests",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.slow_requests",
+                        "delay": "0",
+                        "history": "7d",
+                        "description": "The number of requests that exceeded your request_slowlog_timeout value.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['slow requests']"
+                                ]
+                            },
+                            {
+                                "type": "SIMPLE_CHANGE",
+                                "parameters": [
+                                    ""
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "f30147d8e92f48aa8fedc2d28b8d7c70",
+                                "expression": "min(/PHP FPM - Passive/php-fpm.slow_requests,#3)>0",
+                                "name": "PHP-FPM: Detected slow requests",
+                                "priority": "WARNING",
+                                "description": "PHP-FPM detected slow request. A slow request means that it took more time to execute than expected (defined in the configuration of your pool)."
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4e4d6eda8fbb4dd2ba7f48fba5723473",
+                        "name": "PHP-FPM: Start time",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.start_time",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "unixtime",
+                        "description": "The time when this pool was started.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['start time']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2a19b306712a47999e70d3ec30e39b05",
+                        "name": "PHP-FPM: Uptime",
+                        "type": "DEPENDENT",
+                        "key": "php-fpm.uptime",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "s",
+                        "description": "How long has this pool been running.",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.['start since']"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "bdf9962aee2049a8aec000b037b94d60",
+                                "expression": "nodata(/PHP FPM - Passive/php-fpm.uptime,30m)=1",
+                                "name": "PHP-FPM: Failed to fetch info data (or no data for 30m)",
+                                "priority": "INFO",
+                                "description": "Zabbix has not received data for items for the last 30 minutes",
+                                "manual_close": "YES",
+                                "dependencies": [
+                                    {
+                                        "name": "PHP-FPM: Process is not running",
+                                        "expression": "last(/PHP FPM - Passive/proc.num[\"{$PHP_FPM.PROCESS_NAME}\"])=0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "c6966a6c3ff0452ab4fd112c9299e624",
+                                "expression": "last(/PHP FPM - Passive/php-fpm.uptime)<10m",
+                                "name": "PHP-FPM: has been restarted (uptime < 10m)",
+                                "priority": "INFO",
+                                "description": "Uptime is less than 10 minutes",
+                                "manual_close": "YES"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a709eaae52ad4128a129c618db6525d2",
+                        "name": "PHP-FPM: CPU utilization",
+                        "key": "proc.cpu.util[\"{$PHP_FPM.PROCESS_NAME}\"]",
+                        "history": "7d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "description": "Process CPU utilization percentage.",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ef771994ec9e482babf872d9f867d500",
+                        "name": "PHP-FPM: Memory usage, %",
+                        "key": "proc.mem[\"{$PHP_FPM.PROCESS_NAME}\",,,,pmem]",
+                        "history": "7d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "description": "Memory used percentage relative to total memory available.",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "f55a5ef29f864d0a8c1af25df2372f7c",
+                        "name": "PHP-FPM: Memory usage (rss)",
+                        "key": "proc.mem[\"{$PHP_FPM.PROCESS_NAME}\",,,,rss]",
+                        "history": "7d",
+                        "units": "B",
+                        "description": "Resident set size memory used by process in bytes.",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ab8dc0d1ce344fe8ae6a22716a168fbd",
+                        "name": "PHP-FPM: Number of processes running",
+                        "key": "proc.num[\"{$PHP_FPM.PROCESS_NAME}\"]",
+                        "history": "7d",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP-FPM"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "21a03d0ada634602ae9089a2cf3b4d70",
+                                "expression": "last(/PHP FPM - Passive/proc.num[\"{$PHP_FPM.PROCESS_NAME}\"])=0",
+                                "name": "PHP-FPM: Process is not running",
+                                "priority": "HIGH"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "09ec73291f21417ab8f19f56fda3331f",
+                        "name": "PHP-FPM: Get status page",
+                        "key": "web.page.get[\"{$PHP_FPM.HOST}\",\"{$PHP_FPM.STATUS.PAGE}?json\",\"{$PHP_FPM.PORT}\"]",
+                        "history": "0",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "^[.\\s\\S]*({.+})",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix raw items"
+                            }
+                        ]
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$PHP_FPM.HOST}",
+                        "value": "localhost",
+                        "description": "Hostname or IP of PHP-FPM status host or container."
+                    },
+                    {
+                        "macro": "{$PHP_FPM.PORT}",
+                        "value": "73",
+                        "description": "The port of PHP-FPM status host or container."
+                    },
+                    {
+                        "macro": "{$PHP_FPM.PROCESS_NAME}",
+                        "value": "php-fpm",
+                        "description": "PHP-FPM process name"
+                    },
+                    {
+                        "macro": "{$PHP_FPM.QUEUE.WARN.MAX}",
+                        "value": "80",
+                        "description": "The maximum PHP-FPM queue usage percent for trigger expression."
+                    },
+                    {
+                        "macro": "{$PHP_FPM.STATUS.PAGE}",
+                        "value": "php-fpm_status",
+                        "description": "The path of PHP-FPM status page."
+                    }
+                ],
+                "dashboards": [
+                    {
+                        "uuid": "aa710e8b45a14da582a2e8858a944b23",
+                        "name": "PHP-FPM",
+                        "pages": [
+                            {
+                                "widgets": [
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "Accepted Connections per second",
+                                        "y": "5",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP-FPM: Accepted Connections per second",
+                                                    "host": "PHP FPM - Passive"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "CPU Utilization",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP-FPM: CPU Utilization",
+                                                    "host": "PHP FPM - Passive"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "Memory Utilization",
+                                        "x": "12",
+                                        "width": "11",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP-FPM: Memory Utilization",
+                                                    "host": "PHP FPM - Passive"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "Processes",
+                                        "x": "12",
+                                        "y": "5",
+                                        "width": "11",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP-FPM: Process",
+                                                    "host": "PHP FPM - Passive"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "Queue",
+                                        "y": "10",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP-FPM: Queue",
+                                                    "host": "PHP FPM - Passive"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "valuemaps": [
+                    {
+                        "uuid": "1caa1e7c41e14c7492ab8112f93ea068",
+                        "name": "Service state",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "Down"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "Up"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "graphs": [
+            {
+                "uuid": "aa8e71c9651440f9a516fec76a093506",
+                "name": "PHP-FPM: Accepted Connections per second",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP FPM - Passive",
+                            "key": "php-fpm.conn_accepted.rate"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "aa8e71c9651440f9a516fec76a093306",
+                "name": "PHP-FPM: Accepted Connections per second",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP FPM",
+                            "key": "php-fpm.conn_accepted.rate"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "61fba7cba7224337bfda7e4e0a9dc20c",
+                "name": "PHP-FPM: CPU Utilization",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP FPM - Passive",
+                            "key": "proc.cpu.util[\"{$PHP_FPM.PROCESS_NAME}\"]"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "61fba7cba7224337bfda7e4e0a9dc23c",
+                "name": "PHP-FPM: CPU Utilization",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP FPM",
+                            "key": "proc.cpu.util[\"{$PHP_FPM.PROCESS_NAME}\"]"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "217387d8e81747a2a1c01a3e04e742bc",
+                "name": "PHP-FPM: Memory Utilization",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP FPM - Passive",
+                            "key": "proc.mem[\"{$PHP_FPM.PROCESS_NAME}\",,,,rss]"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "217387d8e81747a2a1c01a3e04e742b3",
+                "name": "PHP-FPM: Memory Utilization",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP FPM",
+                            "key": "proc.mem[\"{$PHP_FPM.PROCESS_NAME}\",,,,rss]"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "36cd028132d94585877ad5726f0f9e3d",
+                "name": "PHP-FPM: Process",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP FPM - Passive",
+                            "key": "php-fpm.processes_max_active"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "2774A4",
+                        "item": {
+                            "host": "PHP FPM - Passive",
+                            "key": "php-fpm.processes_idle"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "color": "F63100",
+                        "item": {
+                            "host": "PHP FPM - Passive",
+                            "key": "php-fpm.processes_total"
+                        }
+                    },
+                    {
+                        "sortorder": "4",
+                        "color": "A54F10",
+                        "item": {
+                            "host": "PHP FPM - Passive",
+                            "key": "php-fpm.processes_active"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "36cd028132d94585877ad5726f0f9e33",
+                "name": "PHP-FPM: Process",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP FPM",
+                            "key": "php-fpm.processes_max_active"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "2774A4",
+                        "item": {
+                            "host": "PHP FPM",
+                            "key": "php-fpm.processes_idle"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "color": "F63100",
+                        "item": {
+                            "host": "PHP FPM",
+                            "key": "php-fpm.processes_total"
+                        }
+                    },
+                    {
+                        "sortorder": "4",
+                        "color": "A54F10",
+                        "item": {
+                            "host": "PHP FPM",
+                            "key": "php-fpm.processes_active"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "768a3e8aaa4741239887b55be5842f4a",
+                "name": "PHP-FPM: Queue",
+                "graph_items": [
+                    {
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP FPM - Passive",
+                            "key": "php-fpm.listen_queue_len"
+                        }
+                    },
+                    {
+                        "sortorder": "1",
+                        "color": "2774A4",
+                        "item": {
+                            "host": "PHP FPM - Passive",
+                            "key": "php-fpm.listen_queue"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "F63100",
+                        "item": {
+                            "host": "PHP FPM - Passive",
+                            "key": "php-fpm.listen_queue_max"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "768a3e8aaa4741239887b55be5842f43",
+                "name": "PHP-FPM: Queue",
+                "graph_items": [
+                    {
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP FPM",
+                            "key": "php-fpm.listen_queue_len"
+                        }
+                    },
+                    {
+                        "sortorder": "1",
+                        "color": "2774A4",
+                        "item": {
+                            "host": "PHP FPM",
+                            "key": "php-fpm.listen_queue"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "F63100",
+                        "item": {
+                            "host": "PHP FPM",
+                            "key": "php-fpm.listen_queue_max"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}

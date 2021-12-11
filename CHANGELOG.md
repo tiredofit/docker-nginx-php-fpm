@@ -1,3 +1,9 @@
+## 6.3.1 2021-12-10 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for 6.3.0 Zabbix Templates and switch to User Parameters
+
+
 ## 6.3.0 2021-12-07 <dave at tiredofit dot ca>
 
    ### Changed

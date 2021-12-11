@@ -1,0 +1,3128 @@
+{
+    "zabbix_export": {
+        "version": "5.4",
+        "date": "2021-12-11T00:34:20Z",
+        "groups": [
+            {
+                "uuid": "a571c0d144b14fd4a87a9d9b2aa9fcd6",
+                "name": "Templates/Applications"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "107256c64b64492cbf2fa9dfe4fd1f5b",
+                "template": "PHP OPcache",
+                "name": "PHP OPcache",
+                "description": "Get metrics from PHP OPcache\n\nThis is template has two external scripts that are required for data collection and this template is meant to be used specifically with https://github.com/tiredofit/docker-nginx-php-fpm/",
+                "groups": [
+                    {
+                        "name": "Templates/Applications"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "e055c0039ead4794891fb0209f2280d1",
+                        "name": "PHP OPCache: Cache Full",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.cache_full",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.cache_full"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2740818a3960459ca0d520c5b0d4c0ec",
+                        "name": "PHP OPCache: Enabled",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.enable",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_enabled"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4291d9d5856a49d08c6f3b32d1bd74f7",
+                        "name": "PHP OPCache: Get Settings page",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "php.opcache.get_settings",
+                        "delay": "60m",
+                        "history": "1h",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "41a78d0f44ce4452a743118c4e8c2d75",
+                        "name": "PHP OPCache: Get Status page",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "php.opcache.get_status",
+                        "history": "1h",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "9a197a56d21d45c4871a170c37831262",
+                        "name": "PHP OPcache: Strings - Buffer Size",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.interned_strings_usage.buffer_size",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.interned_strings_usage.buffer_size"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e833494b18bb42079b76a6a86a552488",
+                        "name": "PHP OPcache: Strings - Free Memory",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.interned_strings_usage.free_memory",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.interned_strings_usage.free_memory"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "0a6c4dc410014f138ff7e0cd8fc93ea0",
+                        "name": "PHP OPcache: Strings - Number of Strings",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.interned_strings_usage.number_of_strings",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.interned_strings_usage.number_of_strings"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3b6894702b6f49d4a2e1bd658d5f9b86",
+                        "name": "PHP OPcache: Strings - Used Memory",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.interned_strings_usage.used_memory",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.interned_strings_usage.used_memory"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "30e0edc8ef9f4b02959c265c9a1a3829",
+                        "name": "PHP OPcache: JIT - Active",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.active",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.on"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "c0dc09d1dc0548dc8f95a988d1c921ad",
+                        "name": "PHP OPcache: JIT - Buffer Free",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.buffer_free",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.buffer_free"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e8b518a7a1694c208691051e721b7cbe",
+                        "name": "PHP OPcache: JIT - Buffer Size",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.buffer_size",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.buffer_size"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "5598fcabe98e43dab8d4d46ab31f3a29",
+                        "name": "PHP OPcache: JIT - Enabled",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.enabled",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.enabled"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ef1cc6fafcf94f3687888aa7df83e618",
+                        "name": "PHP OPcache: JIT - Kind",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.kind",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.kind"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "5132d763f3b846a2a024d9ecbe8828bc",
+                        "name": "PHP OPcache: JIT - Opt Flags",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.opt_flags",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.opt_flags"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "da33ec05038b4d9d80c7fe2bf43b819c",
+                        "name": "PHP OPcache: JIT - Opt Level",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.opt_level",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.opt_level"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a80b17f0bede47fba27dbf1d38ca87a2",
+                        "name": "PHP OPcache: Memory - Current Wasted Percentage",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.memory.current_wasted_percentage",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "%",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.memory_usage.current_wasted_percentage"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "75bc757454b6421398b02e267b9e1e4c",
+                        "name": "PHP OPcache: Memory - Free",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.memory.free",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.memory_usage.free_memory"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "aea82eb0cb3d466881dd12910608b6c0",
+                        "name": "PHP OPcache: Memory - Used",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.memory.used",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.memory_usage.used_memory"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "8d9cef063e0743d9bc82c83c4342ef9d",
+                        "name": "PHP OPcache: Memory - Wasted",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.memory.wasted",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.memory_usage.wasted_memory"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "38f5af5d9ba341eeb5d9c6a92bb6bd5c",
+                        "name": "PHP OPCache: Restart in Progress",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.restart_in_progress",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.restart_in_progress"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "cb803e654d61482080b38285d74ed967",
+                        "name": "PHP OPCache: Restart Pending",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.restart_pending",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.restart_pending"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "61c7207bd8ef4b83ab1db49ad3ee2583",
+                        "name": "PHP OPcache: Settings - Force restart timeout",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.force_restart_timeout",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.force_restart_timeout: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4370a7da5c464999aafd7658ce6bfca3",
+                        "name": "PHP OPcache: Settings - Interned Strings Buffer",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.interned_strings_buffer",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.interned_strings_buffer: ([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "36c6f1354c0545979e086ba48b794cfe",
+                        "name": "PHP OPcache: Settings - JIT - Bisect limit",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.bisect_limit",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_bisect_limit: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "5d8a690b083448a9b21a85139950f07a",
+                        "name": "PHP OPcache: Settings - JIT - Blacklist root trace",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.blacklist_root_trace",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_blacllist_root_trace: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "8257da9363a64c8aa3d8a0b8156bcfe6",
+                        "name": "PHP OPcache: Settings - JIT - Blacklist side trace",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.blacklist_side_trace",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_blacllist_side_trace: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "6851f74479664a9dba95dd10e18c71f9",
+                        "name": "PHP OPcache: Settings - JIT - Buffer Size",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.buffer_size",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_buffer_size: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e3d61597950d4748aa0c64ec43114504",
+                        "name": "PHP OPcache: Settings - JIT - Debug",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.debug",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_debug: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e80e6046c79440ffa7daecc1e01c632c",
+                        "name": "PHP OPcache: Settings - JIT - Hot Function",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.hot_func",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_hot_func: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "de3884cfc0dc429ab76fb49184998e19",
+                        "name": "PHP OPcache: Settings - JIT - Hot Loop",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.hot_loop",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_hot_loop: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "44a87776da8243d5b5b4b4afb404df12",
+                        "name": "PHP OPcache: Settings - JIT - Hot Return",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.hot_return",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_hot_return: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e7833e59e7cf4c1c867d234423afa600",
+                        "name": "PHP OPcache: Settings - JIT - Hot Side exit",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.hot_side_exit",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_hot_side_exit: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "b4c50903e3424582aea54630e91b2ed3",
+                        "name": "PHP OPcache: Settings - JIT - Max exit counters",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.max_exit_counters",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_max_exit_counters: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3557b329424a4f819216b1e73a8c4ea3",
+                        "name": "PHP OPcache: Settings - JIT - Max polymorphic calls",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.max_polymorphic_calls",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_max_polymorphic_calls: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d2176e3749f5479089f66f1b5d12b5ae",
+                        "name": "PHP OPcache: Settings - JIT - Max recursive calls",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.max_recursive_calls",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_max_recursive_calls: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "083fad5c4ead448696236f898e4d251d",
+                        "name": "PHP OPcache: Settings - JIT - Max recursive returns",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.max_recursive_returns",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_max_recursive_returns: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "f1d4c8971788478481e0d9971fc4e69b",
+                        "name": "PHP OPcache: Settings - JIT - Max root traces",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.max_root_traces",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_max_root_traces: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "0fdd61819f3d43bcaff714c05f3b5a5f",
+                        "name": "PHP OPcache: Settings - JIT - Max side traces",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.max_side_traces",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_max_side_traces: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "5d241ad9d87946f2ac72b446549fba20",
+                        "name": "PHP OPcache: Settings - JIT - Prof thereshold",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.prof_threshold",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_prof_threshold: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "df6ae62d5114424cb19ca08b820efd60",
+                        "name": "PHP OPcache: Settings - Max Accelerated Files",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.max_accelerated_files",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.max_accelerated_files: ([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "cc44a6d3dfcb45b1a98a39fad9ba5b15",
+                        "name": "PHP OPcache: Settings - Max Wasted Percentage",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.max_wasted_percentage",
+                        "delay": "0",
+                        "history": "1d",
+                        "units": "%",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.max_wasted_percentage: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "7d1176c0035e4327ae2e94328d59d24a",
+                        "name": "PHP OPcache: Settings - Max Memory Consumption",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.memory_concumption",
+                        "delay": "0",
+                        "history": "1d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.memoryconsumption: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "8288e49e710d4e4fb6f6d5dbfa4e5009",
+                        "name": "PHP OPcache: Settings - Optimization Level",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.optimization_level",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.optimization_level: ([0-9])",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "0abb97d92c8846489f94190217d8da74",
+                        "name": "PHP OPcache: Statistics - Blacklist - Misses",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.blacklist.misses",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.blacklist_misses"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d2ca3078f7e34d0fb2e7af7a014daf1e",
+                        "name": "PHP OPcache: Statistics - Blacklist - Miss Ratio",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.blacklist.miss_ratio",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.blacklist_miss_ratio"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "87deb7ad46cd49f7903b0fe3af0360ea",
+                        "name": "PHP OPcache: Statistics - Hits",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.hits",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.hits"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "34da066361b446788e4996d02f76260a",
+                        "name": "PHP OPcache: Statistics - Last restart time",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.last_restart_time",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.last_restart_time"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "c72b08e3417b44fea8731a126f6f71ce",
+                        "name": "PHP OPcache: Statistics - Max Cached Keys",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.max_cached_keys",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.max_cached_keys"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "dd819ba8e03446cb9de5b2b5ff19538f",
+                        "name": "PHP OPcache: Statistics - Misses",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.misses",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.misses"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4bba5d178df4446883799cb6482dbbfb",
+                        "name": "PHP OPcache: Statistics - Cached Keys",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.num_cached_keys",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.num_cached_keys"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3d68ae85ae7b409f8cedecefad539657",
+                        "name": "PHP OPcache: Statistics - Cached Scripts",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.num_cached_scripts",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.num_cached_scripts"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ba50648234914b388e092dd9aaf3d55b",
+                        "name": "PHP OPcache: Statistics - Hit Rate",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.opcache_hit_rate",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "%",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.opcache_hit_rate"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3dfe91ac4a5346008d23b17ee4d60ceb",
+                        "name": "PHP OPcache: Statistics - Restarts Hash",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.restarts.hash",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.hash_restarts"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "97b6513c52dd46d0829b52926f7f7da9",
+                        "name": "PHP OPcache: Statistics - Restarts Manual",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.restarts.manual",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.manual_restarts"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ed45c38fe00a4d6f9b0fd275563e371f",
+                        "name": "PHP OPcache: Statistics - Restarts OOM",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.restarts.oom",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.oom_restarts"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2168fada222d4cfc970a33cc33c839c0",
+                        "name": "PHP OPcache: Statistics - Start Time",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.start_time",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "unixtime",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.start_time"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$PHP_OPCACHE.HOST}",
+                        "value": "localhost",
+                        "description": "Hostname or IP of PHP-FPM status host or container."
+                    },
+                    {
+                        "macro": "{$PHP_OPCACHE.PORT}",
+                        "value": "73",
+                        "description": "The port of PHP-FPM status host or container."
+                    },
+                    {
+                        "macro": "{$PHP_OPCACHE.SETTINGS.PAGE}",
+                        "value": "opcache-settings.php",
+                        "description": "The path of PHP Opcache settings page."
+                    },
+                    {
+                        "macro": "{$PHP_OPCACHE.STATUS.PAGE}",
+                        "value": "opcache-status.php",
+                        "description": "The path of PHP Opcache status page."
+                    }
+                ],
+                "dashboards": [
+                    {
+                        "uuid": "d202fde7fb8b48a49be848448be9cb99",
+                        "name": "PHP OPcache",
+                        "pages": [
+                            {
+                                "widgets": [
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "Cache Performance",
+                                        "y": "5",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP OPcache: Cache Performance",
+                                                    "host": "PHP OPcache"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "Memory Usage",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP OPcache: Memory usage",
+                                                    "host": "PHP OPcache"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "valuemaps": [
+                    {
+                        "uuid": "9c2f3a4faf85471b81bcbda493053fd7",
+                        "name": "Service state",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "Down"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "Up"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "uuid": "cb967e0e98f84355918a6224f5b76a92",
+                "template": "PHP OPcache - Passive",
+                "name": "PHP OPcache - Passive",
+                "description": "Get metrics from PHP OPcache\n\nThis is template has two external scripts that are required for data collection and this template is meant to be used specifically with https://github.com/tiredofit/docker-nginx-php-fpm/",
+                "groups": [
+                    {
+                        "name": "Templates/Applications"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "354721b532cf4da9973b6140d32cb81c",
+                        "name": "PHP OPCache: Cache Full",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.cache_full",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.cache_full"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "55746db194794a81b725c0471f11dc5d",
+                        "name": "PHP OPCache: Enabled",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.enable",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_enabled"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "f71915f8aad444fc8f6e797762c6b0f6",
+                        "name": "PHP OPCache: Get Settings page",
+                        "key": "php.opcache.get_settings",
+                        "delay": "60m",
+                        "history": "1h",
+                        "trends": "0",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4b1859df5c064f8da6a158cc4ec9be85",
+                        "name": "PHP OPCache: Get Status page",
+                        "key": "php.opcache.get_status",
+                        "history": "1h",
+                        "trends": "0",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "687bebf7bd2c4ef1af569e69f7674830",
+                        "name": "PHP OPcache: Strings - Buffer Size",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.interned_strings_usage.buffer_size",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.interned_strings_usage.buffer_size"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "6d51956cf63b4e00a55a5ef39b3746e0",
+                        "name": "PHP OPcache: Strings - Free Memory",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.interned_strings_usage.free_memory",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.interned_strings_usage.free_memory"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "b0cc779385c542a19ea069730d43f5a1",
+                        "name": "PHP OPcache: Strings - Number of Strings",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.interned_strings_usage.number_of_strings",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.interned_strings_usage.number_of_strings"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2a24e2f21b1d463b94f9f512549a14d4",
+                        "name": "PHP OPcache: Strings - Used Memory",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.interned_strings_usage.used_memory",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.interned_strings_usage.used_memory"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4a09fe5de1684310bb133afb49c6339b",
+                        "name": "PHP OPcache: JIT - Active",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.active",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.on"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "21cfd80599b248eba2d133f24137cf3d",
+                        "name": "PHP OPcache: JIT - Buffer Free",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.buffer_free",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.buffer_free"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "5fe61e41d22b4d289e74c8eaa062b401",
+                        "name": "PHP OPcache: JIT - Buffer Size",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.buffer_size",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.buffer_size"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "11c3efaa867a472487794eb4208d57d0",
+                        "name": "PHP OPcache: JIT - Enabled",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.enabled",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.enabled"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d3bba88d62ca4d35a530fbbce502b0a7",
+                        "name": "PHP OPcache: JIT - Kind",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.kind",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.kind"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "93ed558dab494619bc0c34144677c94b",
+                        "name": "PHP OPcache: JIT - Opt Flags",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.opt_flags",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.opt_flags"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d406c4f76c7e4f21916b3927eb84cea8",
+                        "name": "PHP OPcache: JIT - Opt Level",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.jit.opt_level",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.jit.opt_level"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "b5a4d449321e4681a8516e3b6b823819",
+                        "name": "PHP OPcache: Memory - Current Wasted Percentage",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.memory.current_wasted_percentage",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "%",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.memory_usage.current_wasted_percentage"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "95ca2ae607f94e849c9bf46812f03e04",
+                        "name": "PHP OPcache: Memory - Free",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.memory.free",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.memory_usage.free_memory"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "05b466a2020d4dcca7a35948178057e8",
+                        "name": "PHP OPcache: Memory - Used",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.memory.used",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.memory_usage.used_memory"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2dd5014dd601478ab82a635d58260ba0",
+                        "name": "PHP OPcache: Memory - Wasted",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.memory.wasted",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.memory_usage.wasted_memory"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d1c938c0ac6e4cdab59acbef45709555",
+                        "name": "PHP OPCache: Restart in Progress",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.restart_in_progress",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.restart_in_progress"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "8dfde828b514485baddadcb2e85f5f23",
+                        "name": "PHP OPCache: Restart Pending",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.restart_pending",
+                        "delay": "0",
+                        "history": "7d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.restart_pending"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "432df6cebf7c4374a953f9ac65ad3a79",
+                        "name": "PHP OPcache: Settings - Force restart timeout",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.force_restart_timeout",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.force_restart_timeout: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "24becfd2d8404460a66bee690249a111",
+                        "name": "PHP OPcache: Settings - Interned Strings Buffer",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.interned_strings_buffer",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.interned_strings_buffer: ([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3d919cc3a13a4d06a5e391e2b0c45a80",
+                        "name": "PHP OPcache: Settings - JIT - Bisect limit",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.bisect_limit",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_bisect_limit: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ce426544efed4070b761556a25cc7a2e",
+                        "name": "PHP OPcache: Settings - JIT - Blacklist root trace",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.blacklist_root_trace",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_blacllist_root_trace: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ff15ed0448304c0f96412831f85909fe",
+                        "name": "PHP OPcache: Settings - JIT - Blacklist side trace",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.blacklist_side_trace",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_blacllist_side_trace: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e0bd68d32295412fb48a14f9b23f5775",
+                        "name": "PHP OPcache: Settings - JIT - Buffer Size",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.buffer_size",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_buffer_size: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "68e8178707c74d17b4c9b6208c6adf96",
+                        "name": "PHP OPcache: Settings - JIT - Debug",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.debug",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_debug: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ffb8fded19a34ec1a164c06a8871c0a0",
+                        "name": "PHP OPcache: Settings - JIT - Hot Function",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.hot_func",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_hot_func: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a54d683475cd459bab92da57b28ada68",
+                        "name": "PHP OPcache: Settings - JIT - Hot Loop",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.hot_loop",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_hot_loop: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4946b7bfb0844746b5f2a995b85615d9",
+                        "name": "PHP OPcache: Settings - JIT - Hot Return",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.hot_return",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_hot_return: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "30258b27a6ad4530997df08571799e18",
+                        "name": "PHP OPcache: Settings - JIT - Hot Side exit",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.hot_side_exit",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_hot_side_exit: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2bc1f73679754c17b00038991ab32ec8",
+                        "name": "PHP OPcache: Settings - JIT - Max exit counters",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.max_exit_counters",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_max_exit_counters: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "40a99b2a744a456daa363954371b7d66",
+                        "name": "PHP OPcache: Settings - JIT - Max polymorphic calls",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.max_polymorphic_calls",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_max_polymorphic_calls: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "7cb16ac70cb84b1eb7c6caef507d6ee4",
+                        "name": "PHP OPcache: Settings - JIT - Max recursive calls",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.max_recursive_calls",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_max_recursive_calls: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "6c2d3caf26024c44b8d3484cffb4d86b",
+                        "name": "PHP OPcache: Settings - JIT - Max recursive returns",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.max_recursive_returns",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_max_recursive_returns: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a7a5ad99b6ae408481828dd67ddf1f29",
+                        "name": "PHP OPcache: Settings - JIT - Max root traces",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.max_root_traces",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_max_root_traces: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e664cada78e04a78be8dc035de0284a1",
+                        "name": "PHP OPcache: Settings - JIT - Max side traces",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.max_side_traces",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_max_side_traces: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "dd9958dfcf914d69b7acd125482ae3cc",
+                        "name": "PHP OPcache: Settings - JIT - Prof thereshold",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.jit.prof_threshold",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.jit_prof_threshold: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "c0b04afc02a948f3a2fe24833021c133",
+                        "name": "PHP OPcache: Settings - Max Accelerated Files",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.max_accelerated_files",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.max_accelerated_files: ([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "25b17612c3bf476eb4347fc14841b60d",
+                        "name": "PHP OPcache: Settings - Max Wasted Percentage",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.max_wasted_percentage",
+                        "delay": "0",
+                        "history": "1d",
+                        "units": "%",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.max_wasted_percentage: ([0-9].[0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "559242c796af4abd8a509135b9b74065",
+                        "name": "PHP OPcache: Settings - Max Memory Consumption",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.memory_concumption",
+                        "delay": "0",
+                        "history": "1d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.memoryconsumption: ([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d1e7079ce01249b0ab705c3023957f21",
+                        "name": "PHP OPcache: Settings - Optimization Level",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.settings.optimization_level",
+                        "delay": "0",
+                        "history": "1d",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "opcache.optimization_level: ([0-9].+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_settings"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "fcefbd45acae4fa7a32cafc0df6895e4",
+                        "name": "PHP OPcache: Statistics - Blacklist - Misses",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.blacklist.misses",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.blacklist_misses"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "875a93fb9d8a476b97f6c39b8efd83a7",
+                        "name": "PHP OPcache: Statistics - Blacklist - Miss Ratio",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.blacklist.miss_ratio",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.blacklist_miss_ratio"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "41261e3fab904359b020ede9aa2abcc4",
+                        "name": "PHP OPcache: Statistics - Hits",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.hits",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.hits"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "0e3b89a9f3224130ae04a2fddb696b0d",
+                        "name": "PHP OPcache: Statistics - Last restart time",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.last_restart_time",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.last_restart_time"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a3baefe6e47646f388de5fb9da44ac4a",
+                        "name": "PHP OPcache: Statistics - Max Cached Keys",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.max_cached_keys",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.max_cached_keys"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3eb42b18772f4883b9e4f1f9266dbdf2",
+                        "name": "PHP OPcache: Statistics - Misses",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.misses",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.misses"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3810587a948c46779a40dd07e5f61903",
+                        "name": "PHP OPcache: Statistics - Cached Keys",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.num_cached_keys",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.num_cached_keys"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "7e43e4c690d44167a730a1ce4843ec82",
+                        "name": "PHP OPcache: Statistics - Cached Scripts",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.num_cached_scripts",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.num_cached_scripts"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "0d7a23990dc14761836d45d842fe491f",
+                        "name": "PHP OPcache: Statistics - Hit Rate",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.opcache_hit_rate",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "%",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.opcache_hit_rate"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "884f7711fbe74d939e8e16b6adcae82b",
+                        "name": "PHP OPcache: Statistics - Restarts Hash",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.restarts.hash",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.hash_restarts"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "faf7398988a047a5b4cb453e76f6fc12",
+                        "name": "PHP OPcache: Statistics - Restarts Manual",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.restarts.manual",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.manual_restarts"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "5d650a9f967041879b1fdced081ca84d",
+                        "name": "PHP OPcache: Statistics - Restarts OOM",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.restarts.oom",
+                        "delay": "0",
+                        "history": "7d",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.oom_restarts"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "16993fbdddfa47d6a7ec6613835997ec",
+                        "name": "PHP OPcache: Statistics - Start Time",
+                        "type": "DEPENDENT",
+                        "key": "php.opcache.statistics.start_time",
+                        "delay": "0",
+                        "history": "7d",
+                        "units": "unixtime",
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.opcache_statistics.start_time"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "php.opcache.get_status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application: PHP OPcache"
+                            }
+                        ]
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$PHP_OPCACHE.HOST}",
+                        "value": "localhost",
+                        "description": "Hostname or IP of PHP-FPM status host or container."
+                    },
+                    {
+                        "macro": "{$PHP_OPCACHE.PORT}",
+                        "value": "73",
+                        "description": "The port of PHP-FPM status host or container."
+                    },
+                    {
+                        "macro": "{$PHP_OPCACHE.SETTINGS.PAGE}",
+                        "value": "opcache-settings.php",
+                        "description": "The path of PHP Opcache settings page."
+                    },
+                    {
+                        "macro": "{$PHP_OPCACHE.STATUS.PAGE}",
+                        "value": "opcache-status.php",
+                        "description": "The path of PHP Opcache status page."
+                    }
+                ],
+                "dashboards": [
+                    {
+                        "uuid": "a2d71f90369344f0ac3cb5e7eceeaf51",
+                        "name": "PHP OPcache",
+                        "pages": [
+                            {
+                                "widgets": [
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "Cache Performance",
+                                        "y": "5",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP OPcache: Cache Performance",
+                                                    "host": "PHP OPcache - Passive"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "name": "Memory Usage",
+                                        "width": "12",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "PHP OPcache: Memory usage",
+                                                    "host": "PHP OPcache - Passive"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "valuemaps": [
+                    {
+                        "uuid": "1fd0f90d70ea47088d23aa0ac39e2864",
+                        "name": "Service state",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "Down"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "Up"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "graphs": [
+            {
+                "uuid": "b20ded0f89b245a6948e3cf1b001a174",
+                "name": "PHP OPcache: Cached Values",
+                "show_work_period": "NO",
+                "show_triggers": "NO",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP OPcache",
+                            "key": "php.opcache.statistics.num_cached_keys"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "F63100",
+                        "item": {
+                            "host": "PHP OPcache",
+                            "key": "php.opcache.statistics.num_cached_scripts"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "1973283a9b17455bb522ce2a0f3b649b",
+                "name": "PHP OPcache: Cached Values",
+                "show_work_period": "NO",
+                "show_triggers": "NO",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP OPcache - Passive",
+                            "key": "php.opcache.statistics.num_cached_keys"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "F63100",
+                        "item": {
+                            "host": "PHP OPcache - Passive",
+                            "key": "php.opcache.statistics.num_cached_scripts"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "4adaefc51f5b43c79e297659004b0993",
+                "name": "PHP OPcache: Cache Performance",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "F63100",
+                        "item": {
+                            "host": "PHP OPcache",
+                            "key": "php.opcache.statistics.hits"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP OPcache",
+                            "key": "php.opcache.statistics.opcache_hit_rate"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "color": "2774A4",
+                        "item": {
+                            "host": "PHP OPcache",
+                            "key": "php.opcache.statistics.misses"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "a271aa732bb0444b96ab88428e2a3270",
+                "name": "PHP OPcache: Cache Performance",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "F63100",
+                        "item": {
+                            "host": "PHP OPcache - Passive",
+                            "key": "php.opcache.statistics.hits"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "1A7C11",
+                        "item": {
+                            "host": "PHP OPcache - Passive",
+                            "key": "php.opcache.statistics.opcache_hit_rate"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "color": "2774A4",
+                        "item": {
+                            "host": "PHP OPcache - Passive",
+                            "key": "php.opcache.statistics.misses"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "2a26f27c44c54e3287eb82efc045c5e5",
+                "name": "PHP OPcache: Memory usage",
+                "type": "STACKED",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "2774A4",
+                        "item": {
+                            "host": "PHP OPcache",
+                            "key": "php.opcache.memory.wasted"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "F63100",
+                        "item": {
+                            "host": "PHP OPcache",
+                            "key": "php.opcache.memory.used"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "drawtype": "GRADIENT_LINE",
+                        "color": "00C800",
+                        "item": {
+                            "host": "PHP OPcache",
+                            "key": "php.opcache.memory.free"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "4565f05f2d5e4e44a403d074dfcefb43",
+                "name": "PHP OPcache: Memory usage",
+                "type": "STACKED",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "2774A4",
+                        "item": {
+                            "host": "PHP OPcache - Passive",
+                            "key": "php.opcache.memory.wasted"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "F63100",
+                        "item": {
+                            "host": "PHP OPcache - Passive",
+                            "key": "php.opcache.memory.used"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "drawtype": "GRADIENT_LINE",
+                        "color": "00C800",
+                        "item": {
+                            "host": "PHP OPcache - Passive",
+                            "key": "php.opcache.memory.free"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
