@@ -37,6 +37,7 @@ ENV PHP_BASE=${PHP_BASE:-"8.0"} \
 
 ### Dependency Installation
 RUN export PHP_8_1_RUN_DEPS=" \
+                            mariadb-connector-c \
                             php8  \
                             php8-bcmath  \
                             php8-brotli \
@@ -119,6 +120,7 @@ RUN export PHP_8_1_RUN_DEPS=" \
                             " && \
     \
     export PHP_8_0_RUN_DEPS=" \
+                            mariadb-connector-c \
                             php8  \
                             php8-bcmath  \
                             php8-brotli \
@@ -201,6 +203,7 @@ RUN export PHP_8_1_RUN_DEPS=" \
                             " && \
     \
     export PHP_7_4_RUN_DEPS=" \
+                            mariadb-connector-c \
                             php7 \
                             php7-bcmath \
                             php7-brotli \
@@ -295,6 +298,7 @@ RUN export PHP_8_1_RUN_DEPS=" \
                             " && \
     \
     export PHP_7_3_RUN_DEPS=" \
+                            mariadb-connector-c \
                             php7 \
                             php7-bcmath \
                             php7-brotli \
@@ -701,7 +705,6 @@ RUN export PHP_8_1_RUN_DEPS=" \
                 gpgme \
                 libressl \
                 mariadb-client \
-                mariadb-connector-c \
                 postgresql-client \
                 $(printenv PHP_$(echo ${PHP_BASE} | sed 's|\.|_|g')_RUN_DEPS) \
                 && \

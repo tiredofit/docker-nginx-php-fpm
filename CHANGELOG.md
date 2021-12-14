@@ -1,3 +1,9 @@
+## 6.3.2 2021-12-14 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for Docker Mono repo for PHP < 7.3 failing
+
+
 ## 6.3.1 2021-12-10 <dave at tiredofit dot ca>
 
    ### Changed
