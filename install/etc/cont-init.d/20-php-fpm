@@ -46,6 +46,8 @@ case "$CONTAINER_MODE" in
             sed -i -e "/ server {/i\ n "/etc/nginx/conf.d/default.conf
             sed -i -e "s#fastcgi_pass.*#fastcgi_pass php-pool;#g" /etc/nginx/nginx.conf.d/php-fpm.conf
             service_stop "$(basename "$0")"
+            rm -rf /etc/zabbix/zabbix_agent.conf.d/php-fpm.conf
+            PHP_ENABLE_OPCACHE=FALSE
             liftoff
       ;;
       "php-fpm")
@@ -53,6 +55,7 @@ case "$CONTAINER_MODE" in
             service_stop 10-nginx
             print_notice "Setting PHP-FPM to serve from ${PHP_WEBROOT}"
             sed -i -e "/[www]#/achdir = ${PHP_WEBROOT}" /assets/php-fpm/fpm/php-fpm.conf
+            rm -rf /etc/zabbix/zabbix_agent.conf.d/nginx.conf
       ;;
 esac
 

@@ -1,3 +1,9 @@
+## 6.3.3 2021-12-16 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Cleanup some of the autodiscover routines should Nginx or PHP-FPM be running in 'standalone' mode
+
+
 ## 6.3.2 2021-12-14 <dave at tiredofit dot ca>
 
    ### Changed
