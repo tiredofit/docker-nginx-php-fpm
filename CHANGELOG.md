@@ -1,3 +1,9 @@
+## 6.3.4 2021-12-27 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for Zabbix Opcache monitoring
+
+
 ## 6.3.3 2021-12-16 <dave at tiredofit dot ca>
 
    ### Changed

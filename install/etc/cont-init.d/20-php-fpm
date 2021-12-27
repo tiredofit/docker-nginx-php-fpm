@@ -115,7 +115,7 @@ else
 # Autoregister=opcache
 
 UserParameter=php.opcache.get_status,sudo -u zabbix php /etc/zabbix/zabbix_agentd.conf.d/scripts/php/opcache-status.php
-UserParameter=php.opcache.get_settings,sudo -u zabbix php /etc/zabbix/zabbix_agentd.conf.d/scripts/php/opcache-status.php
+UserParameter=php.opcache.get_settings,sudo -u zabbix php /etc/zabbix/zabbix_agentd.conf.d/scripts/php/opcache-settings.php
 EOF
   fi
 fi
