@@ -1,3 +1,9 @@
+## 6.3.5 2021-12-28 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fixup for LibTidy throwing errors
+
+
 ## 6.3.4 2021-12-27 <dave at tiredofit dot ca>
 
    ### Changed

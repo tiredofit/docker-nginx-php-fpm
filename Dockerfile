@@ -736,6 +736,9 @@ RUN export PHP_8_1_RUN_DEPS=" \
     for module in $php_env_plugins_enabled ; do if [ -f "/etc/php${PHP_BASE:0:1}/mods-available/${module}.ini" ] ; then priority=$(cat /etc/php${PHP_BASE:0:1}/mods-available/${module}.ini | grep ";priority" | cut -d = -f2) ; ln -sf "/etc/php${PHP_BASE:0:1}/mods-available/${module}.ini" /etc/php${PHP_BASE:0:1}/conf.d/${priority}-${module}.ini ; fi ; done ; \
     if [ "${PHP_BASE:0:1}" != "8" ] ; then priority=$(cat /etc/php${PHP_BASE:0:1}/mods-available/json.ini | grep ";priority" | cut -d = -f2) ; ln -sf "/etc/php${PHP_BASE:0:1}/mods-available/json.ini" /etc/php${PHP_BASE:0:1}/conf.d/${priority}-json.ini ; fi ; \
     set -x && \
+    ## Lib Tidy Patchup
+    if [ "${PHP_BASE}" = "8.0" ] ; then ln -s /usr/lib/libtidy.so.5.8.0 /usr/lib/libtidy.so.58 ; fi ; \
+    \
     ### Cleanup
     apk del .php-build-deps && \
     rm -rf /var/cache/apk/* /usr/src/* /tmp/*
