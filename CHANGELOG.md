@@ -1,3 +1,12 @@
+## 6.3.6 2022-02-09 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fixes for builds showing up as PHP 8.1 instead of what they should be
+      - Base image updates
+
+   ### Reverted
+
+
 ## 6.3.5 2021-12-28 <dave at tiredofit dot ca>
 
    ### Changed

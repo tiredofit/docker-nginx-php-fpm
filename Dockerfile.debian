@@ -3,7 +3,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE
 
-ENV PHP_BASE=${PHP_BASE:-"8.0"} \
+ENV PHP_BASE=${PHP_BASE:-"7.4"} \
     PHP_ENABLE_APCU=TRUE \
     PHP_ENABLE_BCMATH=TRUE \
     PHP_ENABLE_BZ2=TRUE \
@@ -153,6 +153,7 @@ RUN export PHP_7_3_RUN_DEPS=" \
     sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php/${PHP_BASE}/cli/php.ini && \
     ln -s /usr/sbin/php-fpm${PHP_BASE} /usr/sbin/php-fpm && \
     rm -rf /etc/logrotate.d/php* && \
+    update-alternatives --set php /usr/bin/php${PHP_BASE} && \
     #### Disabling any but core extensions - When using this image as a base for other images, you'll want to turn turn them on before running composer with the inverse of phpdisomd (phpenmod) to keep things clean
     set +x && \
     for f in /etc/php/${PHP_BASE}/mods-available/*.ini; do phpdismod $(basename $f .ini); done; \
