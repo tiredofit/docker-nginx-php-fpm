@@ -38,7 +38,8 @@ ENV PHP_BASE=${PHP_BASE:-"8.0"} \
     IMAGE_REPO_URL="https://github.com/tiredofit/docker-nginx-php-fpm/"
 
 ### Dependency Installation
-RUN export PHP_8_1_RUN_DEPS=" \
+RUN  if [ "${PHP_BASE}" = "8.1" ] ; then export php_folder="81" ; else php_folder=${PHP_BASE:0:1} ; fi ; \
+     export PHP_8_1_RUN_DEPS=" \
                             mariadb-connector-c \
                             php81  \
                             php81-bcmath  \
@@ -57,7 +58,7 @@ RUN export PHP_8_1_RUN_DEPS=" \
                             php81-fileinfo  \
                             php81-fpm  \
                             php81-ftp  \
-#                            php81-gd  \
+                            php81-gd  \
                             php81-gettext  \
                             php81-gmp  \
                             php81-iconv  \
@@ -692,7 +693,7 @@ RUN export PHP_8_1_RUN_DEPS=" \
     apk add -t .php-build-deps \
                 build-base \
                 gpgme-dev \
-                php${PHP_BASE:0:1}-dev \
+                php${php_folder}-dev \
                 && \
     \
     apk add -t .php-run-deps \
@@ -708,29 +709,29 @@ RUN export PHP_8_1_RUN_DEPS=" \
     \
     ### PHP Setup
     ## Temp Fix for graphicsmagick
-    if [ -f "/etc/php${PHP_BASE:0:1}/*magick*.ini" ]; then mv /etc/php${PHP_BASE:0:1}/conf.d/*magick*.ini /tmp; fi; \
-    sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php${PHP_BASE:0:1}/php.ini && \
-    if [ -f "/usr/sbin/php-fpm${PHP_BASE:0:1}" ] ; then ln -sf /usr/sbin/php-fpm${PHP_BASE:0:1} /usr/sbin/php-fpm ; fi ; \
-    if [ -f "/usr/bin/php${PHP_BASE:0:1}" ] ; then ln -sf /usr/bin/php${PHP_BASE:0:1} /usr/sbin/php ; fi ; \
-    if [ -f "/usr/bin/pecl${PHP_BASE:0:1}" ] ; then echo "pecl" ; ln -sf /usr/bin/pecl${PHP_BASE:0:1} /usr/sbin/pecl; fi ; \
+    if [ -f "/etc/php${php_folder}/*magick*.ini" ]; then mv /etc/php${php_folder}/conf.d/*magick*.ini /tmp; fi; \
+    sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php${php_folder}/php.ini && \
+    if [ -f "/usr/sbin/php-fpm${php_folder}" ] ; then ln -sf /usr/sbin/php-fpm${php_folder} /usr/sbin/php-fpm ; fi ; \
+    if [ -f "/usr/bin/php${php_folder}" ] ; then ln -sf /usr/bin/php${php_folder} /usr/sbin/php ; fi ; \
+    if [ -f "/usr/bin/pecl${php_folder}" ] ; then ln -sf /usr/bin/pecl${php_folder} /usr/sbin/pecl; fi ; \
     rm -rf /etc/logrotate.d/php* && \
     \
     ### Install PHP Composer
     if [ "${PHP_BASE:0:1}" = "5" ] ; then echo "suhosin.executor.include.whitelist = phar" >> /etc/php${PHP_BASE:0:1}/php.ini ; fi;  \
     curl -sSLk https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
-    if [ -f "/etc/php${PHP_BASE:0:1}/*magick*.ini" ]; then mv /tmp/*magick.ini* /etc/php${PHP_BASE:0:1}/conf.d/ ; fi ; \
+    if [ -f "/etc/php${php_folder}/*magick*.ini" ]; then mv /tmp/*magick.ini* /etc/php${php_folder}/conf.d/ ; fi ; \
     \
     ### Build Extra Extensions
     pecl install gnupg && \
-    echo "extension=gnupg.so" > /etc/php${PHP_BASE:0:1}/conf.d/20-gnupg.ini && \
+    echo "extension=gnupg.so" > /etc/php${php_folder}/conf.d/20-gnupg.ini && \
     \
-    mkdir -p /etc/php${PHP_BASE:0:1}/mods-available/ && \
+    mkdir -p /etc/php${php_folder}/mods-available/ && \
     #### Disabling any but core extensions - When using this image as a base for other images, you'll want to turn turn them on before running composer with the inverse of phpdisomd (phpenmod) to keep things clean
     set +x && \
-    for module in /etc/php${PHP_BASE:0:1}/conf.d/*.ini; do if [ ! -L "${module}" ] ; then if [ "$(echo $(basename $module) | grep -c '^[0-9][0-9].*')" = "0" ] ; then mv "${module}" "$(dirname ${module})/20_$(basename ${module})" ; module="$(dirname ${module})/20_$(basename ${module})"; fi ; if ! grep -w -i -q ";priority" "$module"; then echo ";priority=$(basename $module .ini | cut -d _ -f1)" >> $module ; mv "${module}" /etc/php${PHP_BASE:0:1}/mods-available/$(basename ${module} .ini | cut -c 4-).ini; fi; fi; done; \
-    rm -rf /etc/php${PHP_BASE:0:1}/conf.d/* && \
+    for module in /etc/php${php_folder}/conf.d/*.ini; do if [ ! -L "${module}" ] ; then if [ "$(echo $(basename $module) | grep -c '^[0-9][0-9].*')" = "0" ] ; then mv "${module}" "$(dirname ${module})/20_$(basename ${module})" ; module="$(dirname ${module})/20_$(basename ${module})"; fi ; if ! grep -w -i -q ";priority" "$module"; then echo ";priority=$(basename $module .ini | cut -d _ -f1)" >> $module ; mv "${module}" /etc/php${php_folder}/mods-available/$(basename ${module} .ini | cut -c 4-).ini; fi; fi; done; \
+    rm -rf /etc/php${php_folder}/conf.d/* && \
     php_env_plugins_enabled="$(set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr [A-Z] [a-z])" && \
-    for module in $php_env_plugins_enabled ; do if [ -f "/etc/php${PHP_BASE:0:1}/mods-available/${module}.ini" ] ; then priority=$(cat /etc/php${PHP_BASE:0:1}/mods-available/${module}.ini | grep ";priority" | cut -d = -f2) ; ln -sf "/etc/php${PHP_BASE:0:1}/mods-available/${module}.ini" /etc/php${PHP_BASE:0:1}/conf.d/${priority}-${module}.ini ; fi ; done ; \
+    for module in $php_env_plugins_enabled ; do if [ -f "/etc/php${php_folder}/mods-available/${module}.ini" ] ; then priority=$(cat /etc/php${php_folder}/mods-available/${module}.ini | grep ";priority" | cut -d = -f2) ; ln -sf "/etc/php${php_folder}/mods-available/${module}.ini" /etc/php${php_folder}/conf.d/${priority}-${module}.ini ; fi ; done ; \
     if [ "${PHP_BASE:0:1}" != "8" ] ; then priority=$(cat /etc/php${PHP_BASE:0:1}/mods-available/json.ini | grep ";priority" | cut -d = -f2) ; ln -sf "/etc/php${PHP_BASE:0:1}/mods-available/json.ini" /etc/php${PHP_BASE:0:1}/conf.d/${priority}-json.ini ; fi ; \
     set -x && \
     ## Lib Tidy Patchup

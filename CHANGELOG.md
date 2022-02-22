@@ -1,3 +1,9 @@
+## 6.3.7 2022-02-22 <dave at tiredofit dot ca>
+
+   ### Added
+      - Patchup Alpine Mono Dockerfile to properly build PHP 8.1 variants
+
+
 ## 6.3.6 2022-02-09 <dave at tiredofit dot ca>
 
    ### Changed

@@ -11,7 +11,11 @@ esac
 
 case ${os} in
     "alpine" )
-        php_prefix="/etc/php$(php -v | head -n 1 | awk '{print $2}' | cut -c 1)/"
+        if [ "${PHP_BASE}" = "8.1" ] ; then
+          php_prefix="/etc/php81/"
+        else
+          php_prefix="/etc/php$(php -v | head -n 1 | awk '{print $2}' | cut -c 1)/"
+        fi
         ;;
     "debian" )
         php_prefix="/etc/php/$(php -v | head -n 1 | awk '{print $2}' | cut -c 1-3)/"
