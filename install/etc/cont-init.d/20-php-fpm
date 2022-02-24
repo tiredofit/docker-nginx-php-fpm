@@ -36,23 +36,10 @@ case "$CONTAINER_MODE" in
               print_error "Your PHP_FPM_HOST variable is still set to 'localhost' Please change it to something else"
               exit 1
             fi
-
-            php_fpm_hosts=$(echo "${PHP_FPM_HOST}" | tr "," "\n")
-            echo "upstream php-pool {" >> /etc/nginx/nginx.conf.d/php-pool.conf
-            for host in $php_fpm_hosts
-            do
-              echo "    server $host;" >> /etc/nginx/nginx.conf.d/php-pool.conf
-            done
-            echo "}" >> /etc/nginx/nginx.conf.d/php-pool.conf
-
-            sed -i -e "/ server {/i### Multiple PHP-FPM Backends configuration" /etc/nginx/conf.d/default.conf
-            sed -i -e "/ server {/i\include \/etc\/nginx\/nginx.conf.d\/php-pool.conf;" /etc/nginx/conf.d/default.conf
-            sed -i -e "/ server {/i\ n "/etc/nginx/conf.d/default.conf
-            sed -i -e "s#fastcgi_pass.*#fastcgi_pass php-pool;#g" /etc/nginx/nginx.conf.d/php-fpm.conf
             service_stop "$(basename "$0")"
             rm -rf /etc/zabbix/zabbix_agent.conf.d/php-fpm.conf
-            PHP_ENABLE_OPCACHE=FALSE
             liftoff
+            exit 0
       ;;
       "php-fpm")
             print_warn "Setting Container to operate in PHP-FPM standalone mode - You will need a seperate container for Nginx or another webserver to serve content"
@@ -62,6 +49,29 @@ case "$CONTAINER_MODE" in
             rm -rf /etc/zabbix/zabbix_agent.conf.d/nginx.conf
       ;;
 esac
+
+### Create Upstream PHP Hosts
+if var_true "${NGINX_ENABLE_UPSTREAM_KEEPALIVE}" ; then
+  upstream_keepalive="keepalive ${NGINX_UPSTREAM_KEEPALIVE};"
+fi
+
+php_fpm_hosts=$(echo "${PHP_FPM_HOST}" | tr "," "\n")
+echo "upstream php-fpm-upstream {" >> /etc/nginx/nginx.conf.d/php-fpm-upstream.conf
+echo "     ${upstream_keepalive}" >> /etc/nginx/nginx.conf.d/authentication/php-fpm-upstream.conf
+for host in $php_fpm_hosts
+    do
+      if [[ ${host} != *":"* ]];then
+        php_listen_port=":${PHP_FPM_LISTEN_PORT}"
+      else
+        php_listen_port=""
+      fi
+
+    echo "    server $host${php_listen_port} ${PHP_FPM_UPSTREAM_OPTIONS};" >> /etc/nginx/nginx.conf.d/php-fpm-upstream.conf
+done
+echo "}" >> /etc/nginx/nginx.conf.d/php-fpm-upstream.conf
+sed -i -e "/ server {/i### Multiple PHP-FPM Backends configuration" /etc/nginx/conf.d/default.conf
+sed -i -e "/ server {/i\include \/etc\/nginx\/nginx.conf.d\/php-fpm-upstream.conf;" /etc/nginx/conf.d/default.conf
+sed -i -e "s#fastcgi_pass.*#fastcgi_pass php-fpm-upstream;#g" /etc/nginx/nginx.conf.d/php-fpm.conf
 
 ### Adjust PHP Runtime Variables
 sed -i -e "s#<PHP_LISTEN_PORT>#${PHP_FPM_LISTEN_PORT}#g" /assets/php-fpm/fpm/php-fpm.conf
@@ -93,11 +103,11 @@ sed -i -e "s#upload_max_filesize = .*#upload_max_filesize = ${PHP_UPLOAD_MAX_SIZ
 
 sed -i "/access.format=/d" /assets/php-fpm/fpm/php-fpm.conf
 
-case "${PHP_LOG_ACCESS_FORMAT}" in
-  "default" | "DEFAULT" | "standard" | "STANDARD" )
+case "${PHP_LOG_ACCESS_FORMAT,,}" in
+  "default" | "standard" )
     cat /assets/php-fpm/fpm/default.logformat >> /assets/php-fpm/fpm/php-fpm.conf
   ;;
-   "json" | "JSON" )
+   "json" )
     cat /assets/php-fpm/fpm/json.logformat >> /assets/php-fpm/fpm/php-fpm.conf
   ;;
 esac
@@ -118,8 +128,8 @@ else
 # Find Companion Zabbix Server Templates at https://github.com/tiredofit/docker-nginx-php-fpm
 # Autoregister=opcache
 
-UserParameter=php.opcache.get_status,sudo -u zabbix php /etc/zabbix/zabbix_agentd.conf.d/scripts/php/opcache-status.php
-UserParameter=php.opcache.get_settings,sudo -u zabbix php /etc/zabbix/zabbix_agentd.conf.d/scripts/php/opcache-settings.php
+UserParameter=php.opcache.get_status,sudo -Eu zabbix php /etc/zabbix/zabbix_agentd.conf.d/scripts/php/opcache-status.php
+UserParameter=php.opcache.get_settings,sudo -Eu zabbix php /etc/zabbix/zabbix_agentd.conf.d/scripts/php/opcache-settings.php
 EOF
   fi
 fi
@@ -151,20 +161,20 @@ EOF
   if [ "$PHP_XDEBUG_PROFILER_ENABLE" = "1" ]; then
     print_notice "PROFILING MODE ACTIVATED: Please find the profiler logs at: ${PHP_XDEBUG_PROFILER_DIR}"
     mkdir -p "$PHP_XDEBUG_PROFILER_DIR"
-    chown -R "${NGINX_USER}":"${NGINX_GROUP}" "$PHP_XDEBUG_PROFILER_DIR"
+    chown -R "${NGINX_USER}":"${NGINX_GROUP}" "${PHP_XDEBUG_PROFILER_DIR}"
   fi
 fi
 
 case ${os} in
     "alpine" )
-        if var_true "${ENABLE_SMTP}" ; then
+        if var_true "${ENABLE_SMTP}" || var_true "${CONTAINER_ENABLE_MESSAGING}" ; then
           echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"/conf.d/99-smtp.ini
         fi
         echo "date.timezone="$(cat /etc/timezone) >> "${php_prefix}"/conf.d/99-timezone.ini
         ;;
     "debian" )
         ### SMTP Config
-        if var_true "${ENABLE_SMTP}" ; then
+        if var_true "${ENABLE_SMTP}" || var_true "${CONTAINER_ENABLE_MESSAGING}" ; then
           echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"cli/conf.d/99-smtp.ini
           echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"fpm/conf.d/99-smtp.ini
         fi
@@ -207,14 +217,14 @@ create_logrotate php-fpm-error ${PHP_LOG_LOCATION}/${PHP_LOG_ERROR_FILE} php-fpm
 
 #### Create Sample PHP File if doesn't exist
 if var_true "${PHP_ENABLE_CREATE_SAMPLE_PHP}" ; then
-  if [ ! -f "${NGINX_WEBROOT}/index.php" ] ; then
+  if [ ! -f "${NGINX_WEBROOT}"/index.php ] ; then
      print_notice "Creating sample index.php"
      mkdir -p "${NGINX_WEBROOT}"
      cat <<EOF > "${NGINX_WEBROOT}"/index.php
   <html>
   <title>Default Page</title>
   <h2>Container is working</h2>
-  Congratulations! Your ${os} PHP-FPM image is working. You are seeing this because you don't have an index.php file in your ${NGINX_WEBROOT} directory.<br />
+  Congratulations! Your ${IMAGE_NAME} ${os} PHP-FPM image is working. You are seeing this because you don't have an index.php file in your ${NGINX_WEBROOT} directory.<br />
   <?php phpinfo();?>
   </html>
 EOF
@@ -261,7 +271,7 @@ if [ "${NGINX_AUTHENTICATION_TYPE}" = "LLNG" ]; then
       echo "auth_request_set \$${array[1]} \$${array[2]};" >>/etc/nginx/nginx.conf.d/authentication/llng_auth_request
     done
 
-    sed -i '/server {/a\ \ \ \ \  include /etc/nginx/nginx.conf.d/authentication/llng;' /etc/nginx/conf.d/*.conf
+    sed -i '/server {/a\ \ \ \ \  include /etc/nginx/nginx.conf.d/authentication/llng_location_block;' /etc/nginx/conf.d/*.conf
     sed -i '/server {/a\ \ \ \ \  ### LLNG Authentication handler' /etc/nginx/conf.d/*.conf
     cp -R /etc/nginx/nginx.conf.d/php-fpm.conf /etc/nginx/nginx.conf.d/monitoring-php-fpm.conf
     sed -i "s|include /etc/nginx/nginx.conf.d/php-fpm.conf;|include /etc/nginx/nginx.conf.d/monitoring-php-fpm.conf;|g" /etc/nginx/nginx.conf.d/monitoring.conf

@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/command/with-contenv /bin/bash
 
 php_major_version="$(echo ${PHP_BASE} | cut -c 1-1)"
 os=$(cat /etc/os-release |grep ^ID= | cut -d = -f2)
 
 case "${PHP_BASE}" in
     "8.1" )
-        if var_true "${PHP_ENABLE_OPENSSL}" ; then PHP_ENABLE_OPENSSL=FALSE; fi;
+        if [ "${PHP_ENABLE_OPENSSL,,}" = "true" ] ; then PHP_ENABLE_OPENSSL=FALSE; fi;
     ;;
 esac
 

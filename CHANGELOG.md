@@ -1,3 +1,13 @@
+## 6.4.0 2022-02-23 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add multiple PHP upstream hosts by default
+      - Update LLNG Authentication to use Upstream Hosts
+
+   ### Changed
+      - Code Cleanup, refactoring
+
+
 ## 6.3.7 2022-02-22 <dave at tiredofit dot ca>
 
    ### Added
