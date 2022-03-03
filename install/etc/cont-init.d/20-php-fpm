@@ -315,4 +315,14 @@ if [ -n "${PHP_FPM_POST_INIT_SCRIPT}" ] ; then
 	done
 fi
 
+if [ -n "${PHP_FPM_POST_INIT_COMMAND}" ] ; then
+  print_debug "Found Post Init Command"
+  post_commands=$(echo "${PHP_FPM_POST_INIT_COMMAND}" | tr "," "\n")
+	for post_command in $post_commands
+	do
+    print_debug "Executing post init command '${post_command}'"
+    "${post_command}"
+	done
+fi
+
 liftoff

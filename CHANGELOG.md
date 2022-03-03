@@ -1,3 +1,9 @@
+## 6.4.2 2022-03-03 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Patchup for 6.4.1
+
+
 ## 6.4.1 2022-03-02 <dave at tiredofit dot ca>
 
    ### Added
