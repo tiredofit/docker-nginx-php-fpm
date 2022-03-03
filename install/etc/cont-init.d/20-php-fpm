@@ -300,4 +300,19 @@ esac
 chmod -R 0755 "${php_prefix}"
 chown -R root:"${NGINX_GROUP}" "${php_prefix}"
 
+if [ -n "${PHP_FPM_POST_INIT_SCRIPT}" ] ; then
+  print_debug "Found Post Init Scripts"
+  post_scripts=$(echo "${PHP_FPM_POST_INIT_SCRIPT}" | tr "," "\n")
+	for post_script in $post_scripts
+	do
+		if [ -f "${post_script}" ] ; then
+      print_debug "Executing post init script '${post_script}'"
+      chmod +x "${post_script}"
+      "${post_script}"
+    else
+      print_error "Tried to run post script '${post_script}' but it does not exist!"
+    fi
+	done
+fi
+
 liftoff

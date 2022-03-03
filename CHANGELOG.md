@@ -1,3 +1,10 @@
+## 6.4.1 2022-03-02 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add PHP_FPM_POST_INIT_SCRIPT variable to execute scripts before php-fpm process starts
+      - Add PHP_FPM_POST_INIT_COMMAND variable to execute command before php-fpm-process starts
+
+
 ## 6.4.0 2022-02-23 <dave at tiredofit dot ca>
 
    ### Added
