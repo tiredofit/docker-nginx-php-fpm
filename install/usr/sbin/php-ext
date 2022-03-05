@@ -43,7 +43,7 @@ enable_module () {
                     php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z | sed "/^json/d")
                     for module in $php_env_plugins_enabled ; do
                         if [ -f "${php_prefix}mods-available/${module}.ini" ]; then
-                            echo "Enabling $(basename $module .ini)"
+                            echo "Enabling '$(basename $module .ini)' module"
                             case ${os} in
                                 "alpine" )
                                     ln -sf "${php_prefix}mods-available/${module}.ini" ${php_prefix}/conf.d/$(cat ${php_prefix}mods-available/${module}.ini | grep ";priority" | cut -d = -f 2)-${module}.ini
@@ -62,13 +62,13 @@ enable_module () {
                             esac
                             php_script_plugins_enabled="${php_actual_plugins_enabled} $(basename $module .ini)"
                         else
-                            echo "** Requested enabling $(basename $module .ini) however it doesn't exist!"
+                            echo "** Requested enabling '$(basename $module .ini)' module however it doesn't exist!"
                         fi
                     done
                 ;;
                 "optional" )
                     php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
-                    echo "** Activating Optional Plugins"
+                    echo "** Activating Optional Modules"
                     for module in ${php_prefix}mods-available/*.ini; do
                         if ! grep -w -i -q "$(basename $module .ini)" "${php_env_plugins_enabled}"; then
                             echo "Enabling $(basename $module .ini)"
@@ -85,7 +85,7 @@ enable_module () {
                     done
 
                 php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
-                    echo "** Activating Optional Plugins"
+                    echo "** Activating Optional Modules"
                     for module in ${php_prefix}mods-available/*.ini; do
                         MATCH=0
                         for plugin in $php_env_plugins_enabled ; do
@@ -120,7 +120,7 @@ enable_module () {
                         esac
 
                     else
-                        echo "** Requested enabling ${1} however it doesn't exist!"
+                        echo "** Requested enabling '${1}' module however it doesn't exist!"
                     fi
                 ;;
         esac
@@ -174,7 +174,7 @@ disable_module() {
             ;;
             "optional" )
                 php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
-                echo "** Disabling Optional Plugins"
+                echo "** Disabling Optional Modules"
                 for module in ${php_prefix}mods-available/*.ini; do
                     MATCH=0
                     for plugin in $php_env_plugins_enabled ; do
@@ -208,7 +208,7 @@ disable_module() {
                             ;;
                         esac
                 else
-                    echo "** Requested disabling $1 however it doesn't exist!"
+                    echo "** Requested disabling '$1' module however it doesn't exist!"
                 fi
             ;;
         esac
@@ -234,12 +234,12 @@ list_module() {
                     if [ -f "${php_prefix}mods-available/${module}.ini" ]; then
                         echo "${module}"
                     else
-                        echo "** ERROR: ${module} enabled but doesn't exist"
+                        echo "** ERROR: '${module}' module enabled but doesn't exist"
                     fi
                 done
             ;;
             "optional" )
-                echo "** Listing Optional Plugins"
+                echo "** Listing Optional Modules"
                 php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
 
                 for module in ${php_prefix}mods-available/*.ini; do
@@ -304,26 +304,26 @@ prepare() {
 
 
 if [ -n "$1" ] ; then
-    case "$1" in
-        "enable" | "ENABLE" )
+    case "${1,,}" in
+        "enable" )
             enable_module "$2"
             if [[ "$(pgrep -f 'php-fpm: master process')" -ge "1" ]] ; then
                 pkill php-fpm
             fi
         ;;
-        "disable" | "DISABLE" )
+        "disable" )
             disable_module "$2"
             if [[ "$(pgrep -f 'php-fpm: master process')" -ge "1" ]] ; then
                 pkill php-fpm
             fi
         ;;
-        "list" | "LIST" )
+        "list" )
             list_module "$2"
         ;;
-        "prepare" | "PREPARE" )
+        "prepare" )
             prepare
         ;;
-        "help" | "HELP" )
+        "help" )
             display_help "$2"
         ;;
     esac

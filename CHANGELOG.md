@@ -1,3 +1,9 @@
+## 6.4.3 2022-03-04 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change the way that upstream blocks are being added - stop relying on default.conf, instead put them in nginx.conf
+
+
 ## 6.4.2 2022-03-03 <dave at tiredofit dot ca>
 
    ### Changed
