@@ -1,3 +1,9 @@
+## 6.4.4 2022-03-08 <dave at tiredofit dot ca>
+
+   ### Added
+      - Remove php74-embed
+
+
 ## 6.4.3 2022-03-04 <dave at tiredofit dot ca>
 
    ### Changed

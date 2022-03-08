@@ -3,7 +3,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE
 
-ENV PHP_BASE=${PHP_BASE:-"7.4"} \
+ENV PHP_BASE=${PHP_BASE:-"8.0"} \
     PHP_ENABLE_APCU=TRUE \
     PHP_ENABLE_BCMATH=TRUE \
     PHP_ENABLE_BZ2=TRUE \
@@ -97,7 +97,7 @@ RUN export PHP_7_3_RUN_DEPS=" \
                 php$PHP_BASE-curl \
                 php$PHP_BASE-dba \
                 php$PHP_BASE-dev \
-                php$PHP_BASE-embed \
+#                php$PHP_BASE-embed \
                 php$PHP_BASE-enchant \
                 php$PHP_BASE-fpm \
                 php$PHP_BASE-gd \
