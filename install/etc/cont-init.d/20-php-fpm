@@ -50,252 +50,254 @@ case "$CONTAINER_MODE" in
       ;;
 esac
 
-### Create Upstream PHP Hosts
-if var_true "${NGINX_ENABLE_UPSTREAM_KEEPALIVE}" ; then
-  upstream_keepalive="keepalive ${NGINX_UPSTREAM_KEEPALIVE};"
-fi
-
-php_fpm_hosts=$(echo "${PHP_FPM_HOST}" | tr "," "\n")
-echo "upstream php-fpm-upstream {" >> /etc/nginx/nginx.conf.d/php-fpm-upstream.conf
-echo "     ${upstream_keepalive}" >> /etc/nginx/nginx.conf.d/authentication/php-fpm-upstream.conf
-for host in $php_fpm_hosts
-    do
-      if [[ ${host} != *":"* ]];then
-        php_listen_port=":${PHP_FPM_LISTEN_PORT}"
-      else
-        php_listen_port=""
-      fi
-
-    echo "    server $host${php_listen_port} ${PHP_FPM_UPSTREAM_OPTIONS};" >> /etc/nginx/nginx.conf.d/php-fpm-upstream.conf
-done
-echo "}" >> /etc/nginx/nginx.conf.d/php-fpm-upstream.conf
-
-sed -i -e "/# Do not delete - Upstream Configuration/a\ \ \ \ include \/etc\/nginx\/nginx.conf.d\/php-fpm-upstream.conf;" /etc/nginx/nginx.conf
-sed -i -e "/# Do not delete - Upstream Configuration/a\ \ \ \ ### PHP-FPM Multiple Handlers configuration" /etc/nginx/nginx.conf
-
-### Adjust PHP Runtime Variables
-sed -i -e "s#<PHP_LISTEN_PORT>#${PHP_FPM_LISTEN_PORT}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<MAX_CHILDREN>#${PHP_FPM_MAX_CHILDREN}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<MAX_EXECUTION_TIME>#${PHP_TIMEOUT}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<MAX_REQUESTS>#${PHP_FPM_MAX_REQUESTS}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<MAX_SPARE_SERVERS>#${PHP_FPM_MAX_SPARE_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<MAX_START_SERVERS>#${PHP_FPM_START_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<MIN_SPARE_SERVERS>#${PHP_FPM_MIN_SPARE_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<PHP_HOST>#${PHP_FPM_HOST}#g" /etc/nginx/conf.d/default.conf
-sed -i -e "s#<PHP_HOST>#${PHP_FPM_HOST}#g" /etc/nginx/nginx.conf.d/php-fpm.conf
-sed -i -e "s#<PHP_LISTEN_PORT>#${PHP_FPM_LISTEN_PORT}#g" /etc/nginx/nginx.conf.d/php-fpm.conf
-sed -i -e "s#<PHP_LOG_LOCATION>#${PHP_LOG_LOCATION}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<PHP_LOG_ACCESS_FILE>#${PHP_LOG_ACCESS_FILE}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<PHP_LOG_ERROR_FILE>#${PHP_LOG_ERROR_FILE}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<PHP_LOG_LIMIT>#${PHP_LOG_LIMIT}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<PHP_MEMORY_LIMIT>#${PHP_MEMORY_LIMIT}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<PHP_TIMEOUT>#${PHP_TIMEOUT}#g" /etc/nginx/nginx.conf.d/php-fpm.conf
-sed -i -e "s#<POST_MAX_SIZE>#${PHP_POST_MAX_SIZE}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<PROCESS_MANAGER>#${PHP_FPM_PROCESS_MANAGER}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#<UPLOAD_MAX_SIZE>#${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#apc.shm_size.*#apc.shm_size=${PHP_APC_SHM_SIZE}#g" /assets/php-fpm//mods-available/apcu.ini
-sed -i -e "s#opcache.memory_consumption.*#opcache.memory_consumption=$PHP_OPCACHE_MEM_SIZE#g" /assets/php-fpm/mods-available/opcache.ini
-sed -i -e "s#memory_limit = .*#memory_limit = ${PHP_MEMORY_LIMIT}#g" /assets/php-fpm/cli/php.ini
-sed -i -e "s#max_input_time = .*#max_input_time = ${PHP_TIMEOUT}#g" /assets/php-fpm/cli/php.ini
-sed -i -e "s#default_socket_timeout = .*#default_socket_timeout = ${PHP_TIMEOUT}#g" /assets/php-fpm/cli/php.ini
-sed -i -e "s#post_max_size = .*#post_max_size = ${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/cli/php.ini
-sed -i -e "s#upload_max_filesize = .*#upload_max_filesize = ${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/cli/php.ini
-
-sed -i "/access.format=/d" /assets/php-fpm/fpm/php-fpm.conf
-
-case "${PHP_LOG_ACCESS_FORMAT,,}" in
-  "default" | "standard" )
-    cat /assets/php-fpm/fpm/default.logformat >> /assets/php-fpm/fpm/php-fpm.conf
-  ;;
-   "json" )
-    cat /assets/php-fpm/fpm/json.logformat >> /assets/php-fpm/fpm/php-fpm.conf
-  ;;
-esac
-
-### Disable Opcache
-if [ "${PHP_APC_SHM_SIZE}" = "0" ]; then
-  sed -i -e "s/apc.enabled=1/apc.enabled=0/g" /assets/php-fpm/mods-available/acpu.ini
-fi
-
-if [ "${PHP_OPCACHE_MEM_SIZE}" = "0" ] || var_false "${PHP_ENABLE_OPCACHE}" ; then
-  sed -i -e "s/opcache.enable=1/opcache.enable=0/g" /assets/php-fpm/mods-available/opcache.ini
-  sed -i -e "s/opcache.enable_cli=1/opcache.enable_cli=0/g" /assets/php-fpm/mods-available/opcache.ini
-else
-  if var_true "${CONTAINER_ENABLE_MONITORING}" && [ "${CONTAINER_MONITORING_BACKEND,,}" = "zabbix" ]; then
-      source /assets/defaults/03-monitoring
-      cat <<EOF > "${ZABBIX_CONFIG_PATH}"/"${ZABBIX_CONFIG_FILE}.d"/tiredofit-php_opcache.conf
-# Zabbix PHP Opcache Configuration - Automatically Generated
-# Find Companion Zabbix Server Templates at https://github.com/tiredofit/docker-nginx-php-fpm
-# Autoregister=opcache
-
-UserParameter=php.opcache.get_status,sudo -Eu zabbix php /etc/zabbix/zabbix_agentd.conf.d/scripts/php/opcache-status.php
-UserParameter=php.opcache.get_settings,sudo -Eu zabbix php /etc/zabbix/zabbix_agentd.conf.d/scripts/php/opcache-settings.php
-EOF
+if [ ! -f "/tmp/.container/container-restart" ] ; then
+  ### Create Upstream PHP Hosts
+  if var_true "${NGINX_ENABLE_UPSTREAM_KEEPALIVE}" ; then
+    upstream_keepalive="keepalive ${NGINX_UPSTREAM_KEEPALIVE};"
   fi
-fi
 
-if var_true "${PHP_DISPLAY_ERRORS}" ; then
-  sed -i -e "\#php_flag[display_errors]#d" /assets/php-fpm/fpm/php-fpm.conf
-fi
-
-### Allow composer to work
-if [ "${PHP_BASE:0:1}" = "5" ] ; then echo "suhosin.executor.include.whitelist = phar" >> /etc/php"${PHP_BASE:0:1}"/php.ini ; fi;  \
-
-### Debug Mode
-if var_true "${PHP_ENABLE_XDEBUG}" ; then
-  cat <<EOF >> "${php_prefix}"mods-available/xdebug.ini
-zend_extension=xdebug.so
-xdebug.default_enable = 1
-xdebug.profiler_enable= ${PHP_XDEBUG_PROFILER_ENABLE}
-xdebug.profiler_enable_trigger= ${PHP_XDEBUG_PROFILER_ENABLE_TRIGGER}
-xdebug.profiler_output_dir='${PHP_XDEBUG_PROFILER_DIR}'
-xdebug.remote_autostart = ${PHP_XDEBUG_REMOTE_AUTOSTART}
-xdebug.remote_connect_back = ${PHP_XDEBUG_REMOTE_CONNECT_BACK}
-xdebug.remote_enable = ${PHP_XDEBUG_REMOTE_ENABLE}
-xdebug.remote_handler = ${PHP_XDEBUG_REMOTE_HANDLER}
-xdebug.remote_host = ${PHP_XDEBUG_REMOTE_HOST}
-xdebug.remote_port = ${PHP_XDEBUG_REMOTE_PORT}
-EOF
-  PHP_LOG_LEVEL=debug
-  print_notice "DEBUGGING MODE ACTIVATED: Please use your IDE to connect to: ${PHP_XDEBUG_REMOTE_HOST}:${PHP_XDEBUG_REMOTE_PORT}"
-  if [ "$PHP_XDEBUG_PROFILER_ENABLE" = "1" ]; then
-    print_notice "PROFILING MODE ACTIVATED: Please find the profiler logs at: ${PHP_XDEBUG_PROFILER_DIR}"
-    mkdir -p "$PHP_XDEBUG_PROFILER_DIR"
-    chown -R "${NGINX_USER}":"${NGINX_GROUP}" "${PHP_XDEBUG_PROFILER_DIR}"
-  fi
-fi
-
-case ${os} in
-    "alpine" )
-        if var_true "${ENABLE_SMTP}" || var_true "${CONTAINER_ENABLE_MESSAGING}" ; then
-          echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"/conf.d/99-smtp.ini
-        fi
-        echo "date.timezone="$(cat /etc/timezone) >> "${php_prefix}"/conf.d/99-timezone.ini
-        ;;
-    "debian" )
-        ### SMTP Config
-        if var_true "${ENABLE_SMTP}" || var_true "${CONTAINER_ENABLE_MESSAGING}" ; then
-          echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"cli/conf.d/99-smtp.ini
-          echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"fpm/conf.d/99-smtp.ini
-        fi
-        echo "date.timezone="$(cat /etc/timezone) >> "${php_prefix}"fpm/conf.d/99-timezone.ini
-        ;;
-esac
-
-if var_true "${CONTAINER_ENABLE_MESSAGING}" ; then
-  chown "${NGINX_USER}":"${NGINX_GROUP}" /etc/msmtprc
-  chmod 0600 /etc/msmtprc
-fi
-
-### PHP Log Level
-sed -i -e "s/<PHP_LOG_LEVEL>/${PHP_LOG_LEVEL}/g" /assets/php-fpm/fpm/php-fpm.conf
-sed -i -e "s#date.timezone = .*#date.timezone = $(cat /etc/timezone)#g" /assets/php-fpm/cli/php.ini
-sed -i -e "s#date.timezone = .*#date.timezone = $(cat /etc/timezone)#g" /assets/php-fpm/fpm/php.ini
-
-### Copy Bootstrap Config overtop of running conf
-case ${os} in
-    "alpine" )
-        cp -R /assets/php-fpm/cli/php.ini "${php_prefix}"/
-        cp -R /assets/php-fpm/mods-available/* "${php_prefix}"/mods-available/
-        cp -R /assets/php-fpm/fpm/php-fpm.conf "${php_prefix}"/
-        ;;
-    "debian" )
-        cp -R /assets/php-fpm/* "${php_prefix}"
-        ;;
-esac
-
-
-### Create Log Directories
-mkdir -p "${PHP_LOG_LOCATION}"
-touch "${PHP_LOG_LOCATION}"/"${PHP_LOG_ACCESS_FILE}"
-touch "${PHP_LOG_LOCATION}"/"${PHP_LOG_ERROR_FILE}"
-chown -R "${NGINX_USER}":"${NGINX_GROUP}" "${PHP_LOG_LOCATION}"
-
-### Create Logrotate
-create_logrotate php-fpm-access ${PHP_LOG_LOCATION}/${PHP_LOG_ACCESS_FILE} php-fpm ${NGINX_USER} ${NGINX_GROUP}
-create_logrotate php-fpm-error ${PHP_LOG_LOCATION}/${PHP_LOG_ERROR_FILE} php-fpm-error ${NGINX_USER} ${NGINX_GROUP}
-
-#### Create Sample PHP File if doesn't exist
-if var_true "${PHP_ENABLE_CREATE_SAMPLE_PHP}" ; then
-  if [ ! -f "${NGINX_WEBROOT}"/index.php ] ; then
-     print_notice "Creating sample index.php"
-     mkdir -p "${NGINX_WEBROOT}"
-     cat <<EOF > "${NGINX_WEBROOT}"/index.php
-  <html>
-  <title>Default Page</title>
-  <h2>Container is working</h2>
-  Congratulations! Your ${IMAGE_NAME} ${os} PHP-FPM image is working. You are seeing this because you don't have an index.php file in your ${NGINX_WEBROOT} directory.<br />
-  <?php phpinfo();?>
-  </html>
-EOF
-  fi
-fi
-
-#### Disable Extensions
-if var_false "${PHP_KITCHENSINK}" ; then
-    unset PHP_ENABLE_CREATE_SAMPLE_PHP # legacy
-    unset PHP_ENABLE_DISPLAY_ERRORS # legacy
-    php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE |sed -e 's/PHP_ENABLE_//g' | sed -e 's/=TRUE//g' | awk -vRS="" -vOFS=', ' '$1=$1' | tr A-Z a-z)
-	  for module in $(echo "${php_env_plugins_enabled}" | tr "," "\n" )
-	  do
-      if [ -f "${php_prefix}/mods-available/${module}.ini" ]; then
-		    print_debug "Enabling ${module}"
-        silent php-ext enable "${module}"
-        php_actual_plugins_enabled="${php_actual_plugins_enabled} ${module}"
-      else
-        print_error "Requested enabling ${module} however it doesn't exist!"
-      fi
-    done
-    print_notice "PHP-FPM Preparing to start with the following plugins enabled: ${php_actual_plugins_enabled}"
-else
-    print_warn "Enabling Kitchen Sink mode and allowing all plugins to be active"
-    for f in ${php_prefix}/mods-available/*.ini;
+  php_fpm_hosts=$(echo "${PHP_FPM_HOST}" | tr "," "\n")
+  echo "upstream php-fpm-upstream {" >> /etc/nginx/nginx.conf.d/php-fpm-upstream.conf
+  echo "     ${upstream_keepalive}" >> /etc/nginx/nginx.conf.d/authentication/php-fpm-upstream.conf
+  for host in $php_fpm_hosts
       do
-      silent php-ext enable all
-      php_actual_plugins_enabled="${php_actual_plugins_enabled} ${f/.ini/}"
-    done
-    print_notice "PHP-FPM Preparing to start with the following plugins enabled: ${php_actual_plugins_enabled}"
-fi
+        if [[ ${host} != *":"* ]];then
+          php_listen_port=":${PHP_FPM_LISTEN_PORT}"
+        else
+          php_listen_port=""
+        fi
 
-if [ "${NGINX_AUTHENTICATION_TYPE,,}" = "llng" ]; then
-    print_notice "Adding LLNG Authentication parameters to nginx configuration"
+      echo "    server $host${php_listen_port} ${PHP_FPM_UPSTREAM_OPTIONS};" >> /etc/nginx/nginx.conf.d/php-fpm-upstream.conf
+  done
+  echo "}" >> /etc/nginx/nginx.conf.d/php-fpm-upstream.conf
 
-    header_num=$(printenv | sort | grep -c '\NGINX_AUTHENTICATION_LLNG_ATTRIBUTE.*')
-    for ((i = 1; i <= header_num; i++)); do
-      headers=NGINX_AUTHENTICATION_LLNG_ATTRIBUTE${i}
-      IFS=',' read -r -a array <<<"${!headers}"
+  sed -i -e "/# Do not delete - Upstream Configuration/a\ \ \ \ include \/etc\/nginx\/nginx.conf.d\/php-fpm-upstream.conf;" /etc/nginx/nginx.conf
+  sed -i -e "/# Do not delete - Upstream Configuration/a\ \ \ \ ### PHP-FPM Multiple Handlers configuration" /etc/nginx/nginx.conf
 
-      print_notice "Updating Nginx to support receiving attribute from LLNG: '${array[0]}'"
+  ### Adjust PHP Runtime Variables
+  sed -i -e "s#<PHP_LISTEN_PORT>#${PHP_FPM_LISTEN_PORT}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<MAX_CHILDREN>#${PHP_FPM_MAX_CHILDREN}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<MAX_EXECUTION_TIME>#${PHP_TIMEOUT}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<MAX_REQUESTS>#${PHP_FPM_MAX_REQUESTS}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<MAX_SPARE_SERVERS>#${PHP_FPM_MAX_SPARE_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<MAX_START_SERVERS>#${PHP_FPM_START_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<MIN_SPARE_SERVERS>#${PHP_FPM_MIN_SPARE_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<PHP_HOST>#${PHP_FPM_HOST}#g" /etc/nginx/conf.d/default.conf
+  sed -i -e "s#<PHP_HOST>#${PHP_FPM_HOST}#g" /etc/nginx/nginx.conf.d/php-fpm.conf
+  sed -i -e "s#<PHP_LISTEN_PORT>#${PHP_FPM_LISTEN_PORT}#g" /etc/nginx/nginx.conf.d/php-fpm.conf
+  sed -i -e "s#<PHP_LOG_LOCATION>#${PHP_LOG_LOCATION}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<PHP_LOG_ACCESS_FILE>#${PHP_LOG_ACCESS_FILE}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<PHP_LOG_ERROR_FILE>#${PHP_LOG_ERROR_FILE}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<PHP_LOG_LIMIT>#${PHP_LOG_LIMIT}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<PHP_MEMORY_LIMIT>#${PHP_MEMORY_LIMIT}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<PHP_TIMEOUT>#${PHP_TIMEOUT}#g" /etc/nginx/nginx.conf.d/php-fpm.conf
+  sed -i -e "s#<POST_MAX_SIZE>#${PHP_POST_MAX_SIZE}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<PROCESS_MANAGER>#${PHP_FPM_PROCESS_MANAGER}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#<UPLOAD_MAX_SIZE>#${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#apc.shm_size.*#apc.shm_size=${PHP_APC_SHM_SIZE}#g" /assets/php-fpm//mods-available/apcu.ini
+  sed -i -e "s#opcache.memory_consumption.*#opcache.memory_consumption=$PHP_OPCACHE_MEM_SIZE#g" /assets/php-fpm/mods-available/opcache.ini
+  sed -i -e "s#memory_limit = .*#memory_limit = ${PHP_MEMORY_LIMIT}#g" /assets/php-fpm/cli/php.ini
+  sed -i -e "s#max_input_time = .*#max_input_time = ${PHP_TIMEOUT}#g" /assets/php-fpm/cli/php.ini
+  sed -i -e "s#default_socket_timeout = .*#default_socket_timeout = ${PHP_TIMEOUT}#g" /assets/php-fpm/cli/php.ini
+  sed -i -e "s#post_max_size = .*#post_max_size = ${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/cli/php.ini
+  sed -i -e "s#upload_max_filesize = .*#upload_max_filesize = ${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/cli/php.ini
 
-      echo "fastcgi_param ${array[0]} \$${array[1]};" >>/etc/nginx/nginx.conf.d/authentication/llng_params
-      echo "auth_request_set \$${array[1]} \$${array[2]};" >>/etc/nginx/nginx.conf.d/authentication/llng_auth_request
-    done
+  sed -i "/access.format=/d" /assets/php-fpm/fpm/php-fpm.conf
 
-    sed -i '/server {/a\ \ \ \ \  include /etc/nginx/nginx.conf.d/authentication/llng_location_block;' /etc/nginx/conf.d/*.conf
-    sed -i '/server {/a\ \ \ \ \  ### LLNG Authentication handler' /etc/nginx/conf.d/*.conf
-    cp -R /etc/nginx/nginx.conf.d/php-fpm.conf /etc/nginx/nginx.conf.d/monitoring-php-fpm.conf
-    sed -i "s|include /etc/nginx/nginx.conf.d/php-fpm.conf;|include /etc/nginx/nginx.conf.d/monitoring-php-fpm.conf;|g" /etc/nginx/nginx.conf.d/monitoring.conf
-    cat <<EOF >> /etc/nginx/nginx.conf.d/php-fpm.conf
-### LLNG Authentication handler
-include /etc/nginx/nginx.conf.d/authentication/llng_auth_request;
-include /etc/nginx/nginx.conf.d/authentication/llng_params;
+  case "${PHP_LOG_ACCESS_FORMAT,,}" in
+    "default" | "standard" )
+      cat /assets/php-fpm/fpm/default.logformat >> /assets/php-fpm/fpm/php-fpm.conf
+    ;;
+    "json" )
+      cat /assets/php-fpm/fpm/json.logformat >> /assets/php-fpm/fpm/php-fpm.conf
+    ;;
+  esac
+
+  ### Disable Opcache
+  if [ "${PHP_APC_SHM_SIZE}" = "0" ]; then
+    sed -i -e "s/apc.enabled=1/apc.enabled=0/g" /assets/php-fpm/mods-available/acpu.ini
+  fi
+
+  if [ "${PHP_OPCACHE_MEM_SIZE}" = "0" ] || var_false "${PHP_ENABLE_OPCACHE}" ; then
+    sed -i -e "s/opcache.enable=1/opcache.enable=0/g" /assets/php-fpm/mods-available/opcache.ini
+    sed -i -e "s/opcache.enable_cli=1/opcache.enable_cli=0/g" /assets/php-fpm/mods-available/opcache.ini
+  else
+    if var_true "${CONTAINER_ENABLE_MONITORING}" && [ "${CONTAINER_MONITORING_BACKEND,,}" = "zabbix" ]; then
+        source /assets/defaults/03-monitoring
+        cat <<EOF > "${ZABBIX_CONFIG_PATH}"/"${ZABBIX_CONFIG_FILE}.d"/tiredofit-php_opcache.conf
+  # Zabbix PHP Opcache Configuration - Automatically Generated
+  # Find Companion Zabbix Server Templates at https://github.com/tiredofit/docker-nginx-php-fpm
+  # Autoregister=opcache
+
+  UserParameter=php.opcache.get_status,sudo -Eu zabbix php /etc/zabbix/zabbix_agentd.conf.d/scripts/php/opcache-status.php
+  UserParameter=php.opcache.get_settings,sudo -Eu zabbix php /etc/zabbix/zabbix_agentd.conf.d/scripts/php/opcache-settings.php
 EOF
-fi
+    fi
+  fi
 
-case ${os} in
-    "alpine" )
-        ### Weird Opcache issue
-        if [ -f "${php_prefix}/conf.d/10-opcache.ini" ] && [ -f "${php_prefix}/conf.d/00-opcache.ini" ] ; then
-          rm -rf ${php_prefix}/conf.d/00-opcache.ini
+  if var_true "${PHP_DISPLAY_ERRORS}" ; then
+    sed -i -e "\#php_flag[display_errors]#d" /assets/php-fpm/fpm/php-fpm.conf
+  fi
+
+  ### Allow composer to work
+  if [ "${PHP_BASE:0:1}" = "5" ] ; then echo "suhosin.executor.include.whitelist = phar" >> /etc/php"${PHP_BASE:0:1}"/php.ini ; fi;  \
+
+  ### Debug Mode
+  if var_true "${PHP_ENABLE_XDEBUG}" ; then
+    cat <<EOF >> "${php_prefix}"mods-available/xdebug.ini
+  zend_extension=xdebug.so
+  xdebug.default_enable = 1
+  xdebug.profiler_enable= ${PHP_XDEBUG_PROFILER_ENABLE}
+  xdebug.profiler_enable_trigger= ${PHP_XDEBUG_PROFILER_ENABLE_TRIGGER}
+  xdebug.profiler_output_dir='${PHP_XDEBUG_PROFILER_DIR}'
+  xdebug.remote_autostart = ${PHP_XDEBUG_REMOTE_AUTOSTART}
+  xdebug.remote_connect_back = ${PHP_XDEBUG_REMOTE_CONNECT_BACK}
+  xdebug.remote_enable = ${PHP_XDEBUG_REMOTE_ENABLE}
+  xdebug.remote_handler = ${PHP_XDEBUG_REMOTE_HANDLER}
+  xdebug.remote_host = ${PHP_XDEBUG_REMOTE_HOST}
+  xdebug.remote_port = ${PHP_XDEBUG_REMOTE_PORT}
+EOF
+    PHP_LOG_LEVEL=debug
+    print_notice "DEBUGGING MODE ACTIVATED: Please use your IDE to connect to: ${PHP_XDEBUG_REMOTE_HOST}:${PHP_XDEBUG_REMOTE_PORT}"
+    if [ "$PHP_XDEBUG_PROFILER_ENABLE" = "1" ]; then
+      print_notice "PROFILING MODE ACTIVATED: Please find the profiler logs at: ${PHP_XDEBUG_PROFILER_DIR}"
+      mkdir -p "$PHP_XDEBUG_PROFILER_DIR"
+      chown -R "${NGINX_USER}":"${NGINX_GROUP}" "${PHP_XDEBUG_PROFILER_DIR}"
+    fi
+  fi
+
+  case ${os} in
+      "alpine" )
+          if var_true "${ENABLE_SMTP}" || var_true "${CONTAINER_ENABLE_MESSAGING}" ; then
+            echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"/conf.d/99-smtp.ini
+          fi
+          echo "date.timezone="$(cat /etc/timezone) >> "${php_prefix}"/conf.d/99-timezone.ini
+          ;;
+      "debian" )
+          ### SMTP Config
+          if var_true "${ENABLE_SMTP}" || var_true "${CONTAINER_ENABLE_MESSAGING}" ; then
+            echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"cli/conf.d/99-smtp.ini
+            echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"fpm/conf.d/99-smtp.ini
+          fi
+          echo "date.timezone="$(cat /etc/timezone) >> "${php_prefix}"fpm/conf.d/99-timezone.ini
+          ;;
+  esac
+
+  if var_true "${CONTAINER_ENABLE_MESSAGING}" ; then
+    chown "${NGINX_USER}":"${NGINX_GROUP}" /etc/msmtprc
+    chmod 0600 /etc/msmtprc
+  fi
+
+  ### PHP Log Level
+  sed -i -e "s/<PHP_LOG_LEVEL>/${PHP_LOG_LEVEL}/g" /assets/php-fpm/fpm/php-fpm.conf
+  sed -i -e "s#date.timezone = .*#date.timezone = $(cat /etc/timezone)#g" /assets/php-fpm/cli/php.ini
+  sed -i -e "s#date.timezone = .*#date.timezone = $(cat /etc/timezone)#g" /assets/php-fpm/fpm/php.ini
+
+  ### Copy Bootstrap Config overtop of running conf
+  case ${os} in
+      "alpine" )
+          cp -R /assets/php-fpm/cli/php.ini "${php_prefix}"/
+          cp -R /assets/php-fpm/mods-available/* "${php_prefix}"/mods-available/
+          cp -R /assets/php-fpm/fpm/php-fpm.conf "${php_prefix}"/
+          ;;
+      "debian" )
+          cp -R /assets/php-fpm/* "${php_prefix}"
+          ;;
+  esac
+
+
+  ### Create Log Directories
+  mkdir -p "${PHP_LOG_LOCATION}"
+  touch "${PHP_LOG_LOCATION}"/"${PHP_LOG_ACCESS_FILE}"
+  touch "${PHP_LOG_LOCATION}"/"${PHP_LOG_ERROR_FILE}"
+  chown -R "${NGINX_USER}":"${NGINX_GROUP}" "${PHP_LOG_LOCATION}"
+
+  ### Create Logrotate
+  create_logrotate php-fpm-access ${PHP_LOG_LOCATION}/${PHP_LOG_ACCESS_FILE} php-fpm ${NGINX_USER} ${NGINX_GROUP}
+  create_logrotate php-fpm-error ${PHP_LOG_LOCATION}/${PHP_LOG_ERROR_FILE} php-fpm-error ${NGINX_USER} ${NGINX_GROUP}
+
+  #### Create Sample PHP File if doesn't exist
+  if var_true "${PHP_ENABLE_CREATE_SAMPLE_PHP}" ; then
+    if [ ! -f "${NGINX_WEBROOT}"/index.php ] ; then
+      print_notice "Creating sample index.php"
+      mkdir -p "${NGINX_WEBROOT}"
+      cat <<EOF > "${NGINX_WEBROOT}"/index.php
+    <html>
+    <title>Default Page</title>
+    <h2>Container is working</h2>
+    Congratulations! Your ${IMAGE_NAME} ${os} PHP-FPM image is working. You are seeing this because you don't have an index.php file in your ${NGINX_WEBROOT} directory.<br />
+    <?php phpinfo();?>
+    </html>
+EOF
+    fi
+  fi
+
+  #### Disable Extensions
+  if var_false "${PHP_KITCHENSINK}" ; then
+      unset PHP_ENABLE_CREATE_SAMPLE_PHP # legacy
+      unset PHP_ENABLE_DISPLAY_ERRORS # legacy
+      php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE |sed -e 's/PHP_ENABLE_//g' | sed -e 's/=TRUE//g' | awk -vRS="" -vOFS=', ' '$1=$1' | tr A-Z a-z)
+      for module in $(echo "${php_env_plugins_enabled}" | tr "," "\n" )
+      do
+        if [ -f "${php_prefix}/mods-available/${module}.ini" ]; then
+          print_debug "Enabling ${module}"
+          silent php-ext enable "${module}"
+          php_actual_plugins_enabled="${php_actual_plugins_enabled} ${module}"
+        else
+          print_error "Requested enabling ${module} however it doesn't exist!"
         fi
-    ;;
-    "debian" )
-        ### Weird Opcache issue
-        if [ -f "/etc/php/${PHP_BASE}/fpm/conf.d/10-opcache.ini" ] && [ -f "/etc/php/${PHP_BASE}/fpm/conf.d/00-opcache.ini" ] ; then
-          rm -rf /etc/php/"${PHP_BASE}"/*/conf.d/00-opcache.ini
-        fi
-    ;;
-esac
+      done
+      print_notice "PHP-FPM Preparing to start with the following plugins enabled: ${php_actual_plugins_enabled}"
+  else
+      print_warn "Enabling Kitchen Sink mode and allowing all plugins to be active"
+      for f in ${php_prefix}/mods-available/*.ini;
+        do
+        silent php-ext enable all
+        php_actual_plugins_enabled="${php_actual_plugins_enabled} ${f/.ini/}"
+      done
+      print_notice "PHP-FPM Preparing to start with the following plugins enabled: ${php_actual_plugins_enabled}"
+  fi
+
+  if [ "${NGINX_AUTHENTICATION_TYPE,,}" = "llng" ]; then
+      print_notice "Adding LLNG Authentication parameters to nginx configuration"
+
+      header_num=$(printenv | sort | grep -c '\NGINX_AUTHENTICATION_LLNG_ATTRIBUTE.*')
+      for ((i = 1; i <= header_num; i++)); do
+        headers=NGINX_AUTHENTICATION_LLNG_ATTRIBUTE${i}
+        IFS=',' read -r -a array <<<"${!headers}"
+
+        print_notice "Updating Nginx to support receiving attribute from LLNG: '${array[0]}'"
+
+        echo "fastcgi_param ${array[0]} \$${array[1]};" >>/etc/nginx/nginx.conf.d/authentication/llng_params
+        echo "auth_request_set \$${array[1]} \$${array[2]};" >>/etc/nginx/nginx.conf.d/authentication/llng_auth_request
+      done
+
+      sed -i '/server {/a\ \ \ \ \  include /etc/nginx/nginx.conf.d/authentication/llng_location_block;' /etc/nginx/conf.d/*.conf
+      sed -i '/server {/a\ \ \ \ \  ### LLNG Authentication handler' /etc/nginx/conf.d/*.conf
+      cp -R /etc/nginx/nginx.conf.d/php-fpm.conf /etc/nginx/nginx.conf.d/monitoring-php-fpm.conf
+      sed -i "s|include /etc/nginx/nginx.conf.d/php-fpm.conf;|include /etc/nginx/nginx.conf.d/monitoring-php-fpm.conf;|g" /etc/nginx/nginx.conf.d/monitoring.conf
+      cat <<EOF >> /etc/nginx/nginx.conf.d/php-fpm.conf
+  ### LLNG Authentication handler
+  include /etc/nginx/nginx.conf.d/authentication/llng_auth_request;
+  include /etc/nginx/nginx.conf.d/authentication/llng_params;
+EOF
+  fi
+
+  case ${os} in
+      "alpine" )
+          ### Weird Opcache issue
+          if [ -f "${php_prefix}/conf.d/10-opcache.ini" ] && [ -f "${php_prefix}/conf.d/00-opcache.ini" ] ; then
+            rm -rf ${php_prefix}/conf.d/00-opcache.ini
+          fi
+      ;;
+      "debian" )
+          ### Weird Opcache issue
+          if [ -f "/etc/php/${PHP_BASE}/fpm/conf.d/10-opcache.ini" ] && [ -f "/etc/php/${PHP_BASE}/fpm/conf.d/00-opcache.ini" ] ; then
+            rm -rf /etc/php/"${PHP_BASE}"/*/conf.d/00-opcache.ini
+          fi
+      ;;
+  esac
+fi
 
 chmod -R 0755 "${php_prefix}"
 chown -R root:"${NGINX_GROUP}" "${php_prefix}"

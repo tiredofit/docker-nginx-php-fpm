@@ -1,3 +1,9 @@
+## 6.4.5 2022-03-11 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Sanity checks to be able to survive "warm" restarts
+
+
 ## 6.4.4 2022-03-08 <dave at tiredofit dot ca>
 
    ### Added
