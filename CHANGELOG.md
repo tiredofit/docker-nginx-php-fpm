@@ -583,7 +583,7 @@
 
 ## 2017-07-01 2.1 <dave at tiredofit dot ca>
 
-* Sanity Check and write initialization state to /tmp/state/*service name
+* Sanity Check and write initialization state to /tmp/.container/*service name
 * Added MSMTP to take place of sendmail
 
 
