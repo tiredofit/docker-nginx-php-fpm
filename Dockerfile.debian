@@ -115,6 +115,7 @@ RUN export PHP_7_3_RUN_DEPS=" \
                 php$PHP_BASE-pgsql \
                 php$PHP_BASE-pspell \
                 php$PHP_BASE-readline \
+                php$PHP_BASE-redis \
                 php$PHP_BASE-snmp \
                 php$PHP_BASE-soap \
                 php$PHP_BASE-sqlite3 \

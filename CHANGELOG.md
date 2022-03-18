@@ -1,3 +1,9 @@
+## 6.4.6 2022-03-18 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for Debian images not including redis extension
+
+
 ## 6.4.5 2022-03-11 <dave at tiredofit dot ca>
 
    ### Changed
