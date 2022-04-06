@@ -42,11 +42,11 @@ if [ "${PHP_BASE:0:1}" != "8" ] ; then
     PHP_ENABLE_JSON=TRUE
 fi
 
-if var_true "${PHP_ENABLE_REDIS}" ; then
+if [ "${PHP_ENABLE_REDIS,,}" = "true" ] ; then
     PHP_ENABLE_IGBINARY=TRUE
 fi
 
-if var_true "${PHP_ENABLE_MEMCACHED}" ; then
+if [ "${PHP_ENABLE_MEMCACHED,,}" = "true" ; then
     PHP_ENABLE_IGBINARY=TRUE
     PHP_ENABLE_MSGPACK=TRUE
 fi

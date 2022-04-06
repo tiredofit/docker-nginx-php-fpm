@@ -1,3 +1,9 @@
+## 6.4.7 2022-04-06 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Adjust defaults to use proper if statements as opposed to shortcuts
+
+
 ## 6.4.6 2022-03-18 <dave at tiredofit dot ca>
 
    ### Changed
