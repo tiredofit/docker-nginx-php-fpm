@@ -1,3 +1,10 @@
+## 6.4.8 2022-04-011 <unlink@github>
+
+   ### Changed
+      - Fix for open brace in if statement
+      - Revamp Xdebug options for PHP 7.2 and higher
+
+
 ## 6.4.7 2022-04-06 <dave at tiredofit dot ca>
 
    ### Changed
