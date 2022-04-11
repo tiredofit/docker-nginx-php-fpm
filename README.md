@@ -209,6 +209,7 @@ To enable all extensions in image use `PHP_KITCHENSINK=TRUE`. Head inside the im
 #### Debug Options
 To enable XDebug set `PHP_ENABLE_XDEBUG=TRUE`. Visit the [PHP XDebug Documentation](https://xdebug.org/docs/all_settings#remote_connect_back) to understand what these options mean.
 
+For Xdebug 2 (php <= 7.1) you should set:
 | Parameter                            | Description                                |
 | ------------------------------------ | ------------------------------------------ |
 | `PHP_XDEBUG_PROFILER_DIR`            | Where to store Profiler Logs               | `/www/logs/xdebug/` |
@@ -220,6 +221,18 @@ To enable XDebug set `PHP_ENABLE_XDEBUG=TRUE`. Visit the [PHP XDebug Documentati
 | `PHP_XDEBUG_REMOTE_HANDLER`          | XDebug Remote Handler                      | `dbgp`              |
 | `PHP_XDEBUG_REMOTE_HOST`             | Set this to your IP Address                | `127.0.0.1`         |
 | `PHP_XDEBUG_REMOTE_PORT`             | XDebug Remote Port                         | `9090`              |
+
+* * *
+
+For Xdebug 3 (php >= 7.2) you should set:
+| Parameter                            | Description                                                           |
+| ------------------------------------ | ----------------------------------------------------------------------|
+| `PHP_XDEBUG_OUTPUT_DIR`              | Where to store Logs                                                   | `/www/logs/xdebug/` |
+| `PHP_XDEBUG_MODE`                    | This setting controls which Xdebug features are enabled.              | `develop`           |
+| `PHP_XDEBUG_START_WITH_REQUEST`      | Enable Autostarting as opposed to GET/POST                            | `default`           |
+| `PHP_XDEBUG_DISCOVER_CLIENT_HOST`    | Xdebug will try to connect to the client that made the HTTP request.  | `1`                 |
+| `PHP_XDEBUG_CLIENT_HOST`             | Set this to your IP Address                                           | `127.0.0.1`         |
+| `PHP_XDEBUG_CLIENT_PORT`             | XDebug Remote Port                                                    | `9003`              |
 
 * * *
 
