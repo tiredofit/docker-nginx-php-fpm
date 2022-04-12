@@ -102,6 +102,14 @@ if [ ! -f "/tmp/.container/container-restart" ] ; then
   sed -i -e "s#post_max_size = .*#post_max_size = ${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/cli/php.ini
   sed -i -e "s#upload_max_filesize = .*#upload_max_filesize = ${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/cli/php.ini
 
+  if [[ ! -z "${PHP_IDE_CONFIG}" ]]; then
+	if [[ "${PHP_IDE_CONFIG}" = \"* ]] || [[ "${PHP_IDE_CONFIG}" = \'* ]] ; then
+	  echo -e "env[PHP_IDE_CONFIG] = ${PHP_IDE_CONFIG}\n" >> /assets/php-fpm/fpm/php-fpm.conf
+	else
+	  echo -e "env[PHP_IDE_CONFIG] = \"${PHP_IDE_CONFIG}\"\n" >> /assets/php-fpm/fpm/php-fpm.conf
+	fi
+  fi
+
   sed -i "/access.format=/d" /assets/php-fpm/fpm/php-fpm.conf
 
   case "${PHP_LOG_ACCESS_FORMAT,,}" in
