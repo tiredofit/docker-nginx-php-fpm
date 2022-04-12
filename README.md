@@ -207,7 +207,8 @@ Enable extensions by using the PHP extension name ie redis as `PHP_ENABLE_REDIS=
 To enable all extensions in image use `PHP_KITCHENSINK=TRUE`. Head inside the image and see what extensions are available by typing `php-ext list all`
 
 #### Debug Options
-To enable XDebug set `PHP_ENABLE_XDEBUG=TRUE`. Visit the [PHP XDebug Documentation](https://xdebug.org/docs/all_settings#remote_connect_back) to understand what these options mean.
+To enable XDebug set `PHP_ENABLE_XDEBUG=TRUE`. Visit the [PHP XDebug Documentation](https://xdebug.org/docs/all_settings#remote_connect_back) to understand what these options mean. 
+If you debug a PHP project in PHPStorm, you need to set server name using `PHP_IDE_CONFIG` to the same value as set in PHPStorm. Usual value is localhost, i.e. `PHP_IDE_CONFIG="serverName=localhost"`.
 
 For Xdebug 2 (php <= 7.1) you should set:
 | Parameter                            | Description                                |
