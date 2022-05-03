@@ -31,7 +31,7 @@ This repository will build a [Nginx](https://www.nginx.org) w/[PHP-FPM](https://
 - [About](#about)
 - [Maintainer](#maintainer)
 - [Table of Contents](#table-of-contents)
-- [Prerequisites and Assumptions and Assumptions](#prerequisites-and-assumptions-and-assumptions)
+- [Prerequisites and Assumptions](#prerequisites-and-assumptions-and-assumptions)
 - [Installation](#installation)
   - [Build from Source](#build-from-source)
   - [Prebuilt Images](#prebuilt-images)
@@ -59,7 +59,7 @@ This repository will build a [Nginx](https://www.nginx.org) w/[PHP-FPM](https://
 - [References](#references)
 
 
-## Prerequisites and Assumptions and Assumptions
+## Prerequisites and Assumptions
 *  Assumes you are using some sort of SSL terminating reverse proxy such as:
    *  [Traefik](https://github.com/tiredofit/docker-traefik)
    *  [Nginx](https://github.com/jc21/nginx-proxy-manager)
