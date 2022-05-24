@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -67,17 +67,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -112,7 +112,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:debian.*|FROM docker.io/tiredofit/nginx:debian-${DISTRIB}|g" Dockerfile.debian
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -129,7 +129,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -178,17 +178,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -223,7 +223,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:debian.*|FROM docker.io/tiredofit/nginx:debian-${DISTRIB}|g" Dockerfile.debian
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -236,11 +236,11 @@ jobs:
   v8_1_alpine:
     env:
       RELEASE: "8.1"
-      DISTRIB: "edge"
+      DISTRIB: "3.16"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -289,17 +289,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -334,7 +334,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:alpine.*|FROM docker.io/tiredofit/nginx:alpine-${DISTRIB}|g" Dockerfile
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -352,7 +352,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -401,17 +401,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -446,7 +446,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:debian.*|FROM docker.io/tiredofit/nginx:debian-${DISTRIB}|g" Dockerfile.debian
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -464,7 +464,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -513,17 +513,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -558,7 +558,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:debian.*|FROM docker.io/tiredofit/nginx:debian-${DISTRIB}|g" Dockerfile.debian
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -572,11 +572,11 @@ jobs:
   v8_0_alpine:
     env:
       RELEASE: "8.0"
-      DISTRIB: "3.15"
+      DISTRIB: "3.16"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -592,7 +592,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:latest,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -625,17 +625,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -670,7 +670,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:alpine.*|FROM docker.io/tiredofit/nginx:alpine-${DISTRIB}|g" Dockerfile
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -688,7 +688,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -737,17 +737,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -782,7 +782,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:debian.*|FROM docker.io/tiredofit/nginx:debian-${DISTRIB}|g" Dockerfile.debian
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -800,7 +800,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -849,17 +849,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -894,7 +894,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:debian.*|FROM docker.io/tiredofit/nginx:debian-${DISTRIB}|g" Dockerfile.debian
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -912,7 +912,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -928,7 +928,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -961,17 +961,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -1006,7 +1006,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:alpine.*|FROM docker.io/tiredofit/nginx:alpine-${DISTRIB}|g" Dockerfile
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -1024,7 +1024,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -1073,17 +1073,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -1118,7 +1118,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:debian.*|FROM docker.io/tiredofit/nginx:debian-${DISTRIB}|g" Dockerfile.debian
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -1137,7 +1137,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -1186,17 +1186,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -1231,7 +1231,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:debian.*|FROM docker.io/tiredofit/nginx:debian-${DISTRIB}|g" Dockerfile.debian
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -1249,7 +1249,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -1265,7 +1265,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1298,17 +1298,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -1343,7 +1343,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:alpine.*|FROM docker.io/tiredofit/nginx:alpine-${DISTRIB}|g" Dockerfile
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -1361,7 +1361,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -1377,7 +1377,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1410,17 +1410,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -1455,7 +1455,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:alpine.*|FROM docker.io/tiredofit/nginx:alpine-${DISTRIB}|g" Dockerfile
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -1473,7 +1473,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -1489,7 +1489,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1522,17 +1522,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -1567,7 +1567,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:alpine.*|FROM docker.io/tiredofit/nginx:alpine-${DISTRIB}|g" Dockerfile
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -1585,7 +1585,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -1601,7 +1601,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1634,17 +1634,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -1679,7 +1679,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:alpine.*|FROM docker.io/tiredofit/nginx:alpine-${DISTRIB}|g" Dockerfile
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
@@ -1697,7 +1697,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare
         id: prep
@@ -1713,7 +1713,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:alpine,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:alpine-${RELEASE},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB},${DOCKER_IMAGE}:alpine-${RELEASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:${RELEASE},${DOCKER_IMAGE}:${RELEASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1746,17 +1746,17 @@ jobs:
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -1791,7 +1791,7 @@ jobs:
           sed -i "s|FROM docker.io/tiredofit/nginx:alpine.*|FROM docker.io/tiredofit/nginx:alpine-${DISTRIB}|g" Dockerfile
 
       - name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .

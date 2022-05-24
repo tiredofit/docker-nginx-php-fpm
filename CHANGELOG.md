@@ -1,3 +1,9 @@
+## 6.4.10 2022-05-24 <dave at tiredofit dot ca>
+
+   ### Added
+      - Alpine: Switch PHP 8 and 8.1 to Alpine 3.16 base
+
+
 ## 6.4.9 2022-04-12 <unlink@github>
 
    ### Changed
