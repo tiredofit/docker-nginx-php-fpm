@@ -1,4 +1,5 @@
 #!/command/with-contenv /bin/bash
+source /assets/functions/00-container
 
 php_major_version="$(echo ${PHP_BASE} | cut -c 1-1)"
 os=$(cat /etc/os-release |grep ^ID= | cut -d = -f2)
@@ -34,7 +35,7 @@ enable_module () {
                                 ln -sf "${module}" ${php_prefix}/conf.d/$(cat ${module} | grep ";priority" | cut -d = -f 2)-$(basename ${module})
                             ;;
                             "debian" )
-                                phpenmod $(basename $module .ini)
+                                silent phpenmod $(basename $module .ini)
                             ;;
                         esac
                     done
@@ -50,8 +51,8 @@ enable_module () {
                                     if [ "${php_major_version}" != "8" ] ; then ln -sf "${php_prefix}mods-available/json.ini" ${php_prefix}/conf.d/$(cat ${php_prefix}mods-available/json.ini | grep ";priority" | cut -d = -f 2)-json.ini ; fi ;
                                 ;;
                                 "debian" )
-                                    phpenmod $(basename $module .ini)
-                                    if [ "${php_major_version}" != "8" ] ; then phpenmod json ; fi
+                                    silent phpenmod $(basename $module .ini)
+                                    if [ "${php_major_version}" != "8" ] ; then silent phpenmod json ; fi
                                     if [[ "$( ls -l ${php_prefix}/fpm/conf.d/*-opcache.ini |  wc -l )" -gt 1 ]] ; then
                                        rm -f "$(ls ${php_prefix}/fpm/conf.d/*-opcache.ini | tail -1 )"
                                     fi
@@ -77,7 +78,7 @@ enable_module () {
                                     ln -sf "${module}" ${php_prefix}conf.d/$(cat ${module} | grep ";priority" | cut -d = -f 2)-$(basename ${module})
                                 ;;
                                 "debian" )
-                                    phpenmod $(basename $module .ini)
+                                    silent phpenmod $(basename $module .ini)
                                 ;;
                             esac
                             php_script_plugins_enabled="${php_actual_plugins_enabled} $(basename $module .ini)"
@@ -101,7 +102,7 @@ enable_module () {
                                     ln -sf "${module}" ${php_prefix}conf.d/$(cat ${module} | grep ";priority" | cut -d = -f 2)-$(basename ${module})
                                 ;;
                                 "debian" )
-                                    phpdismod $(basename $module .ini)
+                                    silent phpdismod $(basename $module .ini)
                                 ;;
                             esac
                         fi
@@ -115,7 +116,7 @@ enable_module () {
                                     ln -sf "${php_prefix}mods-available/$1.ini" ${php_prefix}conf.d/$(cat ${php_prefix}mods-available/${1}.ini | grep ";priority" | cut -d = -f 2)-$1.ini
                                 ;;
                                 "debian" )
-                                    phpenmod "$1"
+                                    silent phpenmod "$1"
                                 ;;
                         esac
 
@@ -141,7 +142,7 @@ disable_module() {
                             rm -f ${php_prefix}/conf.d/$(cat ${module} | grep ";priority" | cut -d = -f 2)-$(basename ${module})
                         ;;
                         "debian" )
-                            phpdismod $(basename $module .ini)
+                            silent phpdismod $(basename $module .ini)
                         ;;
                     esac
                 done
@@ -156,7 +157,7 @@ disable_module() {
                                 rm -f ${php_prefix}/conf.d/$(cat ${php_prefix}mods-available/${module}.ini | grep ";priority" | cut -d = -f 2)-${module}.ini
                             ;;
                             "debian" )
-                                phpdismod $(basename $module .ini)
+                                silent phpdismod $(basename $module .ini)
                                 if [ "${php_major_version}" != "8" ] ; then phpdismod json ; fi
                                 if [[ "$( ls -l ${php_prefix}/fpm/conf.d/*-opcache.ini |  wc -l )" -ge 1 ]] ; then
                                     rm -f "$(ls ${php_prefix}/fpm/conf.d/*-opcache.ini | tail -1 )"
@@ -190,7 +191,7 @@ disable_module() {
                                 rm -f ${php_prefix}conf.d/$(cat ${module} | grep ";priority" | cut -d = -f 2)-$(basename ${module})
                             ;;
                             "debian" )
-                                phpdismod $(basename $module .ini)
+                                silent phpdismod $(basename $module .ini)
                             ;;
                         esac
                     fi
@@ -204,7 +205,7 @@ disable_module() {
                                 rm -f ${php_prefix}conf.d/$(cat ${php_prefix}mods-available/${1}.ini | grep ";priority" | cut -d = -f 2)-$1.ini
                             ;;
                             "debian" )
-                                phpdismod $1
+                                silent phpdismod $1
                             ;;
                         esac
                 else

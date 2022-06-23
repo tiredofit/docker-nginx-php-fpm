@@ -31,7 +31,7 @@ This repository will build a [Nginx](https://www.nginx.org) w/[PHP-FPM](https://
 - [About](#about)
 - [Maintainer](#maintainer)
 - [Table of Contents](#table-of-contents)
-- [Prerequisites and Assumptions](#prerequisites-and-assumptions-and-assumptions)
+- [Prerequisites and Assumptions](#prerequisites-and-assumptions)
 - [Installation](#installation)
   - [Build from Source](#build-from-source)
   - [Prebuilt Images](#prebuilt-images)
@@ -93,7 +93,7 @@ The following image tags are available along with their tagged release based on 
 | 5.3.x       | 3.4         | `:5.3-latest`  |             |               |
 
 #### Multi Architecture
-Images are built primarily for `amd64` architecture, and may also include builds for `arm/v6`, `arm/v7`, `arm64` and others. These variants are all unsupported. Consider [sponsoring](https://github.com/sponsors/tiredofit) my work so that I can work with various hardware. To see if this image supports multiple architecures, type `docker manifest (image):(tag)`
+Images are built primarily for `amd64` architecture, and may also include builds for `arm/v7`, `arm64` and others. These variants are all unsupported. Consider [sponsoring](https://github.com/sponsors/tiredofit) my work so that I can work with various hardware. To see if this image supports multiple architecures, type `docker manifest (image):(tag)`
 
 ## Configuration
 
@@ -134,11 +134,11 @@ Be sure to view the following repositories to understand all the customizable op
 The container has an ability to work in 3 modes, `nginx-php-fpm` (default) is an All in One image with nginx and php-fpm working together, `nginx` will only utilize nginx however not the included php-fpm instance, allowing for connecting to multiple remote php-fpm backends, and finally `php-fpm` to operate PHP-FPM in standalone mode.
 
 
-| Parameter        | Description                                                   | Default         |
-| ---------------- | ------------------------------------------------------------- | --------------- |
-| `CONTAINER_MODE` | Mode of running container `nginx-php-fpm`, `nginx`, `php-fpm` | `nginx-php-fpm` |
+| Parameter                | Description                                                   | Default         |
+| ------------------------ | ------------------------------------------------------------- | --------------- |
+| `PHP_FPM_CONTAINER_MODE` | Mode of running container `nginx-php-fpm`, `nginx`, `php-fpm` | `nginx-php-fpm` |
 
-When `CONTAINER_MODE` set to `nginx` the `PHP_FPM_LISTEN_PORT` environment variable is ignored and the `PHP_FPM_HOST` variable defined below changes. You can add multiple PHP-FPM hosts to the backend in this syntax
+When `PHP_FPM_CONTAINER_MODE` set to `nginx` the `PHP_FPM_LISTEN_PORT` environment variable is ignored and the `PHP_FPM_HOST` variable defined below changes. You can add multiple PHP-FPM hosts to the backend in this syntax
 <host>:<port> seperated by commas e.g `php-fpm-container1:9000,php-fpm-container2:9000`
 
 *You can also pass arguments to each server as defined in the [Nginx Upstream Documentation](https://nginx.org/en/docs/http/ngx_http_upstream_module.html)*
@@ -207,12 +207,12 @@ Enable extensions by using the PHP extension name ie redis as `PHP_ENABLE_REDIS=
 To enable all extensions in image use `PHP_KITCHENSINK=TRUE`. Head inside the image and see what extensions are available by typing `php-ext list all`
 
 #### Debug Options
-To enable XDebug set `PHP_ENABLE_XDEBUG=TRUE`. Visit the [PHP XDebug Documentation](https://xdebug.org/docs/all_settings#remote_connect_back) to understand what these options mean. 
+To enable XDebug set `PHP_ENABLE_XDEBUG=TRUE`. Visit the [PHP XDebug Documentation](https://xdebug.org/docs/all_settings#remote_connect_back) to understand what these options mean.
 If you debug a PHP project in PHPStorm, you need to set server name using `PHP_IDE_CONFIG` to the same value as set in PHPStorm. Usual value is localhost, i.e. `PHP_IDE_CONFIG="serverName=localhost"`.
 
 For Xdebug 2 (php <= 7.1) you should set:
-| Parameter                            | Description                                |
-| ------------------------------------ | ------------------------------------------ |
+| Parameter                            | Description                                | Default             |
+| ------------------------------------ | ------------------------------------------ | ------------------- |
 | `PHP_XDEBUG_PROFILER_DIR`            | Where to store Profiler Logs               | `/www/logs/xdebug/` |
 | `PHP_XDEBUG_PROFILER_ENABLE`         | Enable Profiler                            | `0`                 |
 | `PHP_XDEBUG_PROFILER_ENABLE_TRIGGER` | Enable Profiler Trigger                    | `0`                 |
@@ -226,14 +226,14 @@ For Xdebug 2 (php <= 7.1) you should set:
 * * *
 
 For Xdebug 3 (php >= 7.2) you should set:
-| Parameter                            | Description                                                           |
-| ------------------------------------ | ----------------------------------------------------------------------|
-| `PHP_XDEBUG_OUTPUT_DIR`              | Where to store Logs                                                   | `/www/logs/xdebug/` |
-| `PHP_XDEBUG_MODE`                    | This setting controls which Xdebug features are enabled.              | `develop`           |
-| `PHP_XDEBUG_START_WITH_REQUEST`      | Enable Autostarting as opposed to GET/POST                            | `default`           |
-| `PHP_XDEBUG_DISCOVER_CLIENT_HOST`    | Xdebug will try to connect to the client that made the HTTP request.  | `1`                 |
-| `PHP_XDEBUG_CLIENT_HOST`             | Set this to your IP Address                                           | `127.0.0.1`         |
-| `PHP_XDEBUG_CLIENT_PORT`             | XDebug Remote Port                                                    | `9003`              |
+| Parameter                         | Description                                                          | Default             |
+| --------------------------------- | -------------------------------------------------------------------- | ------------------- |
+| `PHP_XDEBUG_OUTPUT_DIR`           | Where to store Logs                                                  | `/www/logs/xdebug/` |
+| `PHP_XDEBUG_MODE`                 | This setting controls which Xdebug features are enabled.             | `develop`           |
+| `PHP_XDEBUG_START_WITH_REQUEST`   | Enable Autostarting as opposed to GET/POST                           | `default`           |
+| `PHP_XDEBUG_DISCOVER_CLIENT_HOST` | Xdebug will try to connect to the client that made the HTTP request. | `1`                 |
+| `PHP_XDEBUG_CLIENT_HOST`          | Set this to your IP Address                                          | `127.0.0.1`         |
+| `PHP_XDEBUG_CLIENT_PORT`          | XDebug Remote Port                                                   | `9003`              |
 
 * * *
 

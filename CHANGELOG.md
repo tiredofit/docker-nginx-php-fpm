@@ -1,3 +1,14 @@
+## 7.0.0 2022-06-23 <dave at tiredofit dot ca>
+
+   ### Added
+      - Rewrote entire image and split into functions to be reused in descendent images
+      - Rework to support tiredofit/nginx:6.0.0 and its changes
+
+   ### Changed
+      - Rename CONTAINER_MODE variable
+      - Quiet down output on extension loading/unloading
+
+
 ## 6.4.10 2022-05-24 <dave at tiredofit dot ca>
 
    ### Added
