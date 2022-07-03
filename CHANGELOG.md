@@ -1,3 +1,9 @@
+## 7.0.1 2022-07-03 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add PHP_FPM_OUTPUT_BUFFER_SIZE environment variable
+
+
 ## 7.0.0 2022-06-23 <dave at tiredofit dot ca>
 
    ### Added

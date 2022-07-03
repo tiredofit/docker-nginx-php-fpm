@@ -195,6 +195,7 @@ phpfpm_configure_server() {
     sed -i -e "s#<MAX_SPARE_SERVERS>#${PHP_FPM_MAX_SPARE_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
     sed -i -e "s#<MAX_START_SERVERS>#${PHP_FPM_START_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
     sed -i -e "s#<MIN_SPARE_SERVERS>#${PHP_FPM_MIN_SPARE_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
+    sed -i -e "s#<OUTPUT_BUFFER_SIZE>#${PHP_FPM_OUTPUT_BUFFER_SIZE}#g" /assets/php-fpm/fpm/php-fpm.conf
     sed -i -e "s#<PHP_HOST>#${PHP_FPM_HOST}#g" /etc/nginx/snippets/php-fpm.conf
     sed -i -e "s#<PHP_LISTEN_PORT>#${PHP_FPM_LISTEN_PORT}#g" /etc/nginx/snippets/php-fpm.conf
     sed -i -e "s#<PHP_LOG_LOCATION>#${PHP_LOG_LOCATION}#g" /assets/php-fpm/fpm/php-fpm.conf
