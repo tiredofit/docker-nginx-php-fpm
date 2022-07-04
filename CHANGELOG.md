@@ -1,3 +1,9 @@
+## 7.0.2 2022-07-04 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Bugfix when there is no default.conf file available
+
+
 ## 7.0.1 2022-07-03 <dave at tiredofit dot ca>
 
    ### Added

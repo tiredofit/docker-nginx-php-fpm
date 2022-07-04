@@ -249,7 +249,7 @@ EOF
 }
 
 phpfpm_configure_site_default() {
-    if [ -z "${NGINX_SITE_ENABLED}" ] && [ ! -f "/etc/nginx/sites.available/default.conf" ] && [ ! -f "/etc/cont-init.d/20-php-fpm" ]; then
+    if [ -z "${NGINX_SITE_ENABLED}" ] && [ ! -f "/etc/nginx/sites.available/default.conf" ] && [ -f "/etc/cont-init.d/20-php-fpm" ]; then
         cat <<EOF > /etc/nginx/sites.available/default.conf
   server {
      ### Don't Touch This
