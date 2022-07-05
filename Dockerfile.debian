@@ -1,4 +1,6 @@
-FROM docker.io/tiredofit/nginx:debian-buster
+ARG DEBIAN_VERSION=bullseye
+
+FROM docker.io/tiredofit/nginx:debian-${DEBIAN_VERSION}
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE

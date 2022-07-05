@@ -1,4 +1,6 @@
-FROM docker.io/tiredofit/nginx:alpine-3.16
+ARG ALPINE_VERSION=3.16
+
+FROM docker.io/tiredofit/nginx:alpine-${ALPINE_VERSION}
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ARG PHP_BASE

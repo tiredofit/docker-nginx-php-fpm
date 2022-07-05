@@ -1,3 +1,9 @@
+## 7.0.3 2022-07-05 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Add ARG for easier build argument shifting with CI and command line
+
+
 ## 7.0.2 2022-07-04 <dave at tiredofit dot ca>
 
    ### Changed
