@@ -267,7 +267,7 @@ phpfpm_configure_site_default() {
      location ~ \.php(/|\$) {
         include /etc/nginx/snippets/php-fpm.conf;
         fastcgi_split_path_info ^(.+?\.php)(/.+)\$;
-        fastcgi_param PATH_INFO $fastcgi_path_info;
+        fastcgi_param PATH_INFO \$fastcgi_path_info;
         fastcgi_index index.php;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root\$fastcgi_script_name;

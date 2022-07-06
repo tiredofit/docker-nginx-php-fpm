@@ -4,12 +4,6 @@ source /assets/functions/00-container
 php_major_version="$(echo ${PHP_BASE} | cut -c 1-1)"
 os=$(cat /etc/os-release |grep ^ID= | cut -d = -f2)
 
-case "${PHP_BASE}" in
-    "8.1" )
-        if [ "${PHP_ENABLE_OPENSSL,,}" = "true" ] ; then export PHP_ENABLE_OPENSSL=FALSE; fi;
-    ;;
-esac
-
 case ${os} in
     "alpine" )
         if [ "${PHP_BASE}" = "8.1" ] ; then
@@ -22,6 +16,10 @@ case ${os} in
         php_prefix="/etc/php/$(php -v | head -n 1 | awk '{print $2}' | cut -c 1-3)/"
         ;;
 esac
+
+if [ "${PHP_ENABLE_OPENSSL,,}" = "true" ] && [ -f "${php_prefix}mods-available/openssl.ini" ]; then
+    export PHP_ENABLE_OPENSSL=FALSE;
+fi;
 
 enable_module () {
     if [ -n "$1" ]; then

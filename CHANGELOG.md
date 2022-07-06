@@ -1,3 +1,10 @@
+## 7.0.5 2022-07-06 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for blank configuration not passing proper fastcgi_params
+      - Stop throwing an error for openssl if it doesn't exist in the slightest
+
+
 ## 7.0.4 2022-07-06 <dave at tiredofit dot ca>
 
    ### Changed
