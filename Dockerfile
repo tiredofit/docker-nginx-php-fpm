@@ -171,7 +171,7 @@ RUN  if [ "${PHP_BASE}" = "8.1" ] ; then export php_folder="81" ; else php_folde
                             php8-pecl-memcache \
                             php8-pecl-memcached \
                             php8-pecl-mongodb \
-                            php8-pecl-msgpack \
+#                            php8-msgpack \
                             php8-pecl-oauth \
                             php8-pecl-redis \
                             php8-pecl-timezonedb \

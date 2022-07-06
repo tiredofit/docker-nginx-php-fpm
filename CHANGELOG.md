@@ -1,3 +1,9 @@
+## 7.0.4 2022-07-06 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Debian: Switch to PHP_BASE versioned msgpack module
+
+
 ## 7.0.3 2022-07-05 <dave at tiredofit dot ca>
 
    ### Changed

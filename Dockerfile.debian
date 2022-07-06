@@ -76,7 +76,7 @@ RUN export PHP_7_3_RUN_DEPS=" \
                 php-memcached \
                 php-mongo \
                 php-mongodb \
-                php-msgpack \
+#                php-msgpack \
                 php-oauth \
                 php-pcov \
                 php-pear \
@@ -111,6 +111,7 @@ RUN export PHP_7_3_RUN_DEPS=" \
                 php$PHP_BASE-ldap \
                 php$PHP_BASE-memcached \
                 php$PHP_BASE-mbstring \
+                php$PHP_BASE-msgpack \
                 php$PHP_BASE-mysql \
                 php$PHP_BASE-odbc \
                 php$PHP_BASE-opcache \
