@@ -1,3 +1,9 @@
+## 7.0.6 2022-07-09 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Escape document_root for FastCGI default scripts
+
+
 ## 7.0.5 2022-07-06 <dave at tiredofit dot ca>
 
    ### Changed

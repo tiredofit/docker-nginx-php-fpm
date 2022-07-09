@@ -251,37 +251,37 @@ EOF
 phpfpm_configure_site_default() {
     if [ -z "${NGINX_SITE_ENABLED}" ] && [ ! -f "/etc/nginx/sites.available/default.conf" ] && [ -f "/etc/cont-init.d/20-php-fpm" ]; then
         cat <<EOF > /etc/nginx/sites.available/default.conf
-  server {
-     ### Don't Touch This
-     listen ${NGINX_LISTEN_PORT};
-     root ${NGINX_WEBROOT};
+    server {
+        ### Don't Touch This
+        listen ${NGINX_LISTEN_PORT};
+        root ${NGINX_WEBROOT};
 
-     ### Populate your custom directives here
-     index  index.php index.html index.htm;
+        ### Populate your custom directives here
+        index  index.php index.html index.htm;
 
-     location / {
-        try_files \$uri \$uri/ /index.php?\$args;
-      }
+        location / {
+            try_files \$uri \$uri/ /index.php?\$args;
+        }
 
-     ### Populate your custom directives here
-     location ~ \.php(/|\$) {
-        include /etc/nginx/snippets/php-fpm.conf;
-        fastcgi_split_path_info ^(.+?\.php)(/.+)\$;
-        fastcgi_param PATH_INFO \$fastcgi_path_info;
-        fastcgi_index index.php;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root\$fastcgi_script_name;
+        ### Populate your custom directives here
+        location ~ \.php(/|\$) {
+            include /etc/nginx/snippets/php-fpm.conf;
+            fastcgi_split_path_info ^(.+?\.php)(/.+)\$;
+            fastcgi_param PATH_INFO \$fastcgi_path_info;
+            fastcgi_index index.php;
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        }
+
+        # Deny access to any files with a .php extension in the uploads directory
+        location ~* /(?:uploads|files)/.*\.php$ {
+            deny all;
+        }
+
+        ### Don't edit past here
+        include /etc/nginx/snippets/site_optimization.conf;
+        include /etc/nginx/snippets/exploit_protection.conf;
     }
-
-     # Deny access to any files with a .php extension in the uploads directory
-     location ~* /(?:uploads|files)/.*\.php$ {
-   	    deny all;
-     }
-
-    ### Don't edit past here
-    include /etc/nginx/snippets/site_optimization.conf;
-    include /etc/nginx/snippets/exploit_protection.conf;
-}
 EOF
         NGINX_SITE_ENABLED=default
         nginx_site_enable default
