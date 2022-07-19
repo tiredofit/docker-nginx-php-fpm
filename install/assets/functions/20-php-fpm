@@ -171,7 +171,7 @@ phpfpm_configure_nginx() {
 
     php_fpm_hosts=$(echo "${PHP_FPM_HOST}" | tr "," "\n")
     echo "upstream php-fpm-upstream {" >> /etc/nginx/snippets/php-fpm-upstream.conf
-    echo "     ${upstream_keepalive}" >> /etc/nginx/snippets/authentication/php-fpm-upstream.conf
+    echo "     ${upstream_keepalive}" >> /etc/nginx/snippets/php-fpm-upstream.conf
     for host in $php_fpm_hosts; do
         if [[ ${host} != *":"* ]];then
             php_listen_port=":${PHP_FPM_LISTEN_PORT}"

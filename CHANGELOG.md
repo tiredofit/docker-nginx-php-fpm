@@ -1,3 +1,9 @@
+## 7.0.7 2022-07-18 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for keepalives in upstream
+
+
 ## 7.0.6 2022-07-09 <dave at tiredofit dot ca>
 
    ### Changed
