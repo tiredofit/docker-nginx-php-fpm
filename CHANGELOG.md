@@ -1,3 +1,9 @@
+## 7.0.9 2022-08-08 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Additional fixes to 7.0.8
+
+
 ## 7.0.8 2022-08-08 <dave at tiredofit dot ca>
 
    ### Changed

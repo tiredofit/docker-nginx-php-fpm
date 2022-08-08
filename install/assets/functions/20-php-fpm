@@ -17,7 +17,7 @@ phpfpm_bootstrap() {
 
     case "${PHP_BASE}" in
         "5.6" | "7.0" | "7.1" | "7.2" )
-            sed "/log_limit =/d" /assets/php-fpm/fpm/php-fpm.conf
+            sed -i "/log_limit =/d" /assets/php-fpm/fpm/php-fpm.conf
         ;;
     esac
 }
@@ -145,7 +145,7 @@ EOF
             silent php-ext enable all
             php_actual_plugins_enabled="${php_actual_plugins_enabled} ${f/.ini/}"
         done
-        print_notice "PHP-FPM Preparing to start with the following plugins enabled: $(echo ${php_actual_plugins_enabled} | sed 's|/etc/php7/mods-available/||g' | sed 's| |,|g' )"
+        print_notice "PHP-FPM Preparing to start with the following plugins enabled: $(echo ${php_actual_plugins_enabled} | sed 's|${php_prefix}/mods-available/||g' | sed 's| |,|g' )"
   fi
 }
 
