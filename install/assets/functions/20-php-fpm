@@ -88,14 +88,14 @@ EOF
           if var_true "${ENABLE_SMTP}" || var_true "${CONTAINER_ENABLE_MESSAGING}" ; then
             echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"/conf.d/99-smtp.ini
           fi
-          echo "date.timezone="$(cat /etc/timezone) >> "${php_prefix}"/conf.d/99-timezone.ini
+          echo "date.timezone=$(cat /etc/timezone)" > "${php_prefix}"/conf.d/99-timezone.ini
           ;;
       "debian" )
           if var_true "${ENABLE_SMTP}" || var_true "${CONTAINER_ENABLE_MESSAGING}" ; then
             echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"cli/conf.d/99-smtp.ini
             echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtprc -t "' > "${php_prefix}"fpm/conf.d/99-smtp.ini
           fi
-          echo "date.timezone="$(cat /etc/timezone) >> "${php_prefix}"fpm/conf.d/99-timezone.ini
+          echo "date.timezone=$(cat /etc/timezone)" > "${php_prefix}"fpm/conf.d/99-timezone.ini
           ;;
     esac
 
@@ -130,7 +130,7 @@ EOF
         unset PHP_ENABLE_DISPLAY_ERRORS # legacy
         php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE |sed -e 's/PHP_ENABLE_//g' | sed -e 's/=TRUE//g' | awk -vRS="" -vOFS=', ' '$1=$1' | tr A-Z a-z)
         for module in $(echo "${php_env_plugins_enabled}" | tr "," "\n" ) ; do
-            if [ -f "${php_prefix}/mods-available/${module}.ini" ]; then
+            if [ -f "${php_prefix}"/mods-available/${module}.ini ]; then
                 print_debug "Enabling ${module}"
                 silent php-ext enable "${module}"
                 php_actual_plugins_enabled="${php_actual_plugins_enabled} ${module}"
@@ -141,11 +141,7 @@ EOF
         print_notice "PHP-FPM Preparing to start with the following plugins enabled: ${php_actual_plugins_enabled}"
     else
         print_warn "Enabling Kitchen Sink mode and allowing all plugins to be active"
-        for f in ${php_prefix}/mods-available/*.ini ; do
-            silent php-ext enable all
-            php_actual_plugins_enabled="${php_actual_plugins_enabled} ${f/.ini/}"
-        done
-        print_notice "PHP-FPM Preparing to start with the following plugins enabled: $(echo ${php_actual_plugins_enabled} | sed 's|.*/mods-available/||g' | sed 's| |,|g' )"
+        silent php-ext enable all
   fi
 }
 
