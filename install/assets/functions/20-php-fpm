@@ -14,6 +14,12 @@ phpfpm_bootstrap() {
             php_prefix="/etc/php/$(php -v | head -n 1 | awk '{print $2}' | cut -c 1-3)/"
             ;;
     esac
+
+    case "${PHP_BASE}" in
+        "5.6" | "7.0" | "7.1" | "7.2" )
+            sed "/log_limit =/d" /assets/php-fpm/fpm/php-fpm.conf
+        ;;
+    esac
 }
 
 phpfpm_configure_authentication() {
@@ -139,7 +145,7 @@ EOF
             silent php-ext enable all
             php_actual_plugins_enabled="${php_actual_plugins_enabled} ${f/.ini/}"
         done
-        print_notice "PHP-FPM Preparing to start with the following plugins enabled: ${php_actual_plugins_enabled}"
+        print_notice "PHP-FPM Preparing to start with the following plugins enabled: $(echo ${php_actual_plugins_enabled} | sed 's|/etc/php7/mods-available/||g' | sed 's| |,|g' )"
   fi
 }
 

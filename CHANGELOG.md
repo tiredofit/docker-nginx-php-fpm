@@ -1,3 +1,10 @@
+## 7.0.8 2022-08-08 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for Kitchen Sink mode showing pathnames on print_notice command
+      - Stop using log_length parameter for < PHP-FPM 7.3
+
+
 ## 7.0.7 2022-07-18 <dave at tiredofit dot ca>
 
    ### Changed
