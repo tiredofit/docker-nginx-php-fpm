@@ -233,7 +233,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:${OS},${DOCKER_IMAGE}:${PHP_BASE}-latest,${DOCKER_IMAGE}:latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest,${DOCKER_IMAGE}:${OS},${DOCKER_IMAGE}:${PHP_BASE}-latest,${DOCKER_IMAGE}:latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -528,7 +528,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -827,7 +827,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1122,7 +1122,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1220,7 +1220,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1318,7 +1318,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1421,7 +1421,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1519,7 +1519,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
