@@ -1,3 +1,9 @@
+## 7.0.10 2022-08-17 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Switch to using exec to have process take over pid
+
+
 ## 7.0.9 2022-08-08 <dave at tiredofit dot ca>
 
    ### Changed
