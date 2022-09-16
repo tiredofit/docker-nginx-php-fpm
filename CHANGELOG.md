@@ -1,3 +1,9 @@
+## 7.0.11 2022-09-16 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change the way PHP_DISPLAY_ERRORS works in code - True / False actually works
+
+
 ## 7.0.10 2022-08-17 <dave at tiredofit dot ca>
 
    ### Changed

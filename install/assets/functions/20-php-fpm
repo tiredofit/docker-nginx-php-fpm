@@ -190,6 +190,8 @@ phpfpm_configure_nginx() {
 
 phpfpm_configure_server() {
     if [ "${PHP_BASE:0:1}" = "5" ] ; then echo "suhosin.executor.include.whitelist = phar" >> /etc/php"${PHP_BASE:0:1}"/php.ini ; fi
+    truefalse_onoff PHP_DISPLAY_ERRORS
+    sed -i "s|<DISPLAY_ERRORS>|${PHP_DISPLAY_ERRORS}|g" /assets/php-fpm/fpm/php-fpm.conf
     sed -i -e "s#<PHP_LISTEN_PORT>#${PHP_FPM_LISTEN_PORT}#g" /assets/php-fpm/fpm/php-fpm.conf
     sed -i -e "s#<MAX_CHILDREN>#${PHP_FPM_MAX_CHILDREN}#g" /assets/php-fpm/fpm/php-fpm.conf
     sed -i -e "s#<MAX_EXECUTION_TIME>#${PHP_TIMEOUT}#g" /assets/php-fpm/fpm/php-fpm.conf
@@ -223,10 +225,6 @@ phpfpm_configure_server() {
         else
             echo -e "env[PHP_IDE_CONFIG] = \"${PHP_IDE_CONFIG}\"\n" >> /assets/php-fpm/fpm/php-fpm.conf
         fi
-    fi
-
-    if var_true "${PHP_DISPLAY_ERRORS}" ; then
-        sed -i -e "\#php_flag[display_errors]#d" /assets/php-fpm/fpm/php-fpm.conf
     fi
 
     sed -i -e "s#date.timezone = .*#date.timezone = $(cat /etc/timezone)#g" /assets/php-fpm/cli/php.ini
