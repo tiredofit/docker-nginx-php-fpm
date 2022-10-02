@@ -42,8 +42,8 @@ if [ ! -f "/tmp/.container/container-restart" ] ; then
     phpfpm_configure_extensions
     phpfpm_configure_authentication
     phpfpm_configure_logging
-    if [ "${PHP_FPM_CONTAINER_MODE,,}" != "php-fpm" ] ; then phpfpm_configure_nginx ; fi
-    if [ "${PHP_FPM_CONTAINER_MODE,,}" != "php-fpm" ] ; then phpfpm_create_default_page ; fi
+    if [[ "${PHP_FPM_CONTAINER_MODE,,}" == *"nginx"* ]] ; then phpfpm_configure_nginx ; fi
+    if [[ "${PHP_FPM_CONTAINER_MODE,,}" == *"php-fpm"* ]] ; then phpfpm_create_default_page ; fi
     if var_true "${NGINX_ENABLE_APPLICATION_CONFIGURATION}"; then phpfpm_configure_site_default ; fi
     phpfpm_post_init
 fi

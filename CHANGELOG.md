@@ -1,3 +1,12 @@
+## 7.1.0 2022-10-01 <dave at tiredofit dot ca>
+
+   ### Added
+      - Convert to using update_template functions when configuring
+
+   ### Changed
+      - Fix an error where sample php file wasn't being created properly
+
+
 ## 7.0.11 2022-09-16 <dave at tiredofit dot ca>
 
    ### Changed

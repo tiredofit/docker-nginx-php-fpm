@@ -33,7 +33,9 @@ ENV PHP_BASE=${PHP_BASE:-"8.0"} \
     PHP_ENABLE_XMLREADER=TRUE \
     PHP_ENABLE_XMLWRITER=TRUE \
     CONTAINER_ENABLE_MESSAGING=TRUE \
-    NGINX_ENABLE_CREATE_SAMPLE_HTML=FALSE
+    NGINX_ENABLE_CREATE_SAMPLE_HTML=FALSE \
+    IMAGE_NAME="tiredofit/nginx-php-fpm" \
+    IMAGE_REPO_URL="https://github.com/tiredofit/docker-nginx-php-fpm/"
 
 ### Dependency Installation
 RUN export PHP_7_3_RUN_DEPS=" \

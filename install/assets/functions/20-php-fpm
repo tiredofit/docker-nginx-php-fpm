@@ -126,8 +126,8 @@ EOF
     fi
 
     if var_false "${PHP_KITCHENSINK}" ; then
+        php_enable_create_sample_php=${PHP_ENABLE_CREATE_SAMPLE_PHP}
         unset PHP_ENABLE_CREATE_SAMPLE_PHP # legacy
-        unset PHP_ENABLE_DISPLAY_ERRORS # legacy
         php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE |sed -e 's/PHP_ENABLE_//g' | sed -e 's/=TRUE//g' | awk -vRS="" -vOFS=', ' '$1=$1' | tr A-Z a-z)
         for module in $(echo "${php_env_plugins_enabled}" | tr "," "\n" ) ; do
             if [ -f "${php_prefix}"/mods-available/${module}.ini ]; then
@@ -140,6 +140,7 @@ EOF
         done
         print_notice "PHP-FPM Preparing to start with the following plugins enabled: ${php_actual_plugins_enabled}"
     else
+        php_enable_create_sample_php=${PHP_ENABLE_CREATE_SAMPLE_PHP}
         print_warn "Enabling Kitchen Sink mode and allowing all plugins to be active"
         silent php-ext enable all
   fi
@@ -162,7 +163,7 @@ phpfpm_configure_logging() {
         ;;
     esac
 
-    sed -i -e "s/<PHP_LOG_LEVEL>/${PHP_LOG_LEVEL}/g" /assets/php-fpm/fpm/php-fpm.conf
+    update_template /assets/php-fpm/fpm/php-fpm.conf PHP_LOG_LEVEL
 }
 
 phpfpm_configure_nginx() {
@@ -191,33 +192,39 @@ phpfpm_configure_nginx() {
 phpfpm_configure_server() {
     if [ "${PHP_BASE:0:1}" = "5" ] ; then echo "suhosin.executor.include.whitelist = phar" >> /etc/php"${PHP_BASE:0:1}"/php.ini ; fi
     truefalse_onoff PHP_DISPLAY_ERRORS
-    sed -i "s|<DISPLAY_ERRORS>|${PHP_DISPLAY_ERRORS}|g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<PHP_LISTEN_PORT>#${PHP_FPM_LISTEN_PORT}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<MAX_CHILDREN>#${PHP_FPM_MAX_CHILDREN}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<MAX_EXECUTION_TIME>#${PHP_TIMEOUT}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<MAX_REQUESTS>#${PHP_FPM_MAX_REQUESTS}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<MAX_SPARE_SERVERS>#${PHP_FPM_MAX_SPARE_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<MAX_START_SERVERS>#${PHP_FPM_START_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<MIN_SPARE_SERVERS>#${PHP_FPM_MIN_SPARE_SERVERS}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<OUTPUT_BUFFER_SIZE>#${PHP_FPM_OUTPUT_BUFFER_SIZE}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<PHP_HOST>#${PHP_FPM_HOST}#g" /etc/nginx/snippets/php-fpm.conf
-    sed -i -e "s#<PHP_LISTEN_PORT>#${PHP_FPM_LISTEN_PORT}#g" /etc/nginx/snippets/php-fpm.conf
-    sed -i -e "s#<PHP_LOG_LOCATION>#${PHP_LOG_LOCATION}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<PHP_LOG_ACCESS_FILE>#${PHP_LOG_ACCESS_FILE}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<PHP_LOG_ERROR_FILE>#${PHP_LOG_ERROR_FILE}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<PHP_LOG_LIMIT>#${PHP_LOG_LIMIT}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<PHP_MEMORY_LIMIT>#${PHP_MEMORY_LIMIT}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<PHP_TIMEOUT>#${PHP_TIMEOUT}#g" /etc/nginx/snippets/php-fpm.conf
-    sed -i -e "s#<POST_MAX_SIZE>#${PHP_POST_MAX_SIZE}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<PROCESS_MANAGER>#${PHP_FPM_PROCESS_MANAGER}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#<UPLOAD_MAX_SIZE>#${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/fpm/php-fpm.conf
-    sed -i -e "s#apc.shm_size.*#apc.shm_size=${PHP_APC_SHM_SIZE}#g" /assets/php-fpm//mods-available/apcu.ini
-    sed -i -e "s#opcache.memory_consumption.*#opcache.memory_consumption=$PHP_OPCACHE_MEM_SIZE#g" /assets/php-fpm/mods-available/opcache.ini
-    sed -i -e "s#memory_limit = .*#memory_limit = ${PHP_MEMORY_LIMIT}#g" /assets/php-fpm/cli/php.ini
-    sed -i -e "s#max_input_time = .*#max_input_time = ${PHP_TIMEOUT}#g" /assets/php-fpm/cli/php.ini
-    sed -i -e "s#default_socket_timeout = .*#default_socket_timeout = ${PHP_TIMEOUT}#g" /assets/php-fpm/cli/php.ini
-    sed -i -e "s#post_max_size = .*#post_max_size = ${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/cli/php.ini
-    sed -i -e "s#upload_max_filesize = .*#upload_max_filesize = ${PHP_UPLOAD_MAX_SIZE}#g" /assets/php-fpm/cli/php.ini
+    update_template /assets/php-fpm/fpm/php-fpm.conf \
+                                                    NGINX_USER \
+                                                    NGINX_GROUP \
+                                                    PHP_DISPLAY_ERRORS \
+                                                    PHP_FPM_HOST \
+                                                    PHP_FPM_LISTEN_PORT \
+                                                    PHP_FPM_LISTEN_PORT \
+                                                    PHP_FPM_MAX_CHILDREN \
+                                                    PHP_FPM_MAX_REQUESTS \
+                                                    PHP_FPM_MAX_SPARE_SERVERS \
+                                                    PHP_FPM_MIN_SPARE_SERVERS \
+                                                    PHP_FPM_OUTPUT_BUFFER_SIZE \
+                                                    PHP_FPM_PROCESS_MANAGER \
+                                                    PHP_FPM_START_SERVERS \
+                                                    PHP_LOG_ACCESS_FILE \
+                                                    PHP_LOG_ERROR_FILE \
+                                                    PHP_LOG_LIMIT \
+                                                    PHP_LOG_LOCATION \
+                                                    PHP_MEMORY_LIMIT \
+                                                    PHP_POST_MAX_SIZE \
+                                                    PHP_TIMEOUT \
+                                                    PHP_UPLOAD_MAX_SIZE
+
+    update_template /etc/nginx/snippets/php-fpm.conf PHP_TIMEOUT
+
+    sed -i "s#apc.shm_size.*#apc.shm_size=${PHP_APC_SHM_SIZE}#g" /assets/php-fpm//mods-available/apcu.ini
+    sed -i "s#opcache.memory_consumption.*#opcache.memory_consumption=$PHP_OPCACHE_MEM_SIZE#g" /assets/php-fpm/mods-available/opcache.ini
+    sed -i -e "s#memory_limit = .*#memory_limit = ${PHP_MEMORY_LIMIT}#g" \
+           -e "s#max_input_time = .*#max_input_time = ${PHP_TIMEOUT}#g" \
+           -e "s#default_socket_timeout = .*#default_socket_timeout = ${PHP_TIMEOUT}#g" \
+           -e "s#post_max_size = .*#post_max_size = ${PHP_UPLOAD_MAX_SIZE}#g" \
+           -e "s#upload_max_filesize = .*#upload_max_filesize = ${PHP_UPLOAD_MAX_SIZE}#g" \
+           /assets/php-fpm/cli/php.ini
 
     if [ -n "${PHP_IDE_CONFIG}" ]; then
         if [[ "${PHP_IDE_CONFIG}" = \"* ]] || [[ "${PHP_IDE_CONFIG}" = \'* ]] ; then
@@ -230,9 +237,8 @@ phpfpm_configure_server() {
     sed -i -e "s#date.timezone = .*#date.timezone = $(cat /etc/timezone)#g" /assets/php-fpm/cli/php.ini
     sed -i -e "s#date.timezone = .*#date.timezone = $(cat /etc/timezone)#g" /assets/php-fpm/fpm/php.ini
 }
-
 phpfpm_create_default_page() {
-    if var_true "${PHP_ENABLE_CREATE_SAMPLE_PHP}" ; then
+    if var_true "${php_enable_create_sample_php}" ; then
         if [ ! -f "${NGINX_WEBROOT}"/index.php ] ; then
             print_notice "Creating sample index.php"
             mkdir -p "${NGINX_WEBROOT}"
