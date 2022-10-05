@@ -1,3 +1,9 @@
+## 7.1.1 2022-10-05 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Remvoe /var/log entries in Dockerfile build
+
+
 ## 7.1.0 2022-10-01 <dave at tiredofit dot ca>
 
    ### Added

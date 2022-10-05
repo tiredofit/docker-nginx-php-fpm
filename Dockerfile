@@ -738,7 +738,7 @@ RUN  if [ "${PHP_BASE}" = "8.1" ] ; then export php_folder="81" ; else php_folde
     \
     ### Cleanup
     apk del .php-build-deps && \
-    rm -rf /var/cache/apk/* /usr/src/* /tmp/*
+    rm -rf /var/cache/apk/* /usr/src/* /tmp/* /var/log/*
 
 ### Networking Configuration
 EXPOSE 9000
