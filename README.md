@@ -181,32 +181,36 @@ When `PHP_FPM_CONTAINER_MODE` set to `nginx` the `PHP_FPM_LISTEN_PORT` environme
 
 *You can also pass arguments to each server as defined in the [Nginx Upstream Documentation](https://nginx.org/en/docs/http/ngx_http_upstream_module.html)*
 
-| Parameter                    | Description                                                                                              | Default                                        |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| `PHP_APC_SHM_SIZE`           | APC Cache Memory size - `0` to disable                                                                   | `128M`                                         |
-| `PHP_FPM_HOST`               | Default PHP-FPM Host, seperate multiple by commas                                                        | `127.0.0.1:9000` - See above Container options |
-| `PHP_FPM_LISTEN_PORT`        | PHP-FPM Listening Port - Ignored with above container options                                            | `9000`                                         |
-| `PHP_FPM_MAX_CHILDREN`       | Maximum Children                                                                                         | `75`                                           |
-| `PHP_FPM_MAX_REQUESTS`       | How many requests before spawning new server                                                             | `500`                                          |
-| `PHP_FPM_MAX_SPARE_SERVERS`  | Maximum Spare Servers available                                                                          | `3`                                            |
-| `PHP_FPM_MIN_SPARE_SERVERS`  | Minium Spare Servers avaialble                                                                           | `1`                                            |
-| `PHP_FPM_OUTPUT_BUFFER_SIZE` | Output buffer size in bytes                                                                              | `0`                                            |
-| `PHP_FPM_POST_INIT_COMMAND`  | If you wish to execute a command before php-fpm executes, enter it here and seperate multiples by comma. |                                                |
-| `PHP_FPM_POST_INIT_SCRIPT`   | If you wish to execute a script before php-fpm executes, enter it here and seperate multiples by comma.  |                                                |
-| `PHP_FPM_PROCESS_MANAGER`    | How to handle processes `static`, `ondemand`, `dynamic`                                                  | `dynamic`                                      |
-| `PHP_FPM_START_SERVERS`      | How many FPM servers to start initially                                                                  | `2`                                            |
-| `PHP_LOG_ACCESS_FILE`        | PHP Access Logfile Name                                                                                  | `access.log`                                   |
-| `PHP_LOG_ERROR_FILE`         | Logfile name                                                                                             | `error.log`                                    |
-| `PHP_LOG_LEVEL`              | PHP Log Level `alert` `error` `warning` `notice` `debug`                                                 | `notice`                                       |
-| `PHP_LOG_ACCESS_FORMAT`      | Log format - `default` or `json`                                                                         | `default`                                      |
-| `PHP_LOG_LIMIT`              | Characters to log                                                                                        | `2048`                                         |
-| `PHP_LOG_LOCATION`           | Log Location for PHP Logs                                                                                | `/www/logs/php-fpm`                            |
-| `PHP_MEMORY_LIMIT`           | How much memory should PHP use                                                                           | `128M`                                         |
-| `PHP_OPCACHE_MEM_SIZE`       | OPCache Memory Size - Set `0` to disable or via other env vars                                           | `128`                                          |
-| `PHP_POST_MAX_SIZE`          | Maximum Input Size for POST                                                                              | `2G`                                           |
-| `PHP_TIMEOUT`                | Maximum Script execution Time                                                                            | `180`                                          |
-| `PHP_UPLOAD_MAX_SIZE`        | Maximum Input Size for Uploads                                                                           | `2G`                                           |
-| `PHP_WEBROOT`                | Used with `CONTAINER_MODE=php-fpm`                                                                       | `/www/html`                                    |
+| Parameter                             | Description                                                                                              | Default                                        |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `PHP_APC_SHM_SIZE`                    | APC Cache Memory size - `0` to disable                                                                   | `128M`                                         |
+| `PHP_APC_TTL`                         | APC Time to live in seconds                                                                              | `7200`                                         |
+| `PHP_FPM_HOST`                        | Default PHP-FPM Host, seperate multiple by commas                                                        | `127.0.0.1:9000` - See above Container options |
+| `PHP_FPM_LISTEN_PORT`                 | PHP-FPM Listening Port - Ignored with above container options                                            | `9000`                                         |
+| `PHP_FPM_MAX_CHILDREN`                | Maximum Children                                                                                         | `75`                                           |
+| `PHP_FPM_MAX_REQUESTS`                | How many requests before spawning new server                                                             | `500`                                          |
+| `PHP_FPM_MAX_SPARE_SERVERS`           | Maximum Spare Servers available                                                                          | `3`                                            |
+| `PHP_FPM_MIN_SPARE_SERVERS`           | Minium Spare Servers avaialble                                                                           | `1`                                            |
+| `PHP_FPM_OUTPUT_BUFFER_SIZE`          | Output buffer size in bytes                                                                              | `0`                                            |
+| `PHP_FPM_POST_INIT_COMMAND`           | If you wish to execute a command before php-fpm executes, enter it here and seperate multiples by comma. |                                                |
+| `PHP_FPM_POST_INIT_SCRIPT`            | If you wish to execute a script before php-fpm executes, enter it here and seperate multiples by comma.  |                                                |
+| `PHP_FPM_PROCESS_MANAGER`             | How to handle processes `static`, `ondemand`, `dynamic`                                                  | `dynamic`                                      |
+| `PHP_FPM_START_SERVERS`               | How many FPM servers to start initially                                                                  | `2`                                            |
+| `PHP_LOG_ACCESS_FILE`                 | PHP Access Logfile Name                                                                                  | `access.log`                                   |
+| `PHP_LOG_ERROR_FILE`                  | Logfile name                                                                                             | `error.log`                                    |
+| `PHP_LOG_LEVEL`                       | PHP Log Level `alert` `error` `warning` `notice` `debug`                                                 | `notice`                                       |
+| `PHP_LOG_ACCESS_FORMAT`               | Log format - `default` or `json`                                                                         | `default`                                      |
+| `PHP_LOG_LIMIT`                       | Characters to log                                                                                        | `2048`                                         |
+| `PHP_LOG_LOCATION`                    | Log Location for PHP Logs                                                                                | `/www/logs/php-fpm`                            |
+| `PHP_MEMORY_LIMIT`                    | How much memory should PHP use                                                                           | `128M`                                         |
+| `PHP_OPCACHE_INTERNED_STRINGS_BUFFER` | OPCache interned strings buffer                                                                          | `16`                                           |
+| `PHP_OPCACHE_MAX_ACCELERATED_FILES`   | OPCache Max accelerated files                                                                            | `5413`                                         |
+| `PHP_OPCACHE_MEM_SIZE`                | OPCache Memory Size - Set `0` to disable or via other env vars                                           | `128`                                          |
+| `PHP_OPCACHE_REVALIDATE_FREQ`         | OPCache revalidate frequency                                                                             | `60`                                           |
+| `PHP_POST_MAX_SIZE`                   | Maximum Input Size for POST                                                                              | `2G`                                           |
+| `PHP_TIMEOUT`                         | Maximum Script execution Time                                                                            | `180`                                          |
+| `PHP_UPLOAD_MAX_SIZE`                 | Maximum Input Size for Uploads                                                                           | `2G`                                           |
+| `PHP_WEBROOT`                         | Used with `CONTAINER_MODE=php-fpm`                                                                       | `/www/html`                                    |
 
 #### Enabling / Disabling Specific Extensions
 

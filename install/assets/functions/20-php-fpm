@@ -217,8 +217,16 @@ phpfpm_configure_server() {
 
     update_template /etc/nginx/snippets/php-fpm.conf PHP_TIMEOUT
 
-    sed -i "s#apc.shm_size.*#apc.shm_size=${PHP_APC_SHM_SIZE}#g" /assets/php-fpm//mods-available/apcu.ini
-    sed -i "s#opcache.memory_consumption.*#opcache.memory_consumption=$PHP_OPCACHE_MEM_SIZE#g" /assets/php-fpm/mods-available/opcache.ini
+    sed -i -e "s#apc.shm_size=.*#apc.shm_size=${PHP_APC_SHM_SIZE}#g" \
+           -e "s#apc.ttl=.*#apc.ttl=${PHP_APC_TTL}#g" \
+            /assets/php-fpm//mods-available/apcu.ini
+
+    sed -i -e "s#opcache.memory_consumption=.*#opcache.memory_consumption=${PHP_OPCACHE_MEM_SIZE}#g" \
+           -e "s#opcache.interned_strings_buffer=.*#opcache.interned_strings_buffer=${PHP_OPCACHE_INTERNED_STRINGS_BUFFER}#g" \
+           -e "s#opcache.max_accelerated_files=.*#max_accelerated_files=${PHP_OPCACHE_MAX_ACCELERATED_FILES}#g" \
+           -e "s#opcache.revalidate_freq=.*#revalidate_freq=${PHP_OPCACHE_REVALIDATE_FREQ}#g" \
+           /assets/php-fpm/mods-available/opcache.ini
+
     sed -i -e "s#memory_limit = .*#memory_limit = ${PHP_MEMORY_LIMIT}#g" \
            -e "s#max_input_time = .*#max_input_time = ${PHP_TIMEOUT}#g" \
            -e "s#default_socket_timeout = .*#default_socket_timeout = ${PHP_TIMEOUT}#g" \

@@ -1,3 +1,9 @@
+## 7.2.0 2022-10-13 <dave at tiredofit dot ca>
+
+   ### Added
+      - Introduce customizable Opcache and APC environment variables
+
+
 ## 7.1.1 2022-10-05 <dave at tiredofit dot ca>
 
    ### Changed
