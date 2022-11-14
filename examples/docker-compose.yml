@@ -2,20 +2,19 @@ version: '3.7'
 
 services:
   nginx-php-fpm-app:
-    image: registry.selfdesign.org/docker/nginx-php-fpm/8.1
+    image: tiredofit/nginx-php-fpm/8.1
     container_name: nginx-php-fpm-app
     labels:
       - traefik.enable=true
-      - traefik.frontend.rule=Host:nginx-php-fpm.example.com
-      - traefik.port=80
-      - traefik.protocol=http
-      - traefik.docker.network=proxy
-      - traefik.backend=nginx-php-fpm-app
+      - traefik.http.routers.nginx-php-fpm-app.rule=Host(`nginx.example.com`)
+      - traefik.http.services.nginx-php-fpm-app.loadbalancer.server.port=80
     volumes:
       - ./data/:/www/html
       - ./logs/:/www/logs
     environment:
+      - TIMEZONE=America/Vancouver
       - CONTAINER_NAME=nginx-php-fpm-app-app
+      
     networks:
       - services
       - proxy
