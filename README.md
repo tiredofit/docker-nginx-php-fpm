@@ -81,7 +81,7 @@ The following image tags are available along with their tagged release based on 
 | PHP version | Alpine Base | Tag            | Debian Base | Tag           |
 | ----------- | ----------- | -------------- | ----------- | ------------- |
 | latest      | edge        | `:alpine-edge` |             |               |
-| 8.1.x       | 3.16        | `:alpine-8.1`  | Buster      | `:debian-8.1` |
+| 8.1.x       | 3.17        | `:alpine-8.1`  | Buster      | `:debian-8.1` |
 | 8.0.x       | 3.16        | `:alpine-8.0`  | Buster      | `:debian-8.0` |
 | 7.4.x       | 3.15        | `:alpine-7.4`  | Buster      | `:debian-7.3` |
 | 7.3.x       | 3.12        | `:alpine-7.3`  | Buster      | `:debian-7.3` |

@@ -215,7 +215,7 @@ jobs:
   php8_1_alpine:
     env:
       PHP_BASE: "8.1"
-      DISTRIB: "3.16"
+      DISTRIB: "3.17"
       OS: "alpine"
     runs-on: ubuntu-latest
     steps:

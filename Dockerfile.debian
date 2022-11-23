@@ -187,4 +187,4 @@ RUN export PHP_7_3_RUN_DEPS=" \
 EXPOSE 9000
 
 ### Files Addition
-ADD install /
+COPY install /

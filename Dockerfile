@@ -1,11 +1,11 @@
-ARG ALPINE_VERSION=3.16
+ARG ALPINE_VERSION=3.17
 
 FROM docker.io/tiredofit/nginx:alpine-${ALPINE_VERSION}
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ARG PHP_BASE
 
-ENV PHP_BASE=${PHP_BASE:-"8.0"} \
+ENV PHP_BASE=${PHP_BASE:-"8.1"} \
     PHP_ENABLE_APCU=TRUE \
     PHP_ENABLE_BCMATH=TRUE \
     PHP_ENABLE_BZ2=TRUE \
@@ -702,7 +702,7 @@ RUN  if [ "${PHP_BASE}" = "8.1" ] ; then export php_folder="81" ; else php_folde
                 git \
                 gnupg \
                 gpgme \
-                libressl \
+                openssl \
                 mariadb-client \
                 postgresql-client \
                 $(printenv PHP_$(echo ${PHP_BASE} | sed 's|\.|_|g')_RUN_DEPS) \
@@ -744,5 +744,5 @@ RUN  if [ "${PHP_BASE}" = "8.1" ] ; then export php_folder="81" ; else php_folde
 EXPOSE 9000
 
 ### Files Addition
-ADD install /
+COPY install /
 

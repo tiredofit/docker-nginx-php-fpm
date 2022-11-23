@@ -1,3 +1,9 @@
+## 7.2.1 2022-11-23 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Switch PHP 8.1 base to Alpine 3.17
+
+
 ## 7.2.0 2022-10-13 <dave at tiredofit dot ca>
 
    ### Added
