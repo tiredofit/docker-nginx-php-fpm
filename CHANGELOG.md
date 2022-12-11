@@ -1,3 +1,12 @@
+## 7.3.0 2022-12-11 <dave at tiredofit dot ca>
+
+   ### Added
+      - Introduce PHP 8.2 Support
+
+   ### Changed
+      - Rework Dockerfiles
+
+
 ## 7.2.1 2022-11-23 <dave at tiredofit dot ca>
 
    ### Changed

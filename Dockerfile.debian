@@ -1,11 +1,12 @@
-ARG DEBIAN_VERSION=bullseye
+ARG DISTRO=debian
+ARG DISTRO_VARIANT=bullseye
 
-FROM docker.io/tiredofit/nginx:debian-${DEBIAN_VERSION}
+FROM docker.io/tiredofit/nginx:${DISTRO}-${DISTRO_VARIANT}
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE
 
-ENV PHP_BASE=${PHP_BASE:-"8.0"} \
+ENV PHP_BASE=${PHP_BASE:-"8.2"} \
     PHP_ENABLE_APCU=TRUE \
     PHP_ENABLE_BCMATH=TRUE \
     PHP_ENABLE_BZ2=TRUE \
@@ -39,56 +40,61 @@ ENV PHP_BASE=${PHP_BASE:-"8.0"} \
 
 ### Dependency Installation
 RUN export PHP_7_3_RUN_DEPS=" \
-                php7.3-json \
-                php7.3-apcu-bc \
+                php$PHP_BASE-apcu-bc \
                 php$PHP_BASE-http \
-                php7.3-recode \
+                php$PHP_BASE-json \
+                php$PHP_BASE-mcrypt \
+                php$PHP_BASE-propro \
+                php$PHP_BASE-radius \
+                php$PHP_BASE-recode \
                 " && \
     \
     export PHP_7_4_RUN_DEPS=" \
-                php7.4-apcu-bc \
+                php$PHP_BASE-apcu-bc \
                 php$PHP_BASE-http \
-                php7.4-json \
+                php$PHP_BASE-json \
+                php$PHP_BASE-mcrypt \
+                php$PHP_BASE-propro \
+                php$PHP_BASE-radius \
                 " && \
     \
     export PHP_8_0_RUN_DEPS=" \
                 php$PHP_BASE-http \
-                php-zstd \
+                php$PHP_BASE-mcrypt \
                 " && \
     \
     export PHP_8_1_RUN_DEPS=" \
-                php-zstd \
+                php$PHP_BASE-mcrypt \
+                " && \
+    \
+    export PHP_8_2_RUN_DEPS=" \
                 " && \
     \
     export PHP_ADDITIONAL_MODULES=" \
-                php-apcu \
-                php-apcu-bc \
-                php-ast \
-                php-decimal \
-                php-gearman \
-                php-grpc \
-                php-imagick \
-                php-inotify \
+                php$PHP_BASE-ast \
+                php$PHP_BASE-apcu \
+                php$PHP_BASE-decimal \
+                php$PHP_BASE-gearman \
+                php$PHP_BASE-grpc \
+                php$PHP_BASE-imagick \
+                php$PHP_BASE-inotify \
                 php-lua \
-                php-lz4 \
-                php-mailparse \
-                php-maxminddb \
-                php-mcrypt \
-                php-memcache \
-                php-memcached \
-                php-mongo \
-                php-mongodb \
-#                php-msgpack \
-                php-oauth \
-                php-pcov \
+                php$PHP_BASE-lz4 \
+                php$PHP_BASE-mailparse \
+                php$PHP_BASE-maxminddb \
+                php$PHP_BASE-memcache \
+                php$PHP_BASE-memcached \
+                php$PHP_BASE-mongodb \
+                php$PHP_BASE-msgpack \
+                php$PHP_BASE-oauth \
+                php$PHP_BASE-pcov \
                 php-pear \
-                php-propro \
-                php-protobuf \
-                php-radius \
-                php-smbclient \
-                php-sodium \
-                php-uuid \
-                php-xmlrpc \
+                php$PHP_BASE-protobuf \
+                php$PHP_BASE-smbclient \
+                #php-sodium \
+                php$PHP_BASE-uuid \
+                php$PHP_BASE-xmlrpc \
+                php$PHP_BASE-zstd \
                 " && \
     \
     export PHP_RUN_DEPS=" \
@@ -131,6 +137,7 @@ RUN export PHP_7_3_RUN_DEPS=" \
                 php$PHP_BASE-xsl \
                 php$PHP_BASE-zip \
                 " && \
+    source /assets/functions/00-container && \
     set -x && \
     curl -sSLk https://mariadb.org/mariadb_release_signing_key.asc | apt-key add - && \
     mariadb_client_ver="$(curl -sSLk https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | grep "mariadb_server_version=mariadb-" | head -n 1 | cut -d = -f 2 | cut -d - -f 2)" && \
@@ -139,18 +146,18 @@ RUN export PHP_7_3_RUN_DEPS=" \
     echo "deb https://apt.postgresql.org/pub/repos/apt $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')')-pgdg main" > /etc/apt/sources.list.d/postgres.list && \
     curl -sSLk https://packages.sury.org/php/apt.gpg | apt-key add - && \
     echo "deb https://packages.sury.org/php/ $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')') main" > /etc/apt/sources.list.d/php.list && \
-    apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install --no-install-recommends -y \
-                ca-certificates \
-                git \
-                mariadb-client \
-                openssl \
-                postgresql-client \
-                ${PHP_RUN_DEPS} \
-                $(printenv PHP$(echo ${PHP_BASE} | sed 's|\.|_|g')_RUN_DEPS) \
-                ${PHP_ADDITIONAL_MODULES} \
-                && \
+    package update && \
+    package upgrade -y && \
+    package install \
+                    ca-certificates \
+                    git \
+                    mariadb-client \
+                    openssl \
+                    postgresql-client \
+                    ${PHP_RUN_DEPS} \
+                    $(printenv PHP$(echo ${PHP_BASE} | sed 's|\.|_|g')_RUN_DEPS) \
+                    ${PHP_ADDITIONAL_MODULES} \
+                    && \
     \
     ### Install PHP Composer
     curl -sSLk https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
@@ -172,19 +179,13 @@ RUN export PHP_7_3_RUN_DEPS=" \
     cd /etc/php && \
     find . -mindepth 1 -maxdepth 1 -type d -not -name ${PHP_BASE} -exec rm -rf '{}' \; && \
     \
-    ### Cleanup
-    apt-get autoremove -y && \
-    apt-get clean && \
-    \
+    package cleanup && \
     mkdir -p /var/log/nginx && \
-    rm -rf /var/lib/apt/lists/* \
-           /usr/src/* \
+    rm -rf \
            /root/.gnupg \
-           /var/log/* \
-           /tmp/*
+           /tmp/* \
+           /usr/src/* \
+           /var/log/*
 
-### Networking Configuration
 EXPOSE 9000
-
-### Files Addition
 COPY install /

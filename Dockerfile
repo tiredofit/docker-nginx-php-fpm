@@ -1,11 +1,12 @@
-ARG ALPINE_VERSION=3.17
+ARG DISTRO=alpine
+ARG DISTRO_VARIANT=edge
 
-FROM docker.io/tiredofit/nginx:alpine-${ALPINE_VERSION}
-LABEL maintainer="Dave Conroy (github.com/tiredofit)"
+FROM docker.io/tiredofit/nginx:${DISTRO}-${DISTRO_VARIANT}
+LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE
 
-ENV PHP_BASE=${PHP_BASE:-"8.1"} \
+ENV PHP_BASE=${PHP_BASE:-"8.2"} \
     PHP_ENABLE_APCU=TRUE \
     PHP_ENABLE_BCMATH=TRUE \
     PHP_ENABLE_BZ2=TRUE \
@@ -40,7 +41,85 @@ ENV PHP_BASE=${PHP_BASE:-"8.1"} \
     IMAGE_REPO_URL="https://github.com/tiredofit/docker-nginx-php-fpm/"
 
 ### Dependency Installation
-RUN  if [ "${PHP_BASE}" = "8.1" ] ; then export php_folder="81" ; else php_folder=${PHP_BASE:0:1} ; fi ; \
+RUN if [ "${PHP_BASE}" = "8.1" ] ; then export php_folder="81" ; else php_folder=${PHP_BASE:0:1} ; fi ; \
+    if [ "${PHP_BASE}" = "8.2" ] ; then export php_folder="82" ; else php_folder=${PHP_BASE:0:1} ; fi ; \
+    export PHP_8_2_RUN_DEPS=" \
+                            mariadb-connector-c \
+                            php82  \
+                            php82-bcmath  \
+                            #php82-brotli \
+                            php82-bz2  \
+                            php82-calendar  \
+                            php82-common  \
+                            php82-ctype  \
+                            php82-curl  \
+                            php82-dba  \
+                            php82-dom  \
+                            php82-embed  \
+                            php82-enchant  \
+                            php82-exif  \
+                            php82-ffi  \
+                            php82-fileinfo  \
+                            php82-fpm  \
+                            php82-ftp  \
+                            php82-gd  \
+                            php82-gettext  \
+                            php82-gmp  \
+                            php82-iconv  \
+                            php82-imap  \
+                            php82-intl  \
+                            php82-ldap  \
+                            php82-mbstring  \
+                            php82-mysqli  \
+                            php82-mysqlnd  \
+                            php82-odbc  \
+                            php82-opcache  \
+                            php82-openssl  \
+                            php82-pcntl  \
+                            php82-pdo  \
+                            php82-pdo_dblib  \
+                            php82-pdo_mysql  \
+                            php82-pdo_odbc  \
+                            php82-pdo_pgsql  \
+                            php82-pdo_sqlite  \
+                            php82-pear  \
+                            php82-pecl-apcu \
+                            php82-pecl-ast \
+                            #php82-pecl-event \
+                            php82-pecl-igbinary \
+                            #php82-pecl-imagick \
+                            #php82-pecl-lzf \
+                            #php82-pecl-maxminddb \
+                            #php82-pecl-memcache \
+                            php82-pecl-memcached \
+                            php82-pecl-mongodb \
+                            php82-pecl-msgpack \
+                            php82-pecl-redis \
+                            php82-pecl-uploadprogress \
+                            #php82-pecl-uuid \
+                            php82-pecl-xdebug \
+                            php82-pecl-xhprof \
+                            php82-pecl-yaml \
+                            php82-pgsql  \
+                            php82-phar  \
+                            php82-posix  \
+                            php82-pspell  \
+                            php82-session  \
+                            php82-shmop  \
+                            php82-simplexml  \
+                            php82-snmp  \
+                            php82-soap  \
+                            php82-sockets  \
+                            php82-sodium  \
+                            php82-sqlite3  \
+                            php82-tidy  \
+                            php82-tokenizer  \
+                            php82-xml  \
+                            php82-xmlreader  \
+                            php82-xmlwriter  \
+                            php82-xsl  \
+                            php82-zip  \
+                            " && \
      export PHP_8_1_RUN_DEPS=" \
                             mariadb-connector-c \
                             php81  \
@@ -688,16 +767,17 @@ RUN  if [ "${PHP_BASE}" = "8.1" ] ; then export php_folder="81" ; else php_folde
                             php5-zip \
                             " && \
     \
+    source /assets/functions/00-container && \
     set -x && \
-    apk update && \
-    apk upgrade && \
-    apk add -t .php-build-deps \
+    package update && \
+    package upgrade && \
+    package install .php-build-deps \
                 build-base \
                 gpgme-dev \
                 php${php_folder}-dev \
                 && \
     \
-    apk add -t .php-run-deps \
+    package install .php-run-deps \
                 ca-certificates \
                 git \
                 gnupg \
@@ -737,12 +817,13 @@ RUN  if [ "${PHP_BASE}" = "8.1" ] ; then export php_folder="81" ; else php_folde
     set -x && \
     \
     ### Cleanup
-    apk del .php-build-deps && \
-    rm -rf /var/cache/apk/* /usr/src/* /tmp/* /var/log/*
+    package remove .php-build-deps && \
+    package cleanup && \
+    rm -rf \
+           /tmp/* \
+           /usr/src/* \
+           /var/log/*
 
-### Networking Configuration
 EXPOSE 9000
-
-### Files Addition
 COPY install /
 

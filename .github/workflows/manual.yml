@@ -8,11 +8,11 @@ on:
         description: 'Manual Build'
         required: false
 jobs:
-  php8_1_debian_bullseye:
+  php8_2_debian_bullseye:
     env:
-      PHP_BASE: "8.1"
-      DISTRIB: "bullseye"
-      OS: "debian"
+      PHP_BASE: "8.2"
+      DISTRO_VARIANT: "bullseye"
+      DISTRO: "debian"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,7 +32,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -41,7 +41,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -75,7 +75,7 @@ jobs:
           if [ -f "Dockerfile.debian" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
@@ -93,11 +93,6 @@ jobs:
             fi
           fi
 
-      - name: Switch
-        id: Switch
-        run: |
-          sed -i "s|FROM docker.io/tiredofit/nginx:${OS}.*|FROM docker.io/tiredofit/nginx:${OS}-${DISTRIB}|g" Dockerfile.debian
-
       - name: Build
         uses: docker/build-push-action@v3
         with:
@@ -108,14 +103,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
-             DEBIAN_VERSION=${{ env.DISTRIB }}
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
 
-  php8_1_debian_buster:
+  php8_2_debian_buster:
     env:
-      PHP_BASE: "8.1"
-      DISTRIB: "buster"
-      OS: "debian"
+      PHP_BASE: "8.2"
+      DISTRO_VARIANT: "buster"
+      DISTRO: "debian"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -135,7 +131,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -144,7 +140,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -178,7 +174,7 @@ jobs:
           if [ -f "Dockerfile.debian" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
@@ -206,14 +202,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
-             DEBIAN_VERSION=${{ env.DISTRIB }}
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
 
-  php8_1_alpine:
+  php8_2_alpine:
     env:
-      PHP_BASE: "8.1"
-      DISTRIB: "3.17"
-      OS: "alpine"
+      PHP_BASE: "8.2"
+      DISTRO_VARIANT: "edge"
+      DISTRO: "alpine"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -233,7 +230,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest,${DOCKER_IMAGE}:${OS},${DOCKER_IMAGE}:${PHP_BASE}-latest,${DOCKER_IMAGE}:latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest,${DOCKER_IMAGE}:${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-latest,${DOCKER_IMAGE}:latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -242,7 +239,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -276,7 +273,7 @@ jobs:
           if [ -f "Dockerfile" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
@@ -304,14 +301,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
-             ALPINE_VERSION=${{ env.DISTRIB }}
 
-  php8_0_debian_bullseye:
+  php8_1_debian_bullseye:
     env:
-      PHP_BASE: "8.0"
-      DISTRIB: "bullseye"
-      OS: "debian"
+      PHP_BASE: "8.1"
+      DISTRO_VARIANT: "bullseye"
+      DISTRO: "debian"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -331,7 +329,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -340,7 +338,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -374,7 +372,7 @@ jobs:
           if [ -f "Dockerfile.debian" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
@@ -402,14 +400,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
-             DEBIAN_VERSION=${{ env.DISTRIB }}
 
-  php8_0_debian_buster:
+  php8_1_debian_buster:
     env:
-      PHP_BASE: "8.0"
-      DISTRIB: "buster"
-      OS: "debian"
+      PHP_BASE: "8.1"
+      DISTRO_VARIANT: "buster"
+      DISTRO: "debian"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -429,7 +428,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -438,7 +437,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -472,7 +471,304 @@ jobs:
           if [ -f "Dockerfile.debian" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
+            if [ -f "CHANGELOG.md" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
+              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+            fi
+
+            if [[ $GITHUB_REF == refs/tags/* ]]; then
+              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile.debian
+            fi
+
+            if [[ $GITHUB_REF == refs/heads/* ]]; then
+              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile.debian
+            fi
+          fi
+
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./Dockerfile.debian
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          push: true
+          tags: ${{ steps.prep.outputs.tags }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+  php8_1_alpine:
+    env:
+      PHP_BASE: "8.1"
+      DISTRO_VARIANT: "3.17"
+      DISTRO: "alpine"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
+
+          if [[ $GITHUB_REF == refs/heads/* ]]; then
+             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
+               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+             else
+               BRANCH=${GITHUB_REF#refs/heads/}
+             fi
+
+            case ${BRANCH} in
+              "main" | "master" )
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest,${DOCKER_IMAGE}:${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-latest,${DOCKER_IMAGE}:latest"
+                ;;
+              "develop" )
+                  BRANCHTAG="${DOCKER_IMAGE}:develop"
+                ;;
+            esac
+          fi
+
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
+            TAGS=${BRANCHTAG},${GITTAG}
+          else
+            TAGS="${BRANCHTAG}${GITTAG}"
+          fi
+
+          echo ::set-output name=tags::${TAGS}
+          echo ::set-output name=docker_image::${DOCKER_IMAGE}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Label
+        id: Label
+        run: |
+          if [ -f "Dockerfile" ] ; then
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
+            if [ -f "CHANGELOG.md" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
+              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+            fi
+
+            if [[ $GITHUB_REF == refs/tags/* ]]; then
+              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile
+            fi
+
+            if [[ $GITHUB_REF == refs/heads/* ]]; then
+              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile
+            fi
+          fi
+
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          push: true
+          tags: ${{ steps.prep.outputs.tags }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+  php8_0_debian_bullseye:
+    env:
+      PHP_BASE: "8.0"
+      DISTRO_VARIANT: "bullseye"
+      DISTRO: "debian"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
+
+          if [[ $GITHUB_REF == refs/heads/* ]]; then
+             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
+               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+             else
+               BRANCH=${GITHUB_REF#refs/heads/}
+             fi
+
+            case ${BRANCH} in
+              "main" | "master" )
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
+                ;;
+              "develop" )
+                  BRANCHTAG="${DOCKER_IMAGE}:develop"
+                ;;
+            esac
+          fi
+
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
+            TAGS=${BRANCHTAG},${GITTAG}
+          else
+            TAGS="${BRANCHTAG}${GITTAG}"
+          fi
+
+          echo ::set-output name=tags::${TAGS}
+          echo ::set-output name=docker_image::${DOCKER_IMAGE}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Label
+        id: Label
+        run: |
+          if [ -f "Dockerfile.debian" ] ; then
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
+            if [ -f "CHANGELOG.md" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
+              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+            fi
+
+            if [[ $GITHUB_REF == refs/tags/* ]]; then
+              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile.debian
+            fi
+
+            if [[ $GITHUB_REF == refs/heads/* ]]; then
+              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile.debian
+            fi
+          fi
+
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./Dockerfile.debian
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          push: true
+          tags: ${{ steps.prep.outputs.tags }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+  php8_0_debian_buster:
+    env:
+      PHP_BASE: "8.0"
+      DISTRO_VARIANT: "buster"
+      DISTRO: "debian"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
+
+          if [[ $GITHUB_REF == refs/heads/* ]]; then
+             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
+               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+             else
+               BRANCH=${GITHUB_REF#refs/heads/}
+             fi
+
+            case ${BRANCH} in
+              "main" | "master" )
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
+                ;;
+              "develop" )
+                  BRANCHTAG="${DOCKER_IMAGE}:develop"
+                ;;
+            esac
+          fi
+
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
+            TAGS=${BRANCHTAG},${GITTAG}
+          else
+            TAGS="${BRANCHTAG}${GITTAG}"
+          fi
+
+          echo ::set-output name=tags::${TAGS}
+          echo ::set-output name=docker_image::${DOCKER_IMAGE}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Label
+        id: Label
+        run: |
+          if [ -f "Dockerfile.debian" ] ; then
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
@@ -501,14 +797,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
-             DEBIAN_VERSION=${{ env.DISTRIB }}
 
   php8_0_alpine:
     env:
       PHP_BASE: "8.0"
-      DISTRIB: "3.16"
-      OS: "alpine"
+      DISTRO_VARIANT: "3.16"
+      DISTRO: "alpine"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -528,7 +825,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -537,7 +834,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -571,7 +868,7 @@ jobs:
           if [ -f "Dockerfile" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
@@ -599,14 +896,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
-             ALPINE_VERSION=${{ env.DISTRIB }}
 
-  php_7_4_debian_bullseye:
+  php7_4_debian_bullseye:
     env:
       PHP_BASE: "7.4"
-      DISTRIB: "bullseye"
-      OS: "debian"
+      DISTRO_VARIANT: "bullseye"
+      DISTRO: "debian"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -626,7 +924,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -635,7 +933,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -669,7 +967,7 @@ jobs:
           if [ -f "Dockerfile.debian" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
@@ -687,11 +985,6 @@ jobs:
             fi
           fi
 
-      - name: Switch
-        id: Switch
-        run: |
-          sed -i "s|FROM docker.io/tiredofit/nginx:${OS}.*|FROM docker.io/tiredofit/nginx:${OS}-${DISTRIB}|g" Dockerfile.debian
-
       - name: Build
         uses: docker/build-push-action@v3
         with:
@@ -702,14 +995,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
-             DEBIAN_VERSION=${{ env.DISTRIB }}
 
   php7_4_debian_buster:
     env:
       PHP_BASE: "7.4"
-      DISTRIB: "buster"
-      OS: "debian"
+      DISTRO_VARIANT: "buster"
+      DISTRO: "debian"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -729,7 +1023,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -738,7 +1032,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -772,7 +1066,7 @@ jobs:
           if [ -f "Dockerfile.debian" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
@@ -800,14 +1094,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
-             DEBIAN_VERSION=${{ env.DISTRIB }}
 
   php_7_4_alpine:
     env:
       PHP_BASE: "7.4"
-      DISTRIB: "3.15"
-      OS: "alpine"
+      DISTRO_VARIANT: "3.15"
+      DISTRO: "alpine"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -827,7 +1122,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -836,7 +1131,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -870,7 +1165,7 @@ jobs:
           if [ -f "Dockerfile" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
@@ -898,14 +1193,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
-             ALPINE_VERSION=${{ env.DISTRIB }}
 
   php7_3_debian_bullseye:
     env:
       PHP_BASE: "7.3"
-      DISTRIB: "bullseye"
-      OS: "debian"
+      DISTRO_VARIANT: "bullseye"
+      DISTRO: "debian"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -925,7 +1221,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -934,7 +1230,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -968,7 +1264,7 @@ jobs:
           if [ -f "Dockerfile.debian" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
@@ -996,15 +1292,16 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
-             DEBIAN_VERSION=${{ env.DISTRIB }}
 
 
   php7_3_debian_buster:
     env:
       PHP_BASE: "7.3"
-      DISTRIB: "buster"
-      OS: "debian"
+      DISTRO_VARIANT: "buster"
+      DISTRO: "debian"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -1024,7 +1321,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB},${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-${DISTRIB}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1033,7 +1330,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -1067,7 +1364,7 @@ jobs:
           if [ -f "Dockerfile.debian" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile.debian
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
@@ -1095,14 +1392,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
-             DEBIAN_VERSION=${{ env.DISTRIB }}
 
   php7_3_alpine:
     env:
       PHP_BASE: "7.3"
-      DISTRIB: "3.12"
-      OS: "alpine"
+      DISTRO_VARIANT: "3.12"
+      DISTRO: "alpine"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -1122,7 +1420,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1131,7 +1429,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -1165,7 +1463,7 @@ jobs:
           if [ -f "Dockerfile" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
@@ -1193,14 +1491,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
-             ALPINE_VERSION=${{ env.DISTRIB }}
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
 
   php7_2_alpine:
     env:
       PHP_BASE: "7.2"
-      DISTRIB: "3.9"
-      OS: "alpine"
+      DISTRO_VARIANT: "3.9"
+      DISTRO: "alpine"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -1220,7 +1519,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1229,7 +1528,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -1263,7 +1562,7 @@ jobs:
           if [ -f "Dockerfile" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
@@ -1291,14 +1590,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
-             ALPINE_VERSION=${{ env.DISTRIB }}
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
 
   php7_1_alpine:
     env:
       PHP_BASE: "7.1"
-      DISTRIB: "3.7"
-      OS: "alpine"
+      DISTRO_VARIANT: "3.7"
+      DISTRO: "alpine"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -1318,7 +1618,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1327,7 +1627,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -1361,7 +1661,7 @@ jobs:
           if [ -f "Dockerfile" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
@@ -1378,11 +1678,6 @@ jobs:
               sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile
             fi
           fi
-
-      - name: Switch
-        id: Switch
-        run: |
-          sed -i "s|FROM docker.io/tiredofit/nginx:${OS}.*|FROM docker.io/tiredofit/nginx:${OS}-${DISTRIB}|g" Dockerfile
 
       - name: Build
         uses: docker/build-push-action@v3
@@ -1394,14 +1689,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
-             ALPINE_VERSION=${{ env.DISTRIB }}
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
 
   php7_0_alpine:
     env:
       PHP_BASE: "7.0"
-      DISTRIB: "3.5"
-      OS: "alpine"
+      DISTRO_VARIANT: "3.5"
+      DISTRO: "alpine"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -1421,7 +1717,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1430,7 +1726,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -1464,7 +1760,7 @@ jobs:
           if [ -f "Dockerfile" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
@@ -1492,14 +1788,15 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
-             ALPINE_VERSION=${{ env.DISTRIB }}
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
 
   php5_6_alpine:
     env:
       PHP_BASE: "5.6"
-      DISTRIB: "3.8"
-      OS: "alpine"
+      DISTRO_VARIANT: "3.8"
+      DISTRO: "alpine"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -1519,7 +1816,7 @@ jobs:
 
             case ${BRANCH} in
               "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${OS},${DOCKER_IMAGE}:${PHP_BASE}-${OS}-latest,${DOCKER_IMAGE}:${OS}-${PHP_BASE},${DOCKER_IMAGE}:${OS}-${PHP_BASE}-latest"
+                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
                 ;;
               "develop" )
                   BRANCHTAG="${DOCKER_IMAGE}:develop"
@@ -1528,7 +1825,7 @@ jobs:
           fi
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${OS}_${DISTRIB}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
           fi
 
           if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
@@ -1562,7 +1859,7 @@ jobs:
           if [ -f "Dockerfile" ] ; then
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRIB}\"" Dockerfile
+            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
             sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
@@ -1590,5 +1887,6 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
-             ALPINE_VERSION=${{ env.DISTRIB }}
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
