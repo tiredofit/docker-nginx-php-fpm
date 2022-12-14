@@ -1,3 +1,9 @@
+## 7.3.1 2022-12-13 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Patchup for 8.2.x on Alpine systems
+
+
 ## 7.3.0 2022-12-11 <dave at tiredofit dot ca>
 
    ### Added
