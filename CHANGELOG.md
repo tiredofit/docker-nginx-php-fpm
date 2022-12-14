@@ -1,3 +1,9 @@
+## 7.3.2 2022-12-14 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix PHP_BASE issue with modules not loading introduced with 7.3.0
+
+
 ## 7.3.1 2022-12-13 <dave at tiredofit dot ca>
 
    ### Changed

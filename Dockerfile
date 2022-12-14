@@ -1,12 +1,12 @@
 ARG DISTRO=alpine
-ARG DISTRO_VARIANT=edge
+ARG DISTRO_VARIANT=3.17
 
 FROM docker.io/tiredofit/nginx:${DISTRO}-${DISTRO_VARIANT}
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE
 
-ENV PHP_BASE=${PHP_BASE:-"8.2"} \
+ENV PHP_BASE=${PHP_BASE:-"8.1"} \
     PHP_ENABLE_APCU=TRUE \
     PHP_ENABLE_BCMATH=TRUE \
     PHP_ENABLE_BZ2=TRUE \
@@ -41,8 +41,11 @@ ENV PHP_BASE=${PHP_BASE:-"8.2"} \
     IMAGE_REPO_URL="https://github.com/tiredofit/docker-nginx-php-fpm/"
 
 ### Dependency Installation
-RUN if [ "${PHP_BASE}" = "8.1" ] ; then export php_folder="81" ; else php_folder=${PHP_BASE:0:1} ; fi ; \
-    if [ "${PHP_BASE}" = "8.2" ] ; then export php_folder="82" ; else php_folder=${PHP_BASE:0:1} ; fi ; \
+RUN case "${PHP_BASE}" in \
+     8.2 ) export php_folder="82" ;; \
+     8.1 ) export php_folder="81" ;; \
+     *) export php_folder=${PHP_BASE:0:1} ;; \
+    esac ; \
     export PHP_8_2_RUN_DEPS=" \
                             mariadb-connector-c \
                             php82  \
