@@ -1,7 +1,7 @@
 #!/command/with-contenv /bin/bash
 source /assets/functions/00-container
 
-
+alias get_php_env_plugins_enabled="set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3- | cut -d = -f 1 | tr A-Z a-z"
 php_major_version="$(echo ${PHP_BASE} | cut -c 1-1)"
 os=$(cat /etc/os-release |grep ^ID= | cut -d = -f2)
 
@@ -46,7 +46,7 @@ enable_module () {
                     done
                 ;;
                 "core" )
-                    php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z | sed "/^json/d")
+                    php_env_plugins_enabled=$(get_php_env_plugins_enabled | sed "/^json/d")
                     for module in $php_env_plugins_enabled ; do
                         if [ -f "${php_prefix}mods-available/${module}.ini" ]; then
                             echo "Enabling '$(basename $module .ini)' module"
@@ -73,7 +73,7 @@ enable_module () {
                     done
                 ;;
                 "optional" )
-                    php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
+                    php_env_plugins_enabled=$(get_php_env_plugins_enabled)
                     echo "** Activating Optional Modules"
                     for module in ${php_prefix}mods-available/*.ini; do
                         if ! grep -w -i -q "$(basename $module .ini)" "${php_env_plugins_enabled}"; then
@@ -90,7 +90,7 @@ enable_module () {
                         fi
                     done
 
-                php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
+                php_env_plugins_enabled=$(get_php_env_plugins_enabled)
                     echo "** Activating Optional Modules"
                     for module in ${php_prefix}mods-available/*.ini; do
                         MATCH=0
@@ -153,7 +153,7 @@ disable_module() {
                 done
             ;;
             "core" )
-                php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
+                php_env_plugins_enabled=$(get_php_env_plugins_enabled)
                 for module in $php_env_plugins_enabled ; do
                     if [ -f "${php_prefix}mods-available/${module}.ini" ]; then
                         echo "Disabling ${module}"
@@ -179,7 +179,7 @@ disable_module() {
                 done
             ;;
             "optional" )
-                php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
+                php_env_plugins_enabled=$(get_php_env_plugins_enabled)
                 echo "** Disabling Optional Modules"
                 for module in ${php_prefix}mods-available/*.ini; do
                     MATCH=0
@@ -235,7 +235,7 @@ list_module() {
             ;;
             "core"  )
                 echo "** Listing Core Modules"
-                php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
+                php_env_plugins_enabled=$(get_php_env_plugins_enabled)
                 for module in $php_env_plugins_enabled ; do
                     if [ -f "${php_prefix}mods-available/${module}.ini" ]; then
                         echo "${module}"
@@ -246,7 +246,7 @@ list_module() {
             ;;
             "optional" )
                 echo "** Listing Optional Modules"
-                php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr A-Z a-z)
+                php_env_plugins_enabled=$(get_php_env_plugins_enabled)
 
                 for module in ${php_prefix}mods-available/*.ini; do
                     MATCH=0
