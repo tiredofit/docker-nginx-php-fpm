@@ -1,3 +1,9 @@
+## 7.3.3 2023-01-10 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for `php-ext` not reading modules with underscores properly (credit timoschwarzer@github)
+
+
 ## 7.3.2 2022-12-14 <dave at tiredofit dot ca>
 
    ### Changed
