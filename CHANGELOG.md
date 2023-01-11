@@ -1,3 +1,9 @@
+## 7.3.4 2023-01-11 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Convert alias to function in php-ext for non interactive sessions
+
+
 ## 7.3.3 2023-01-10 <dave at tiredofit dot ca>
 
    ### Changed
