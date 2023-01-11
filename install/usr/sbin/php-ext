@@ -1,7 +1,10 @@
 #!/command/with-contenv /bin/bash
 source /assets/functions/00-container
 
-alias get_php_env_plugins_enabled="set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3- | cut -d = -f 1 | tr A-Z a-z"
+get_php_env_plugins_enabled() {
+  set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3- | cut -d = -f 1 | tr A-Z a-z
+}
+
 php_major_version="$(echo ${PHP_BASE} | cut -c 1-1)"
 os=$(cat /etc/os-release |grep ^ID= | cut -d = -f2)
 
