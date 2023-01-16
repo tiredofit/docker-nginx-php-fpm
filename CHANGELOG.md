@@ -1,3 +1,9 @@
+## 7.4.1 2023-01-16 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for 7.4.0
+
+
 ## 7.4.0 2023-01-15 <dave at tiredofit dot ca>
 
    ### Added
