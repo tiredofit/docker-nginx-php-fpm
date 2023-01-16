@@ -115,8 +115,10 @@ EOF
     fi
 
     if [ "${PHP_OPCACHE_MEM_SIZE}" = "0" ] || var_false "${PHP_ENABLE_OPCACHE}" ; then
-        sed -i -e "s/opcache.enable=1/opcache.enable=0/g" /assets/php-fpm/mods-available/opcache.ini
-        sed -i -e "s/opcache.enable_cli=1/opcache.enable_cli=0/g" /assets/php-fpm/mods-available/opcache.ini
+        sed -i \
+                    -e "s/opcache.enable=1/opcache.enable=0/g" \
+                    -e "s/opcache.enable_cli=1/opcache.enable_cli=0/g" \
+                /assets/php-fpm/mods-available/opcache.ini
     else
         if var_true "${CONTAINER_ENABLE_MONITORING}" && [ "${CONTAINER_MONITORING_BACKEND,,}" = "zabbix" ]; then
             source /assets/defaults/03-monitoring
@@ -191,8 +193,10 @@ phpfpm_configure_nginx() {
     done
     echo "}" >> /etc/nginx/snippets/php-fpm-upstream.conf
 
-    sed -i -e "/# Do not delete - Upstream Configuration/a\ \ \ \ include \/etc\/nginx\/snippets\/php-fpm-upstream.conf;" /etc/nginx/nginx.conf
-    sed -i -e "/# Do not delete - Upstream Configuration/a\ \ \ \ ### PHP-FPM Multiple Handlers configuration" /etc/nginx/nginx.conf
+    sed -i \
+                -e "/# Do not delete - Upstream Configuration/a\ \ \ \ include \/etc\/nginx\/snippets\/php-fpm-upstream.conf;" \
+                -e "/# Do not delete - Upstream Configuration/a\ \ \ \ ### PHP-FPM Multiple Handlers configuration" \
+            /etc/nginx/nginx.conf
 }
 
 phpfpm_configure_server() {
@@ -223,21 +227,33 @@ phpfpm_configure_server() {
 
     update_template /etc/nginx/snippets/php-fpm.conf PHP_TIMEOUT
 
-    sed -i -e "s#apc.shm_size=.*#apc.shm_size=${PHP_APC_SHM_SIZE}#g" \
-           -e "s#apc.ttl=.*#apc.ttl=${PHP_APC_TTL}#g" \
+    sed -i \
+                -e "s#apc.shm_size=.*#apc.shm_size=${PHP_APC_SHM_SIZE}#g" \
+                -e "s#apc.ttl=.*#apc.ttl=${PHP_APC_TTL}#g" \
             /assets/php-fpm//mods-available/apcu.ini
 
-    sed -i -e "s#opcache.memory_consumption=.*#opcache.memory_consumption=${PHP_OPCACHE_MEM_SIZE}#g" \
-           -e "s#opcache.interned_strings_buffer=.*#opcache.interned_strings_buffer=${PHP_OPCACHE_INTERNED_STRINGS_BUFFER}#g" \
-           -e "s#opcache.max_accelerated_files=.*#max_accelerated_files=${PHP_OPCACHE_MAX_ACCELERATED_FILES}#g" \
-           -e "s#opcache.revalidate_freq=.*#revalidate_freq=${PHP_OPCACHE_REVALIDATE_FREQ}#g" \
+    sed -i \
+                -e "s#opcache.memory_consumption=.*#opcache.memory_consumption=${PHP_OPCACHE_MEM_SIZE}#g" \
+                -e "s#opcache.interned_strings_buffer=.*#opcache.interned_strings_buffer=${PHP_OPCACHE_INTERNED_STRINGS_BUFFER}#g" \
+                -e "s#opcache.max_accelerated_files=.*#max_accelerated_files=${PHP_OPCACHE_MAX_ACCELERATED_FILES}#g" \
+                -e "s#opcache.revalidate_freq=.*#revalidate_freq=${PHP_OPCACHE_REVALIDATE_FREQ}#g"
            /assets/php-fpm/mods-available/opcache.ini
 
-    sed -i -e "s#memory_limit = .*#memory_limit = ${PHP_MEMORY_LIMIT}#g" \
-           -e "s#max_input_time = .*#max_input_time = ${PHP_TIMEOUT}#g" \
-           -e "s#default_socket_timeout = .*#default_socket_timeout = ${PHP_TIMEOUT}#g" \
-           -e "s#post_max_size = .*#post_max_size = ${PHP_UPLOAD_MAX_SIZE}#g" \
-           -e "s#upload_max_filesize = .*#upload_max_filesize = ${PHP_UPLOAD_MAX_SIZE}#g" \
+    if [ "${PHP_BASE:0:1}" = "7" ] ; then
+        sed -i "/opcache.jit/d" /assets/php-fpm/mods-available/opcache.ini
+    else
+        sed -i \
+                    -e "s#opcache.jit_buffer_size=.*#opcache.jit_buffer_size=${PHP_OPCACHE_JIT_BUFFER_SIZE}#g" \
+                    -e "s#opcache.jit=.*#opcache.jit=${PHP_OPCACHE_JIT_MODE}#g"
+                /assets/php-fpm/mods-available/opcache.ini
+    fi
+
+    sed -i \
+                -e "s#memory_limit = .*#memory_limit = ${PHP_MEMORY_LIMIT}#g" \
+                -e "s#max_input_time = .*#max_input_time = ${PHP_TIMEOUT}#g" \
+                -e "s#default_socket_timeout = .*#default_socket_timeout = ${PHP_TIMEOUT}#g" \
+                -e "s#post_max_size = .*#post_max_size = ${PHP_UPLOAD_MAX_SIZE}#g" \
+                -e "s#upload_max_filesize = .*#upload_max_filesize = ${PHP_UPLOAD_MAX_SIZE}#g" \
            /assets/php-fpm/cli/php.ini
 
     if [ -n "${PHP_IDE_CONFIG}" ]; then
@@ -248,9 +264,9 @@ phpfpm_configure_server() {
         fi
     fi
 
-    sed -i -e "s#date.timezone = .*#date.timezone = $(cat /etc/timezone)#g" /assets/php-fpm/cli/php.ini
-    sed -i -e "s#date.timezone = .*#date.timezone = $(cat /etc/timezone)#g" /assets/php-fpm/fpm/php.ini
+    sed -i -e "s#date.timezone = .*#date.timezone = $(cat /etc/timezone)#g" /assets/php-fpm/cli/php.ini /assets/php-fpm/fpm/php.ini
 }
+
 phpfpm_create_default_page() {
     if var_true "${php_enable_create_sample_php}" ; then
         if [ ! -f "${NGINX_WEBROOT}"/index.php ] ; then

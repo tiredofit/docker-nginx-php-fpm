@@ -205,6 +205,8 @@ When `PHP_FPM_CONTAINER_MODE` set to `nginx` the `PHP_FPM_LISTEN_PORT` environme
 | `PHP_LOG_LOCATION`                    | Log Location for PHP Logs                                                                                | `/www/logs/php-fpm`                            |
 | `PHP_MEMORY_LIMIT`                    | How much memory should PHP use                                                                           | `128M`                                         |
 | `PHP_OPCACHE_INTERNED_STRINGS_BUFFER` | OPCache interned strings buffer                                                                          | `16`                                           |
+| `PHP_OPCACHE_JIT_BUFFER_SIZE`         | JIT Buffer Size `0` to disable                                                                           | `50M`                                          |
+| `PHP_OPCACHE_JIT_MODE`                | JIT [CRTO](https://wiki.php.net/rfc/jit) Mode - > PHP 8.x                                                | `1255`                                         |
 | `PHP_OPCACHE_MAX_ACCELERATED_FILES`   | OPCache Max accelerated files                                                                            | `5413`                                         |
 | `PHP_OPCACHE_MEM_SIZE`                | OPCache Memory Size - Set `0` to disable or via other env vars                                           | `128`                                          |
 | `PHP_OPCACHE_REVALIDATE_FREQ`         | OPCache revalidate frequency                                                                             | `60`                                           |

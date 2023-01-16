@@ -1,3 +1,12 @@
+## 7.4.0 2023-01-15 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add JIT Compilation support by means of PHP_OPCACHE_JIT_MODE and PHP_OPCACHE_BUFFER_SIZE variables (8.x only)
+
+   ### Changed
+      - Minor formatting fixes
+
+
 ## 7.3.4 2023-01-11 <dave at tiredofit dot ca>
 
    ### Changed
