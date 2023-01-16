@@ -138,7 +138,7 @@ EOF
         unset PHP_ENABLE_CREATE_SAMPLE_PHP # legacy
         php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE |sed -e 's/PHP_ENABLE_//g' | sed -e 's/=TRUE//g' | awk -vRS="" -vOFS=', ' '$1=$1' | tr A-Z a-z)
         for module in $(echo "${php_env_plugins_enabled}" | tr "," "\n" ) ; do
-            if [ -f "${php_prefix}"/mods-available/${module}.ini ]; then
+            if [ -f "${php_prefix}"/mods-available/"${module}".ini ]; then
                 print_debug "Enabling ${module}"
                 silent php-ext enable "${module}"
                 php_actual_plugins_enabled="${php_actual_plugins_enabled} ${module}"
@@ -329,7 +329,7 @@ phpfpm_post_init() {
         "alpine" )
             ### Weird Opcache issue
             if [ -f "${php_prefix}/conf.d/10-opcache.ini" ] && [ -f "${php_prefix}/conf.d/00-opcache.ini" ] ; then
-              rm -rf ${php_prefix}/conf.d/00-opcache.ini
+              rm -rf "${php_prefix}"/conf.d/00-opcache.ini
             fi
         ;;
         "debian" )
