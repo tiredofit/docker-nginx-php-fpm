@@ -11,1399 +11,510 @@ on:
     - '**'
     - '!README.md'
 jobs:
-  php8_2_debian_bullseye:
+  php82_alpine:
     env:
-      PHP_BASE: "8.2"
-      DISTRO_VARIANT: "bullseye"
-      DISTRO: "debian"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile.debian" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile.debian
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile.debian
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile.debian
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-  php8_2_debian_buster:
-    env:
-      PHP_BASE: "8.2"
-      DISTRO_VARIANT: "buster"
-      DISTRO: "debian"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile.debian" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile.debian
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile.debian
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile.debian
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-  php8_2_alpine:
-    env:
-      PHP_BASE: "8.2"
+      DISTRO: "alpine"
       DISTRO_VARIANT: "edge"
+      PHP_BASE: 8.2
+      build_file: Dockerfile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php81_alpine:
+    env:
       DISTRO: "alpine"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest,${DOCKER_IMAGE}:${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-latest,${DOCKER_IMAGE}:latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-  php8_1_debian_bullseye:
-    env:
-      PHP_BASE: "8.1"
-      DISTRO_VARIANT: "bullseye"
-      DISTRO: "debian"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile.debian" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile.debian
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile.debian
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile.debian
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-  php8_1_debian_buster:
-    env:
-      PHP_BASE: "8.1"
-      DISTRO_VARIANT: "buster"
-      DISTRO: "debian"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile.debian" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile.debian
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile.debian
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile.debian
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-  php8_1_alpine:
-    env:
-      PHP_BASE: "8.1"
       DISTRO_VARIANT: "3.17"
+      PHP_BASE: 8.1
+      build_file: Dockerfile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php80_alpine:
+    env:
       DISTRO: "alpine"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest,${DOCKER_IMAGE}:${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-latest,${DOCKER_IMAGE}:latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-  php8_0_debian_bullseye:
-    env:
-      PHP_BASE: "8.0"
-      DISTRO_VARIANT: "bullseye"
-      DISTRO: "debian"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile.debian" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile.debian
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile.debian
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile.debian
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-  php8_0_debian_buster:
-    env:
-      PHP_BASE: "8.0"
-      DISTRO_VARIANT: "buster"
-      DISTRO: "debian"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile.debian" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile.debian
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile.debian
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile.debian
-          #platforms: linux/amd64,linux/arm/v7,linux/arm64
-          platforms: linux/amd64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-  php8_0_alpine:
-    env:
-      PHP_BASE: "8.0"
       DISTRO_VARIANT: "3.16"
+      PHP_BASE: 8.0
+      build_file: Dockerfile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+
+  php74_alpine:
+    env:
       DISTRO: "alpine"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-  php7_4_debian_bullseye:
-    env:
-      PHP_BASE: "7.4"
-      DISTRO_VARIANT: "bullseye"
-      DISTRO: "debian"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile.debian" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile.debian
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile.debian
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile.debian
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-  php7_4_debian_buster:
-    env:
-      PHP_BASE: "7.4"
-      DISTRO_VARIANT: "buster"
-      DISTRO: "debian"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile.debian" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile.debian
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile.debian
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile.debian
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-  php_7_4_alpine:
-    env:
-      PHP_BASE: "7.4"
       DISTRO_VARIANT: "3.15"
+      PHP_BASE: 7.4
+      build_file: Dockerfile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+
+  php73_alpine:
+    env:
       DISTRO: "alpine"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-  php7_3_debian_bullseye:
-    env:
-      PHP_BASE: "7.3"
-      DISTRO_VARIANT: "bullseye"
-      DISTRO: "debian"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile.debian" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile.debian
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile.debian
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile.debian
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-
-  php7_3_debian_buster:
-    env:
-      PHP_BASE: "7.3"
-      DISTRO_VARIANT: "buster"
-      DISTRO: "debian"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
-
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-${DISTRO_VARIANT}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
-          fi
-
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
-          fi
-
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
-          else
-            TAGS="${BRANCHTAG}${GITTAG}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile.debian" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile.debian
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile.debian
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile.debian
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile.debian
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile.debian
-            fi
-          fi
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: ./Dockerfile.debian
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ${{ steps.prep.outputs.tags }}
-          build-args: |
-             DISTRO=${{ env.DISTRO }}
-             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
-             PHP_BASE=${{ env.PHP_BASE }}
-
-  php7_3_alpine:
-    env:
-      PHP_BASE: "7.3"
       DISTRO_VARIANT: "3.12"
-      DISTRO: "alpine"
+      PHP_BASE: 7.3
+      build_file: Dockerfile
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -1412,46 +523,75 @@ jobs:
       - name: Prepare
         id: prep
         run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
 
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
           fi
 
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
           fi
 
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
           else
-            TAGS="${BRANCHTAG}${GITTAG}"
+              image_tags="${branch_tag}${git_tag}"
           fi
 
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
+          platforms: arm,arm64
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -1460,49 +600,46 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile
-            fi
-          fi
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
+        if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
-          file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ steps.prep.outputs.tags }}
+          tags: ${{ steps.prep.outputs.container_images }}
           build-args: |
              DISTRO=${{ env.DISTRO }}
              DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
 
-  php7_2_alpine:
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+
+  php72_alpine:
     env:
-      PHP_BASE: "7.2"
+      DISTRO: "alpine"
       DISTRO_VARIANT: "3.9"
-      DISTRO: "alpine"
+      PHP_BASE: 8.0
+      build_file: Dockerfile
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -1511,46 +648,75 @@ jobs:
       - name: Prepare
         id: prep
         run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
 
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
           fi
 
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
           fi
 
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
           else
-            TAGS="${BRANCHTAG}${GITTAG}"
+              image_tags="${branch_tag}${git_tag}"
           fi
 
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
+          platforms: arm,arm64
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -1559,49 +725,46 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile
-            fi
-          fi
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
+        if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
-          file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ steps.prep.outputs.tags }}
+          tags: ${{ steps.prep.outputs.container_images }}
           build-args: |
              DISTRO=${{ env.DISTRO }}
              DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
 
-  php7_1_alpine:
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+
+  php71_alpine:
     env:
-      PHP_BASE: "7.1"
+      DISTRO: "alpine"
       DISTRO_VARIANT: "3.7"
-      DISTRO: "alpine"
+      PHP_BASE: 7.1
+      build_file: Dockerfile
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -1610,46 +773,75 @@ jobs:
       - name: Prepare
         id: prep
         run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
 
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
           fi
 
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
           fi
 
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
           else
-            TAGS="${BRANCHTAG}${GITTAG}"
+              image_tags="${branch_tag}${git_tag}"
           fi
 
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
+          platforms: arm,arm64
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -1658,49 +850,45 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile
-            fi
-          fi
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
+        if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
-          file: ./Dockerfile
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.prep.outputs.tags }}
+          tags: ${{ steps.prep.outputs.container_images }}
           build-args: |
              DISTRO=${{ env.DISTRO }}
              DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
 
-  php7_0_alpine:
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php70_alpine:
     env:
-      PHP_BASE: "7.0"
+      DISTRO: "alpine"
       DISTRO_VARIANT: "3.5"
-      DISTRO: "alpine"
+      PHP_BASE: 7.0
+      build_file: Dockerfile
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -1709,46 +897,75 @@ jobs:
       - name: Prepare
         id: prep
         run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
 
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
           fi
 
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
           fi
 
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
           else
-            TAGS="${BRANCHTAG}${GITTAG}"
+              image_tags="${branch_tag}${git_tag}"
           fi
 
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
+          platforms: arm,arm64
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -1757,49 +974,45 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile
-            fi
-          fi
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
+        if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
-          file: ./Dockerfile
+          file: ./${{ env.build_file }}
           platforms: linux/amd64
           push: true
-          tags: ${{ steps.prep.outputs.tags }}
+          tags: ${{ steps.prep.outputs.container_images }}
           build-args: |
              DISTRO=${{ env.DISTRO }}
              DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
 
-  php5_6_alpine:
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php56_alpine:
     env:
-      PHP_BASE: "5.6"
-      DISTRO_VARIANT: "3.8"
       DISTRO: "alpine"
+      DISTRO_VARIANT: "3.5"
+      PHP_BASE: 5.6
+      build_file: Dockerfile
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -1808,46 +1021,75 @@ jobs:
       - name: Prepare
         id: prep
         run: |
-          DOCKER_IMAGE=${GITHUB_REPOSITORY/docker-/}
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
 
-          if [[ $GITHUB_REF == refs/heads/* ]]; then
-             if [[ $GITHUB_REF == refs/heads/*/* ]] ; then
-               BRANCH="${DOCKER_IMAGE}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
-             else
-               BRANCH=${GITHUB_REF#refs/heads/}
-             fi
-
-            case ${BRANCH} in
-              "main" | "master" )
-                  BRANCHTAG="${DOCKER_IMAGE}:${PHP_BASE},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO},${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}-latest,${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE},${DOCKER_IMAGE}:${DISTRO}-${PHP_BASE}-latest"
-                ;;
-              "develop" )
-                  BRANCHTAG="${DOCKER_IMAGE}:develop"
-                ;;
-            esac
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
           fi
 
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-               GITTAG="${DOCKER_IMAGE}:${PHP_BASE}-${DISTRO}_${DISTRO_VARIANT}-$(echo $GITHUB_REF | sed 's|refs/tags/||g')"
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
           fi
 
-          if [ -n "${BRANCHTAG}" ] && [ -n "${GITTAG}" ]; then
-            TAGS=${BRANCHTAG},${GITTAG}
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
           else
-            TAGS="${BRANCHTAG}${GITTAG}"
+              image_tags="${branch_tag}${git_tag}"
           fi
 
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
+          platforms: arm,arm64
 
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -1856,40 +1098,1649 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Label
-        id: Label
-        run: |
-          if [ -f "Dockerfile" ] ; then
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.runtime_version=\"${PHP_BASE}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.distro=\"${DISTRO_VARIANT}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_commit=\"${GITHUB_SHA}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_committed_by=\"${GITHUB_ACTOR}\"" Dockerfile
-            sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" Dockerfile
-            if [ -f "CHANGELOG.md" ] ; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" Dockerfile
-              mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
-            fi
-
-            if [[ $GITHUB_REF == refs/tags/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_tag=\"${GITHUB_REF#refs/tags/v}\"" Dockerfile
-            fi
-
-            if [[ $GITHUB_REF == refs/heads/* ]]; then
-              sed -i "/FROM .*/a LABEL tiredofit.nginx-php-fpm.git_branch=\"${GITHUB_REF#refs/heads/}\"" Dockerfile
-            fi
-          fi
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
+        if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
-          file: ./Dockerfile
+          file: ./${{ env.build_file }}
           platforms: linux/amd64
           push: true
-          tags: ${{ steps.prep.outputs.tags }}
+          tags: ${{ steps.prep.outputs.container_images }}
           build-args: |
              DISTRO=${{ env.DISTRO }}
              DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
              PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php82_debian_bookworm:
+    env:
+      DISTRO: "debian"
+      DISTRO_VARIANT: "bookworm"
+      PHP_BASE: 8.2
+      build_file: Dockerfile.debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php82_debian_bullseye:
+    env:
+      DISTRO: "debian"
+      DISTRO_VARIANT: "bullseye"
+      PHP_BASE: 8.2
+      build_file: Dockerfile.debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php82_debian_buster:
+    env:
+      DISTRO: "debian"
+      DISTRO_VARIANT: "buster"
+      PHP_BASE: 8.2
+      build_file: Dockerfile.debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php81_debian_bookworm:
+    env:
+      DISTRO: "debian"
+      DISTRO_VARIANT: "bookworm"
+      PHP_BASE: 8.1
+      build_file: Dockerfile.debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php81_debian_bullseye:
+    env:
+      DISTRO: "debian"
+      DISTRO_VARIANT: "bullseye"
+      PHP_BASE: 8.1
+      build_file: Dockerfile.debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php81_debian_buster:
+    env:
+      DISTRO: "debian"
+      DISTRO_VARIANT: "buster"
+      PHP_BASE: 8.1
+      build_file: Dockerfile.debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php80_debian_bookworm:
+    env:
+      DISTRO: "debian"
+      DISTRO_VARIANT: "bookworm"
+      PHP_BASE: 8.0
+      build_file: Dockerfile.debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php80_debian_bullseye:
+    env:
+      DISTRO: "debian"
+      DISTRO_VARIANT: "bullseye"
+      PHP_BASE: 8.0
+      build_file: Dockerfile.debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php80_debian_buster:
+    env:
+      DISTRO: "debian"
+      DISTRO_VARIANT: "buster"
+      PHP_BASE: 8.0
+      build_file: Dockerfile.debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php74_debian_bullseye:
+    env:
+      DISTRO: "debian"
+      DISTRO_VARIANT: "bullseye"
+      PHP_BASE: 7.4
+      build_file: Dockerfile.debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php74_debian_buster:
+    env:
+      DISTRO: "debian"
+      DISTRO_VARIANT: "buster"
+      PHP_BASE: 7.4
+      build_file: Dockerfile.debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php73_debian_bullseye:
+    env:
+      DISTRO: "debian"
+      DISTRO_VARIANT: "bullseye"
+      PHP_BASE: 7.3
+      build_file: Dockerfile.debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
+  php73_debian_buster:
+    env:
+      DISTRO: "debian"
+      DISTRO_VARIANT: "buster"
+      PHP_BASE: 7.3
+      build_file: Dockerfile.debian
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        id: prep
+        run: |
+          if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+              if [[ "${GITHUB_REF}" == refs/heads/*/* ]] ; then
+                  git_branch="${GITHUB_REPOSITORY/docker-/}:$(echo $GITHUB_REF | sed "s|refs/heads/||g" | sed "s|/|-|g")"
+              else
+                  git_branch=${GITHUB_REF#refs/heads/}
+              fi
+
+              case "${git_branch}" in
+                  "main" | "master" )
+                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                          image_latest=",${GITHUB_REPOSITORY}:latest"
+                      fi
+                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                          image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
+                      fi
+                      branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
+                  ;;
+                  "develop" )
+                      branch_tag="${GITHUB_REPOSITORY}:develop"
+                  ;;
+              esac
+          fi
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              git_tag="${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}-$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+          fi
+
+          if [ -n "${branch_tag}" ] && [ -n "${git_tag}" ]; then
+              image_tags=${branch_tag},${git_tag}
+          else
+              image_tags="${branch_tag}${git_tag}"
+          fi
+
+          echo "dockerhub_repo=${GITHUB_REPOSITORY/docker-/}" >> $GITHUB_ENV
+          dockerhub_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|docker.io/${GITHUB_REPOSITORY/docker-/}|g")
+          ghcr_images=$(echo "${image_tags}" | sed "s|${GITHUB_REPOSITORY}|ghcr.io/${GITHUB_REPOSITORY}|g")
+          echo "container_images=${dockerhub_images},${ghcr_images}" >> $GITHUB_OUTPUT
+      - name: Label
+        id: Label
+        run: |
+          image_name=${GITHUB_REPOSITORY/docker-/}
+          if [ -f "${{ env.build_file }}" ] ; then
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_repository=\"https://github.com/${GITHUB_REPOSITORY}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_commit=\"${GITHUB_SHA}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_committed_by=\"${GITHUB_ACTOR}\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL tiredofit.${image_name}.image_build_date=\"$(date +'%Y-%m-%d %H:%M:%S')\"" ${{ env.build_file }}
+              sed -i "/FROM .*/a LABEL org.opencontainers.image.source https://github.com/${GITHUB_REPOSITORY}"  ${{ env.build_file }}
+
+              if [ -f "CHANGELOG.md" ] ; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_changelog_version=\"$(head -n1 ./CHANGELOG.md | awk '{print $2}')\"" ${{ env.build_file }}
+                  mkdir -p install/assets/.changelogs ; cp CHANGELOG.md install/assets/.changelogs/${GITHUB_REPOSITORY/\//_}.md
+              fi
+
+              if [[ $GITHUB_REF == refs/tags/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_tag=\"${GITHUB_REF#refs/tags/v}\"" ${{ env.build_file }}
+              fi
+
+              if [[ $GITHUB_REF == refs/heads/* ]]; then
+                  sed -i "/FROM .*/a LABEL tiredofit.${image_name}.git_branch=\"${GITHUB_REF#refs/heads/}\"" ${{ env.build_file }}
+              fi
+          fi
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm,arm64
+
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./${{ env.build_file }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.prep.outputs.container_images }}
+          build-args: |
+             DISTRO=${{ env.DISTRO }}
+             DISTRO_VARIANT=${{ env.DISTRO_VARIANT }}
+             PHP_BASE=${{ env.PHP_BASE }}
+
+      - name: Update Docker Hub Information
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.dockerhub_repo }}
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+###
