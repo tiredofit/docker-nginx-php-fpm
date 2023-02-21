@@ -31,7 +31,7 @@ phpfpm_bootstrap() {
 phpfpm_configure_authentication() {
     if [ "${NGINX_AUTHENTICATION_TYPE,,}" = "llng" ]; then
         print_notice "Adding LLNG Authentication parameters to nginx configuration"
-        header_num=$(printenv | sort | grep -c '\NGINX_AUTHENTICATION_LLNG_ATTRIBUTE.*')
+        header_num=$(printenv | sort | grep -c '^NGINX_AUTHENTICATION_LLNG_ATTRIBUTE.*')
         for ((i = 1; i <= header_num; i++)); do
             headers=NGINX_AUTHENTICATION_LLNG_ATTRIBUTE${i}
             IFS=',' read -r -a array <<<"${!headers}"
