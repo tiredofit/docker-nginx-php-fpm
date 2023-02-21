@@ -1,4 +1,4 @@
-## 7.4.1 2023-02-21 <radarsymphony@github>
+## 7.4.2 2023-02-21 <radarsymphony@github>
 
    ### Changed
       - Fix for LLNG_AUTHENTICATION_TYPE not reading variables properly
