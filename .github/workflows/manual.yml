@@ -637,7 +637,7 @@ jobs:
     env:
       DISTRO: "alpine"
       DISTRO_VARIANT: "3.9"
-      PHP_BASE: 8.0
+      PHP_BASE: 7.2
       build_file: Dockerfile
     runs-on: ubuntu-latest
     steps:
