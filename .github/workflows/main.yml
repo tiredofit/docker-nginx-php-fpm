@@ -740,7 +740,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
           file: ./${{ env.build_file }}
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64
           push: true
           tags: ${{ steps.prep.outputs.container_images }}
           build-args: |
