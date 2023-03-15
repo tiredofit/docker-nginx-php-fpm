@@ -1,3 +1,11 @@
+## 7.5.0 2023-03-15 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Quiet down output when loading defaults (xxx is already loaded! warnings)
+      - Rework initialization
+      - Fix a weird opcache issue
+
+
 ## 7.4.2 2023-02-21 <radarsymphony@github>
 
    ### Changed

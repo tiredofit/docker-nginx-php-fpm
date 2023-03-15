@@ -1,12 +1,12 @@
 ARG DISTRO=alpine
-ARG DISTRO_VARIANT=3.17
+ARG DISTRO_VARIANT=edge
 
 FROM docker.io/tiredofit/nginx:${DISTRO}-${DISTRO_VARIANT}
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE
 
-ENV PHP_BASE=${PHP_BASE:-"8.1"} \
+ENV PHP_BASE=${PHP_BASE:-"8.2"} \
     PHP_ENABLE_APCU=TRUE \
     PHP_ENABLE_BCMATH=TRUE \
     PHP_ENABLE_BZ2=TRUE \
@@ -813,8 +813,11 @@ RUN case "${PHP_BASE}" in \
     #### Disabling any but core extensions - When using this image as a base for other images, you'll want to turn turn them on before running composer with the inverse of phpdisomd (phpenmod) to keep things clean
     set +x && \
     for module in /etc/php${php_folder}/conf.d/*.ini; do if [ ! -L "${module}" ] ; then if [ "$(echo $(basename $module) | grep -c '^[0-9][0-9].*')" = "0" ] ; then mv "${module}" "$(dirname ${module})/20_$(basename ${module})" ; module="$(dirname ${module})/20_$(basename ${module})"; fi ; if ! grep -w -i -q ";priority" "$module"; then echo ";priority=$(basename $module .ini | cut -d _ -f1)" >> $module ; mv "${module}" /etc/php${php_folder}/mods-available/$(basename ${module} .ini | cut -c 4-).ini; fi; fi; done; \
+
     rm -rf /etc/php${php_folder}/conf.d/* && \
+    sed -i "s|;priority=00|;priority=10|g" /etc/php${php_folder}/mods-available/opcache.ini && \
     php_env_plugins_enabled="$(set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr [A-Z] [a-z])" && \
+    cat /etc/php${php_folder}/mods-available/opcache.ini && \
     for module in $php_env_plugins_enabled ; do if [ -f "/etc/php${php_folder}/mods-available/${module}.ini" ] ; then priority=$(cat /etc/php${php_folder}/mods-available/${module}.ini | grep ";priority" | cut -d = -f2) ; ln -sf "/etc/php${php_folder}/mods-available/${module}.ini" /etc/php${php_folder}/conf.d/${priority}-${module}.ini ; fi ; done ; \
     if [ "${PHP_BASE:0:1}" != "8" ] ; then priority=$(cat /etc/php${PHP_BASE:0:1}/mods-available/json.ini | grep ";priority" | cut -d = -f2) ; ln -sf "/etc/php${PHP_BASE:0:1}/mods-available/json.ini" /etc/php${PHP_BASE:0:1}/conf.d/${priority}-json.ini ; fi ; \
     set -x && \

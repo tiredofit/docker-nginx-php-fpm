@@ -12,12 +12,12 @@ phpfpm_bootstrap() {
                     php_prefix="/etc/php82/"
                 ;;
                 * )
-                    php_prefix="/etc/php$(php -v | head -n 1 | awk '{print $2}' | cut -c 1)/"
+                    php_prefix="/etc/php$(php -v 2>/dev/null | grep "^PHP " | head -n 1 | awk '{print $2}' | cut -c 1)/"
                 ;;
             esac
         ;;
         "debian" )
-            php_prefix="/etc/php/$(php -v | head -n 1 | awk '{print $2}' | cut -c 1-3)/"
+            php_prefix="/etc/php/$(php -v 2>/dev/null | grep "^PHP " | head -n 1 | awk '{print $2}' | cut -c 1-3)/"
         ;;
     esac
 
@@ -132,26 +132,6 @@ EOF
 EOF
         fi
     fi
-
-    if var_false "${PHP_KITCHENSINK}" ; then
-        php_enable_create_sample_php=${PHP_ENABLE_CREATE_SAMPLE_PHP}
-        unset PHP_ENABLE_CREATE_SAMPLE_PHP # legacy
-        php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE |sed -e 's/PHP_ENABLE_//g' | sed -e 's/=TRUE//g' | awk -vRS="" -vOFS=', ' '$1=$1' | tr A-Z a-z)
-        for module in $(echo "${php_env_plugins_enabled}" | tr "," "\n" ) ; do
-            if [ -f "${php_prefix}"/mods-available/"${module}".ini ]; then
-                print_debug "Enabling ${module}"
-                silent php-ext enable "${module}"
-                php_actual_plugins_enabled="${php_actual_plugins_enabled} ${module}"
-            else
-                print_error "Requested enabling ${module} however it doesn't exist!"
-            fi
-        done
-        print_notice "PHP-FPM Preparing to start with the following plugins enabled: ${php_actual_plugins_enabled}"
-    else
-        php_enable_create_sample_php=${PHP_ENABLE_CREATE_SAMPLE_PHP}
-        print_warn "Enabling Kitchen Sink mode and allowing all plugins to be active"
-        silent php-ext enable all
-  fi
 }
 
 phpfpm_configure_logging() {
@@ -327,6 +307,17 @@ EOF
 phpfpm_post_init() {
     case ${os} in
         "alpine" )
+            cp -R /assets/php-fpm/cli/php.ini "${php_prefix}"/
+            cp -R /assets/php-fpm/mods-available/* "${php_prefix}"/mods-available/
+            cp -R /assets/php-fpm/fpm/php-fpm.conf "${php_prefix}"/
+        ;;
+        "debian" )
+            cp -R /assets/php-fpm/* "${php_prefix}"
+        ;;
+    esac
+
+    case ${os} in
+        "alpine" )
             ### Weird Opcache issue
             if [ -f "${php_prefix}/conf.d/10-opcache.ini" ] && [ -f "${php_prefix}/conf.d/00-opcache.ini" ] ; then
               rm -rf "${php_prefix}"/conf.d/00-opcache.ini
@@ -340,16 +331,25 @@ phpfpm_post_init() {
         ;;
     esac
 
-    case ${os} in
-        "alpine" )
-            cp -R /assets/php-fpm/cli/php.ini "${php_prefix}"/
-            cp -R /assets/php-fpm/mods-available/* "${php_prefix}"/mods-available/
-            cp -R /assets/php-fpm/fpm/php-fpm.conf "${php_prefix}"/
-        ;;
-        "debian" )
-            cp -R /assets/php-fpm/* "${php_prefix}"
-        ;;
-    esac
+    if var_false "${PHP_KITCHENSINK}" ; then
+        php_enable_create_sample_php=${PHP_ENABLE_CREATE_SAMPLE_PHP}
+        unset PHP_ENABLE_CREATE_SAMPLE_PHP # legacy
+        php_env_plugins_enabled=$(set -o posix; set | sort | grep PHP_ENABLE_ | grep -i TRUE |sed -e 's/PHP_ENABLE_//g' | sed -e 's/=TRUE//g' | awk -vRS="" -vOFS=', ' '$1=$1' | tr A-Z a-z)
+        for module in $(echo "${php_env_plugins_enabled}" | tr "," "\n" ) ; do
+            if [ -f "${php_prefix}"/mods-available/"${module}".ini ]; then
+                print_debug "Enabling ${module}"
+                silent php-ext enable "${module}"
+                php_actual_plugins_enabled="${php_actual_plugins_enabled} ${module}"
+            else
+                print_error "Requested enabling ${module} however it doesn't exist!"
+            fi
+        done
+        print_debug "PHP-FPM Preparing to start with the following extensions enabled: ${php_actual_plugins_enabled}"
+    else
+        php_enable_create_sample_php=${PHP_ENABLE_CREATE_SAMPLE_PHP}
+        print_warn "Enabling Kitchen Sink mode and allowing all plugins to be active"
+        silent php-ext enable all
+    fi
 
     chmod -R 0755 "${php_prefix}"
     chown -R root:"${NGINX_GROUP}" "${php_prefix}"

@@ -18,16 +18,16 @@ case ${os} in
                 php_prefix="/etc/php82/"
             ;;
             * )
-                php_prefix="/etc/php$(php -v | head -n 1 | awk '{print $2}' | cut -c 1)/"
+                php_prefix="/etc/php$(php -v 2>/dev/null | grep "^PHP " | head -n 1 | awk '{print $2}' | cut -c 1)/"
             ;;
         esac
     ;;
     "debian" )
-        php_prefix="/etc/php/$(php -v | head -n 1 | awk '{print $2}' | cut -c 1-3)/"
+        php_prefix="/etc/php/$(php -v 2>/dev/null | grep "^PHP " | head -n 1 | awk '{print $2}' | cut -c 1-3)/"
     ;;
 esac
 
-if [ "${PHP_ENABLE_OPENSSL,,}" = "true" ] && [ ! -f "${php_prefix}mods-available/openssl.ini" ]; then
+if [ "${PHP_ENABLE_OPENSSL,,}" = "true" ] && [ ! -f "${php_prefix}/mods-available/openssl.ini" ]; then
     export PHP_ENABLE_OPENSSL=FALSE
 fi
 
