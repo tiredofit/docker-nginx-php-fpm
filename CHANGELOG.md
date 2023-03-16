@@ -1,3 +1,12 @@
+## 7.5.1 2023-03-16 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change log_errors_max_len to 0 in php.ini from 1024
+
+   ### Reverted
+      - Strip php_admin_value[log_errors_max_len] from fpm config
+
+
 ## 7.5.0 2023-03-15 <dave at tiredofit dot ca>
 
    ### Changed
