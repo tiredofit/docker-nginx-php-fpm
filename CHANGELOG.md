@@ -1,3 +1,9 @@
+## 7.5.2 2023-03-20 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add gnu-libconv package
+
+
 ## 7.5.1 2023-03-16 <dave at tiredofit dot ca>
 
    ### Changed

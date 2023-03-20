@@ -784,6 +784,7 @@ RUN case "${PHP_BASE}" in \
                 ca-certificates \
                 git \
                 gnupg \
+                gnu-libiconv \
                 gpgme \
                 openssl \
                 mariadb-client \
