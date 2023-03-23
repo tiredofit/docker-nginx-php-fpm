@@ -76,18 +76,18 @@ Builds of the image are available on [Docker Hub](https://hub.docker.com/r/tired
 docker pull docker.io/tiredofdit/nginx-php-fpm:(imagetag)
 ```
 
-Builds of the image are also available on the [Github Container Registry](https://github.com/tiredofit/docker-nginx-php-fpm/pkgs/container/docker-nginx-php-fpm) 
- 
+Builds of the image are also available on the [Github Container Registry](https://github.com/tiredofit/docker-nginx-php-fpm/pkgs/container/docker-nginx-php-fpm)
+
 ```
 docker pull ghcr.io/tiredofit/docker-nginx-php-fpm:(imagetag)
-``` 
+```
 
 The following image tags are available along with their tagged release based on what's written in the [Changelog](CHANGELOG.md):
 
 | PHP version | Alpine Base | Tag            | Debian Base | Tag           |
 | ----------- | ----------- | -------------- | ----------- | ------------- |
 | latest      | edge        | `:alpine-edge` |             |               |
-| 8.2.x       | edge        | `:alpine-8.1`  | Bullseye    | `:debian-8.2` |
+| 8.2.x       | edge        | `:alpine-8.2`  | Bullseye    | `:debian-8.2` |
 | 8.1.x       | 3.17        | `:alpine-8.1`  | Buster      | `:debian-8.1` |
 | 8.0.x       | 3.16        | `:alpine-8.0`  | Buster      | `:debian-8.0` |
 | 7.4.x       | 3.15        | `:alpine-7.4`  | Buster      | `:debian-7.3` |
@@ -203,6 +203,7 @@ When `PHP_FPM_CONTAINER_MODE` set to `nginx` the `PHP_FPM_LISTEN_PORT` environme
 | `PHP_FPM_POST_INIT_SCRIPT`            | If you wish to execute a script before php-fpm executes, enter it here and seperate multiples by comma.  |                                                |
 | `PHP_FPM_PROCESS_MANAGER`             | How to handle processes `static`, `ondemand`, `dynamic`                                                  | `dynamic`                                      |
 | `PHP_FPM_START_SERVERS`               | How many FPM servers to start initially                                                                  | `2`                                            |
+| `PHP_HIDE_X_POWERED_BY`               | Hide X-Powered by response                                                                               | `TRUE`                                         |
 | `PHP_LOG_ACCESS_FILE`                 | PHP Access Logfile Name                                                                                  | `access.log`                                   |
 | `PHP_LOG_ERROR_FILE`                  | Logfile name                                                                                             | `error.log`                                    |
 | `PHP_LOG_LEVEL`                       | PHP Log Level `alert` `error` `warning` `notice` `debug`                                                 | `notice`                                       |

@@ -1,3 +1,9 @@
+## 7.5.3 2023-03-23 <dave at tiredofit dot ca>
+
+   ### Added
+      - Introduce PHP_HIDE_X_POWERED_BY variable
+
+
 ## 7.5.2 2023-03-20 <dave at tiredofit dot ca>
 
    ### Added

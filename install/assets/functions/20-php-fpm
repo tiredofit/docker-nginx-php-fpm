@@ -177,6 +177,10 @@ phpfpm_configure_nginx() {
                 -e "/# Do not delete - Upstream Configuration/a\ \ \ \ include \/etc\/nginx\/snippets\/php-fpm-upstream.conf;" \
                 -e "/# Do not delete - Upstream Configuration/a\ \ \ \ ### PHP-FPM Multiple Handlers configuration" \
             /etc/nginx/nginx.conf
+
+    if var_true "${PHP_HIDE_X_POWERED_BY}" ; then
+        sed -i "/fastcgi_buffer_size/a \    fastcgi_hide_header X-Powered-By;" /etc/nginx/nginx.conf
+    fi
 }
 
 phpfpm_configure_server() {
