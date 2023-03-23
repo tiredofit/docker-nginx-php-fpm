@@ -1,3 +1,9 @@
+## 7.5.5 2023-03-23 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add more OPCache options and fix broken options
+
+
 ## 7.5.4 2023-03-23 <dave at tiredofit dot ca>
 
    ### Added

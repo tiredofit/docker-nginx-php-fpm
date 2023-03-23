@@ -211,12 +211,17 @@ When `PHP_FPM_CONTAINER_MODE` set to `nginx` the `PHP_FPM_LISTEN_PORT` environme
 | `PHP_LOG_LIMIT`                       | Characters to log                                                                                        | `2048`                                         |
 | `PHP_LOG_LOCATION`                    | Log Location for PHP Logs                                                                                | `/www/logs/php-fpm`                            |
 | `PHP_MEMORY_LIMIT`                    | How much memory should PHP use                                                                           | `128M`                                         |
-| `PHP_OPCACHE_INTERNED_STRINGS_BUFFER` | OPCache interned strings buffer                                                                          | `16`                                           |
+| `PHP_OPCACHE_INTERNED_STRINGS_BUFFER` | OPCache interned strings buffer                                                                          | `8`                                            |
 | `PHP_OPCACHE_JIT_BUFFER_SIZE`         | JIT Buffer Size `0` to disable                                                                           | `50M`                                          |
 | `PHP_OPCACHE_JIT_MODE`                | JIT [CRTO](https://wiki.php.net/rfc/jit) Mode - > PHP 8.x                                                | `1255`                                         |
-| `PHP_OPCACHE_MAX_ACCELERATED_FILES`   | OPCache Max accelerated files                                                                            | `5413`                                         |
+| `PHP_OPCACHE_MAX_ACCELERATED_FILES`   | OPCache Max accelerated files                                                                            | `10000`                                        |
 | `PHP_OPCACHE_MEM_SIZE`                | OPCache Memory Size - Set `0` to disable or via other env vars                                           | `128`                                          |
-| `PHP_OPCACHE_REVALIDATE_FREQ`         | OPCache revalidate frequency                                                                             | `60`                                           |
+| `PHP_OPCACHE_REVALIDATE_FREQ`         | OPCache revalidate frequency in seconds                                                                  | `2`                                            |
+| `PHP_OPCACHE_MAX_WASTED_PERCENTAGE`   | Max wasted percentage cache                                                                              | `5`                                            |
+| `PHP_OPCACHE_VALIDATE_TIMESTAMPS`     | Validate timestamps `1` or `0`                                                                           | `1`                                            |
+| `PHP_OPCACHE_SAVE_COMMENTS`           | Opcache Save Comments `0` or `1`                                                                         | `1`                                            |
+| `PHP_OPCACHE_MAX_FILE_SIZE`           | Opcache maximum file size                                                                                | `0`                                            |
+| `PHP_OPCACHE_OPTIMIZATION_LEVEL`      | Opcache optimization level                                                                               | `0x7FFFBFF`                                    |
 | `PHP_POST_MAX_SIZE`                   | Maximum Input Size for POST                                                                              | `2G`                                           |
 | `PHP_TIMEOUT`                         | Maximum Script execution Time                                                                            | `180`                                          |
 | `PHP_UPLOAD_MAX_SIZE`                 | Maximum Input Size for Uploads                                                                           | `2G`                                           |

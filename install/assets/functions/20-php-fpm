@@ -217,10 +217,16 @@ phpfpm_configure_server() {
             /assets/php-fpm//mods-available/apcu.ini
 
     sed -i \
-                -e "s#opcache.memory_consumption=.*#opcache.memory_consumption=${PHP_OPCACHE_MEM_SIZE}#g" \
                 -e "s#opcache.interned_strings_buffer=.*#opcache.interned_strings_buffer=${PHP_OPCACHE_INTERNED_STRINGS_BUFFER}#g" \
-                -e "s#opcache.max_accelerated_files=.*#max_accelerated_files=${PHP_OPCACHE_MAX_ACCELERATED_FILES}#g" \
-                -e "s#opcache.revalidate_freq=.*#revalidate_freq=${PHP_OPCACHE_REVALIDATE_FREQ}#g" \
+                -e "s#opcache.max_accelerated_files=.*#opcache.max_accelerated_files=${PHP_OPCACHE_MAX_ACCELERATED_FILES}#g" \
+                -e "s#opcache.max_file_size=.*#opcache.max_file_size=${PHP_OPCACHE_MAX_FILE_SIZE}#g" \
+                -e "s#opcache.max_wasted_percentage=.*#opcache.max_wasted_percentage=${PHP_OPCACHE_MAX_WASTED_PERCENTAGE}#g" \
+                -e "s#opcache.memory_consumption=.*#opcache.memory_consumption=${PHP_OPCACHE_MEM_SIZE}#g" \
+                -e "s#opcache.optimization_level=.*#opcache.optimization_level=${PHP_OPCACHE_OPTIMIZATION_LEVEL}#g" \
+                -e "s#opcache.revalidate_freq=.*#opcache.revalidate_freq=${PHP_OPCACHE_REVALIDATE_FREQ}#g" \
+                -e "s#opcache.revalidate_freq=.*#opcache.revalidate_freq=${PHP_OPCACHE_REVALIDATE_FREQ}#g" \
+                -e "s#opcache.save_comments=.*#opcache.save_comments=${PHP_OPCACHE_SAVE_COMMENTS}#g" \
+                -e "s#opcache.validate_timestamps=.*#opcache.validate_timestamps=${PHP_OPCACHE_VALIDATE_TIMESTAMPS}#g" \
            /assets/php-fpm/mods-available/opcache.ini
 
     if [ "${PHP_BASE:0:1}" = "7" ] ; then
