@@ -1,3 +1,9 @@
+## 7.5.6 2023-03-23 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Load MSGPACK when loading Redis module
+
+
 ## 7.5.5 2023-03-23 <dave at tiredofit dot ca>
 
    ### Added
