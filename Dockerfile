@@ -42,7 +42,7 @@ ENV PHP_BASE=${PHP_BASE:-"8.2"} \
 
 ### Dependency Installation
 RUN case "${PHP_BASE}" in \
-     8.2 ) export php_folder="82" ;; \
+     8.2 ) export php_folder="82" ; echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories ;; \
      8.1 ) export php_folder="81" ;; \
      *) export php_folder=${PHP_BASE:0:1} ;; \
     esac ; \
@@ -50,7 +50,7 @@ RUN case "${PHP_BASE}" in \
                             mariadb-connector-c \
                             php82  \
                             php82-bcmath  \
-                            #php82-brotli \
+                            php82-brotli \
                             php82-bz2  \
                             php82-calendar  \
                             php82-common  \
@@ -90,16 +90,16 @@ RUN case "${PHP_BASE}" in \
                             php82-pecl-ast \
                             #php82-pecl-event \
                             php82-pecl-igbinary \
-                            #php82-pecl-imagick \
-                            #php82-pecl-lzf \
-                            #php82-pecl-maxminddb \
-                            #php82-pecl-memcache \
+                            php82-pecl-imagick \
+                            php82-pecl-lzf \
+                            php82-pecl-maxminddb \
+                            php82-pecl-memcache \
                             php82-pecl-memcached \
                             php82-pecl-mongodb \
                             php82-pecl-msgpack \
                             php82-pecl-redis \
                             php82-pecl-uploadprogress \
-                            #php82-pecl-uuid \
+                            php82-pecl-uuid \
                             php82-pecl-xdebug \
                             php82-pecl-xhprof \
                             php82-pecl-yaml \

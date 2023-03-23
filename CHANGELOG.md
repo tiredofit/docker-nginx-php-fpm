@@ -1,3 +1,9 @@
+## 7.5.4 2023-03-23 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add testing repository for PHP 8.2-alpine
+
+
 ## 7.5.3 2023-03-23 <dave at tiredofit dot ca>
 
    ### Added
