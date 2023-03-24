@@ -1,3 +1,9 @@
+## 7.6.0 2023-03-24 <dave at tiredofit dot ca>
+
+   ### Added
+      - Added dozens of extra modules for Alpine PHP 8.0, 8.1, 8.2 variants
+
+
 ## 7.5.6 2023-03-23 <dave at tiredofit dot ca>
 
    ### Changed

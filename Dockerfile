@@ -48,201 +48,244 @@ RUN case "${PHP_BASE}" in \
     esac ; \
     export PHP_8_2_RUN_DEPS=" \
                             mariadb-connector-c \
-                            php82  \
-                            php82-bcmath  \
+                            php82 \
+                            php82-bcmath \
                             php82-brotli \
-                            php82-bz2  \
-                            php82-calendar  \
-                            php82-common  \
-                            php82-ctype  \
-                            php82-curl  \
-                            php82-dba  \
-                            php82-dom  \
-                            php82-embed  \
-                            php82-enchant  \
-                            php82-exif  \
-                            php82-ffi  \
-                            php82-fileinfo  \
-                            php82-fpm  \
-                            php82-ftp  \
-                            php82-gd  \
-                            php82-gettext  \
-                            php82-gmp  \
-                            php82-iconv  \
-                            php82-imap  \
-                            php82-intl  \
-                            php82-ldap  \
-                            php82-mbstring  \
-                            php82-mysqli  \
-                            php82-mysqlnd  \
-                            php82-odbc  \
-                            php82-opcache  \
-                            php82-openssl  \
-                            php82-pcntl  \
-                            php82-pdo  \
-                            php82-pdo_dblib  \
-                            php82-pdo_mysql  \
-                            php82-pdo_odbc  \
-                            php82-pdo_pgsql  \
-                            php82-pdo_sqlite  \
-                            php82-pear  \
+                            php82-bz2 \
+                            php82-calendar \
+                            php82-common \
+                            php82-ctype \
+                            php82-curl \
+                            php82-dba \
+                            php82-dom \
+                            php82-embed \
+                            php82-enchant \
+                            php82-exif \
+                            php82-ffi \
+                            php82-fileinfo \
+                            php82-fpm \
+                            php82-ftp \
+                            php82-gd \
+                            php82-gettext \
+                            php82-gmp \
+                            php82-iconv \
+                            php82-imap \
+                            php82-intl \
+                            php82-ldap \
+                            php82-litespeed \
+                            php82-mbstring \
+                            php82-mysqli \
+                            php82-mysqlnd \
+                            php82-odbc \
+                            php82-opcache \
+                            php82-openssl \
+                            php82-pcntl \
+                            php82-pdo \
+                            php82-pdo_dblib \
+                            php82-pdo_mysql \
+                            php82-pdo_odbc \
+                            php82-pdo_pgsql \
+                            php82-pdo_sqlite \
+                            php82-pear \
+                            php82-pecl-amqp \
                             php82-pecl-apcu \
                             php82-pecl-ast \
-                            #php82-pecl-event \
+                            php82-pecl-couchbase \
+                            php82-pecl-grpc \
                             php82-pecl-igbinary \
                             php82-pecl-imagick \
+                            php82-pecl-immutable_cache \
+                            php82-pecl-luasandbox \
                             php82-pecl-lzf \
                             php82-pecl-maxminddb \
+                            php82-pecl-mcrypt \
                             php82-pecl-memcache \
                             php82-pecl-memcached \
                             php82-pecl-mongodb \
                             php82-pecl-msgpack \
+                            php82-pecl-oauth \
+                            php82-pecl-pcov \
+                            php82-pecl-phalcon \
+                            php82-pecl-protobuf \
+                            php82-pecl-psr \
                             php82-pecl-redis \
+                            php82-pecl-runkit7 \
+                            php82-pecl-swoole \
+                            php82-pecl-teds \
+                            php82-pecl-timezonedb \
                             php82-pecl-uploadprogress \
                             php82-pecl-uuid \
+                            php82-pecl-vips \
+                            php82-pecl-vld \
                             php82-pecl-xdebug \
                             php82-pecl-xhprof \
+                            php82-pecl-xhprof-assets \
+                            php82-pecl-xlswriter \
                             php82-pecl-yaml \
-                            php82-pgsql  \
-                            php82-phar  \
-                            php82-posix  \
-                            php82-pspell  \
-                            php82-session  \
-                            php82-shmop  \
-                            php82-simplexml  \
-                            php82-snmp  \
-                            php82-soap  \
-                            php82-sockets  \
-                            php82-sodium  \
-                            php82-sqlite3  \
-                            php82-tidy  \
-                            php82-tokenizer  \
-                            php82-xml  \
-                            php82-xmlreader  \
-                            php82-xmlwriter  \
-                            php82-xsl  \
-                            php82-zip  \
+                            php82-pecl-zephir_parser \
+                            php82-pecl-zstd \
+                            php82-pgsql \
+                            php82-phar \
+                            php82-posix \
+                            php82-pspell \
+                            php82-session \
+                            php82-shmop \
+                            php82-simplexml \
+                            php82-snmp \
+                            php82-soap \
+                            php82-sockets \
+                            php82-sodium \
+                            php82-spx \
+                            php82-sqlite3 \
+                            php82-sysvmsg \
+                            php82-sysvsem \
+                            php82-sysvshm \
+                            php82-tidy \
+                            php82-tokenizer \
+                            php82-xml \
+                            php82-xmlreader \
+                            php82-xmlwriter \
+                            php82-xsl \
+                            php82-zip \
                             " && \
      export PHP_8_1_RUN_DEPS=" \
                             mariadb-connector-c \
-                            php81  \
-                            php81-bcmath  \
+                            php81 \
+                            php81-bcmath \
                             php81-brotli \
-                            php81-bz2  \
-                            php81-calendar  \
-                            php81-common  \
-                            php81-ctype  \
-                            php81-curl  \
-                            php81-dba  \
-                            php81-dom  \
-                            php81-embed  \
-                            php81-enchant  \
-                            php81-exif  \
-                            php81-ffi  \
-                            php81-fileinfo  \
-                            php81-fpm  \
-                            php81-ftp  \
-                            php81-gd  \
-                            php81-gettext  \
-                            php81-gmp  \
-                            php81-iconv  \
-                            php81-imap  \
-                            php81-intl  \
-                            php81-ldap  \
-                            php81-mbstring  \
-                            php81-mysqli  \
-                            php81-mysqlnd  \
-                            php81-odbc  \
-                            php81-opcache  \
-                            php81-openssl  \
-                            php81-pcntl  \
-                            php81-pdo  \
-                            php81-pdo_dblib  \
-                            php81-pdo_mysql  \
-                            php81-pdo_odbc  \
-                            php81-pdo_pgsql  \
-                            php81-pdo_sqlite  \
-                            php81-pear  \
+                            php81-bz2 \
+                            php81-calendar \
+                            php81-common \
+                            php81-ctype \
+                            php81-curl \
+                            php81-dba \
+                            php81-dom \
+                            php81-embed \
+                            php81-enchant \
+                            php81-exif \
+                            php81-ffi \
+                            php81-fileinfo \
+                            php81-fpm \
+                            php81-ftp \
+                            php81-gd \
+                            php81-gettext \
+                            php81-gmp \
+                            php81-iconv \
+                            php81-imap \
+                            php81-intl \
+                            php81-ldap \
+                            php81-litespeed \
+                            php81-mbstring \
+                            php81-mysqli \
+                            php81-mysqlnd \
+                            php81-odbc \
+                            php81-opcache \
+                            php81-openssl \
+                            php81-pcntl \
+                            php81-pdo \
+                            php81-pdo_dblib \
+                            php81-pdo_mysql \
+                            php81-pdo_odbc \
+                            php81-pdo_pgsql \
+                            php81-pdo_sqlite \
+                            php81-pear \
+                            php81-pecl-amqp \
                             php81-pecl-apcu \
                             php81-pecl-ast \
+                            php81-pecl-couchbase \
                             php81-pecl-event \
                             php81-pecl-igbinary \
                             php81-pecl-imagick \
                             php81-pecl-lzf \
+                            php81-pecl-mailparse \
                             php81-pecl-maxminddb \
                             php81-pecl-memcache \
                             php81-pecl-memcached \
                             php81-pecl-mongodb \
                             php81-pecl-msgpack \
+                            php81-pecl-protobuf \
+                            php81-pecl-psr \
+                            php81-pecl-rdkafka \
                             php81-pecl-redis \
+                            php81-pecl-ssh2 \
+                            php81-pecl-swoole \
                             php81-pecl-uploadprogress \
                             php81-pecl-uuid \
+                            php81-pecl-vips \
                             php81-pecl-xdebug \
                             php81-pecl-xhprof \
+                            php81-pecl-xhprof-assets \
                             php81-pecl-yaml \
-                            php81-pgsql  \
-                            php81-phar  \
-                            php81-posix  \
-                            php81-pspell  \
-                            php81-session  \
-                            php81-shmop  \
-                            php81-simplexml  \
-                            php81-snmp  \
-                            php81-soap  \
-                            php81-sockets  \
-                            php81-sodium  \
-                            php81-sqlite3  \
-                            php81-tidy  \
-                            php81-tokenizer  \
-                            php81-xml  \
-                            php81-xmlreader  \
-                            php81-xmlwriter  \
-                            php81-xsl  \
-                            php81-zip  \
+                            php81-pecl-zstd \
+                            php81-pgsql \
+                            php81-phar \
+                            php81-posix \
+                            php81-pspell \
+                            php81-session \
+                            php81-shmop \
+                            php81-simplexml \
+                            php81-snmp \
+                            php81-soap \
+                            php81-sockets \
+                            php81-sodium \
+                            php81-sqlite3 \
+                            php81-sysvmsg \
+                            php81-sysvsem \
+                            php81-sysvshm \
+                            php81-tidy \
+                            php81-tokenizer \
+                            php81-xml \
+                            php81-xmlreader \
+                            php81-xmlwriter \
+                            php81-xsl \
+                            php81-zip \
                             " && \
     \
     export PHP_8_0_RUN_DEPS=" \
                             mariadb-connector-c \
-                            php8  \
-                            php8-bcmath  \
+                            php8 \
+                            php8-bcmath \
                             php8-brotli \
-                            php8-bz2  \
-                            php8-calendar  \
-                            php8-common  \
-                            php8-ctype  \
-                            php8-curl  \
-                            php8-dba  \
-                            php8-dom  \
-                            php8-embed  \
-                            php8-enchant  \
-                            php8-exif  \
-                            php8-ffi  \
-                            php8-fileinfo  \
-                            php8-fpm  \
-                            php8-ftp  \
-                            php8-gd  \
-                            php8-gettext  \
-                            php8-gmp  \
-                            php8-iconv  \
-                            php8-imap  \
-                            php8-intl  \
-                            php8-ldap  \
-                            php8-mbstring  \
-                            php8-mysqli  \
-                            php8-mysqlnd  \
-                            php8-odbc  \
-                            php8-opcache  \
-                            php8-openssl  \
-                            php8-pcntl  \
-                            php8-pdo  \
-                            php8-pdo_dblib  \
-                            php8-pdo_mysql  \
-                            php8-pdo_odbc  \
-                            php8-pdo_pgsql  \
-                            php8-pdo_sqlite  \
-                            php8-pear  \
+                            php8-bz2 \
+                            php8-calendar \
+                            php8-common \
+                            php8-ctype \
+                            php8-curl \
+                            php8-dba \
+                            php8-dom \
+                            php8-embed \
+                            php8-enchant \
+                            php8-exif \
+                            php8-ffi \
+                            php8-fileinfo \
+                            php8-fpm \
+                            php8-ftp \
+                            php8-gd \
+                            php8-gettext \
+                            php8-gmp \
+                            php8-iconv \
+                            php8-imap \
+                            php8-intl \
+                            php8-ldap \
+                            php8-litespeed \
+                            php8-mbstring \
+                            php8-mysqli \
+                            php8-mysqlnd \
+                            php8-odbc \
+                            php8-opcache \
+                            php8-openssl \
+                            php8-pcntl \
+                            php8-pdo \
+                            php8-pdo_dblib \
+                            php8-pdo_mysql \
+                            php8-pdo_odbc \
+                            php8-pdo_pgsql \
+                            php8-pdo_sqlite \
+                            php8-pear \
+                            php8-pecl-amqp \
                             php8-pecl-apcu \
                             php8-pecl-ast \
+                            php8-pecl-couchbase \
                             php8-pecl-event \
                             php8-pecl-igbinary \
                             php8-pecl-imagick \
@@ -253,35 +296,46 @@ RUN case "${PHP_BASE}" in \
                             php8-pecl-memcache \
                             php8-pecl-memcached \
                             php8-pecl-mongodb \
-#                            php8-msgpack \
+                            php8-pecl-msgpack \
                             php8-pecl-oauth \
+                            php8-pecl-protobuf \
+                            php8-pecl-psr \
+                            php8-pecl-rdkafka \
                             php8-pecl-redis \
+                            php8-pecl-ssh2 \
+                            php8-pecl-swoole \
                             php8-pecl-timezonedb \
                             php8-pecl-uploadprogress \
                             php8-pecl-uuid \
                             php8-pecl-vips \
                             php8-pecl-xdebug \
                             php8-pecl-xhprof \
+                            php8-pecl-xhprof-assets \
                             php8-pecl-yaml \
-                            php8-pgsql  \
-                            php8-phar  \
-                            php8-posix  \
-                            php8-pspell  \
-                            php8-session  \
-                            php8-shmop  \
-                            php8-simplexml  \
-                            php8-snmp  \
-                            php8-soap  \
-                            php8-sockets  \
-                            php8-sodium  \
-                            php8-sqlite3  \
-                            php8-tidy  \
-                            php8-tokenizer  \
-                            php8-xml  \
-                            php8-xmlreader  \
-                            php8-xmlwriter  \
-                            php8-xsl  \
-                            php8-zip  \
+                            php8-pecl-zstd \
+                            php8-pgsql \
+                            php8-phar \
+                            php8-posix \
+                            php8-pspell \
+                            php8-session \
+                            php8-shmop \
+                            php8-simplexml \
+                            php8-snmp \
+                            php8-soap \
+                            php8-sockets \
+                            php8-sodium \
+                            php8-sqlite3 \
+                            php8-sysvmsg \
+                            php8-sysvsem \
+                            php8-sysvshm \
+                            php8-tideways_xhprof \
+                            php8-tidy \
+                            php8-tokenizer \
+                            php8-xml \
+                            php8-xmlreader \
+                            php8-xmlwriter \
+                            php8-xsl \
+                            php8-zip \
                             " && \
     \
     export PHP_7_4_RUN_DEPS=" \
@@ -358,7 +412,6 @@ RUN case "${PHP_BASE}" in \
                             php7-pgsql \
                             php7-phalcon \
                             php7-phar \
-                            php7-phpdbg \
                             php7-posix \
                             php7-pspell \
                             php7-session \
@@ -390,7 +443,6 @@ RUN case "${PHP_BASE}" in \
                             php7-ctype \
                             php7-curl \
                             php7-dba \
-                            php7-dbg \
                             php7-dom \
                             php7-embed \
                             php7-enchant \
@@ -452,7 +504,6 @@ RUN case "${PHP_BASE}" in \
                             php7-pgsql \
                             php7-phalcon \
                             php7-phar \
-                            php7-phpdbg \
                             php7-posix \
                             php7-pspell \
                             php7-recode \
@@ -544,7 +595,6 @@ RUN case "${PHP_BASE}" in \
                             php7-pgsql \
                             php7-phalcon \
                             php7-phar \
-                            php7-phpdbg \
                             php7-posix \
                             php7-pspell \
                             php7-recode \
@@ -622,7 +672,6 @@ RUN case "${PHP_BASE}" in \
                             php7-pear-net_socket \
                             php7-pgsql \
                             php7-phar \
-                            php7-phpdbg \
                             php7-posix \
                             php7-pspell \
                             php7-recode \
@@ -690,7 +739,6 @@ RUN case "${PHP_BASE}" in \
                             php7-pear \
                             php7-pgsql \
                             php7-phar \
-                            php7-phpdbg \
                             php7-posix \
                             php7-pspell \
                             php7-session \
@@ -721,7 +769,6 @@ RUN case "${PHP_BASE}" in \
                             php5-ctype \
                             php5-curl \
                             php5-dba \
-                            php5-dbg \
                             php5-dom \
                             php5-embed \
                             php5-enchant \
@@ -753,7 +800,6 @@ RUN case "${PHP_BASE}" in \
                             php5-pear \
                             php5-pgsql \
                             php5-phar \
-                            php5-phpdbg \
                             php5-posix \
                             php5-pspell \
                             php5-shmop \
