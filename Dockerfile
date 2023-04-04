@@ -135,7 +135,6 @@ RUN case "${PHP_BASE}" in \
                             php82-soap \
                             php82-sockets \
                             php82-sodium \
-                            php82-spx \
                             php82-sqlite3 \
                             php82-sysvmsg \
                             php82-sysvsem \
@@ -860,7 +859,6 @@ RUN case "${PHP_BASE}" in \
     #### Disabling any but core extensions - When using this image as a base for other images, you'll want to turn turn them on before running composer with the inverse of phpdisomd (phpenmod) to keep things clean
     set +x && \
     for module in /etc/php${php_folder}/conf.d/*.ini; do if [ ! -L "${module}" ] ; then if [ "$(echo $(basename $module) | grep -c '^[0-9][0-9].*')" = "0" ] ; then mv "${module}" "$(dirname ${module})/20_$(basename ${module})" ; module="$(dirname ${module})/20_$(basename ${module})"; fi ; if ! grep -w -i -q ";priority" "$module"; then echo ";priority=$(basename $module .ini | cut -d _ -f1)" >> $module ; mv "${module}" /etc/php${php_folder}/mods-available/$(basename ${module} .ini | cut -c 4-).ini; fi; fi; done; \
-
     rm -rf /etc/php${php_folder}/conf.d/* && \
     sed -i "s|;priority=00|;priority=10|g" /etc/php${php_folder}/mods-available/opcache.ini && \
     php_env_plugins_enabled="$(set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr [A-Z] [a-z])" && \

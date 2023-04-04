@@ -1,3 +1,9 @@
+## 7.6.1 2023-04-04 <dave at tiredofit dot ca>
+
+   ### Reverted
+      - Remove spx extension from PHP 8.2 alpine
+
+
 ## 7.6.0 2023-03-24 <dave at tiredofit dot ca>
 
    ### Added
