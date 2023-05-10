@@ -1,5 +1,5 @@
 ARG DISTRO=alpine
-ARG DISTRO_VARIANT=edge
+ARG DISTRO_VARIANT=3.18
 
 FROM docker.io/tiredofit/nginx:${DISTRO}-${DISTRO_VARIANT}
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
@@ -42,7 +42,7 @@ ENV PHP_BASE=${PHP_BASE:-"8.2"} \
 
 ### Dependency Installation
 RUN case "${PHP_BASE}" in \
-     8.2 ) export php_folder="82" ; echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories ;; \
+     8.2 ) export php_folder="82" ;; \
      8.1 ) export php_folder="81" ;; \
      *) export php_folder=${PHP_BASE:0:1} ;; \
     esac ; \

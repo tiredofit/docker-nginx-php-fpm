@@ -1,3 +1,11 @@
+## 7.6.2 2023-05-10 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change PHP 8.2 to build with Alpine 3.18 Base
+      - Change PHP 8.1 to build with Alpine 3.18 Base
+      - Drop PHP 3.17 base variant
+
+
 ## 7.6.1 2023-04-04 <dave at tiredofit dot ca>
 
    ### Reverted
