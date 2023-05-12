@@ -1,3 +1,9 @@
+## 7.6.3 2023-05-12 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Strip pecl packages that no longer exist in Arch 3.18 repository for PHP 8.2
+
+
 ## 7.6.2 2023-05-10 <dave at tiredofit dot ca>
 
    ### Changed

@@ -91,38 +91,25 @@ RUN case "${PHP_BASE}" in \
                             php82-pecl-apcu \
                             php82-pecl-ast \
                             php82-pecl-couchbase \
-                            php82-pecl-grpc \
                             php82-pecl-igbinary \
                             php82-pecl-imagick \
-                            php82-pecl-immutable_cache \
-                            php82-pecl-luasandbox \
                             php82-pecl-lzf \
                             php82-pecl-maxminddb \
-                            php82-pecl-mcrypt \
                             php82-pecl-memcache \
                             php82-pecl-memcached \
                             php82-pecl-mongodb \
                             php82-pecl-msgpack \
-                            php82-pecl-oauth \
-                            php82-pecl-pcov \
                             php82-pecl-phalcon \
                             php82-pecl-protobuf \
                             php82-pecl-psr \
                             php82-pecl-redis \
-                            php82-pecl-runkit7 \
                             php82-pecl-swoole \
-                            php82-pecl-teds \
-                            php82-pecl-timezonedb \
                             php82-pecl-uploadprogress \
                             php82-pecl-uuid \
-                            php82-pecl-vips \
-                            php82-pecl-vld \
                             php82-pecl-xdebug \
                             php82-pecl-xhprof \
                             php82-pecl-xhprof-assets \
-                            php82-pecl-xlswriter \
                             php82-pecl-yaml \
-                            php82-pecl-zephir_parser \
                             php82-pecl-zstd \
                             php82-pgsql \
                             php82-phar \
