@@ -99,7 +99,6 @@ RUN case "${PHP_BASE}" in \
                             php82-pecl-memcached \
                             php82-pecl-mongodb \
                             php82-pecl-msgpack \
-                            php82-pecl-phalcon \
                             php82-pecl-protobuf \
                             php82-pecl-psr \
                             php82-pecl-redis \

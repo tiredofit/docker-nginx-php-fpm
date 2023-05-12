@@ -1,3 +1,9 @@
+## 7.6.4 2023-05-12 <dave at tiredofit dot ca>
+
+   ### Reverted
+      - Remove php82-pecl-phalcon for Alpine 3.18
+
+
 ## 7.6.3 2023-05-12 <dave at tiredofit dot ca>
 
    ### Changed
