@@ -73,7 +73,7 @@ Clone this repository and build the image with `docker build -t (imagename) .`
 Builds of the image are available on [Docker Hub](https://hub.docker.com/r/tiredofit/nginx-php-fpm)
 
 ```bash
-docker pull docker.io/tiredofdit/nginx-php-fpm:(imagetag)
+docker pull docker.io/tiredofit/nginx-php-fpm:(imagetag)
 ```
 
 Builds of the image are also available on the [Github Container Registry](https://github.com/tiredofit/docker-nginx-php-fpm/pkgs/container/docker-nginx-php-fpm)
