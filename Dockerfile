@@ -47,6 +47,7 @@ RUN case "${PHP_BASE}" in \
      *) export php_folder=${PHP_BASE:0:1} ;; \
     esac ; \
     export PHP_8_2_RUN_DEPS=" \
+                            gnu-libiconv \
                             mariadb-connector-c \
                             php82 \
                             php82-bcmath \
@@ -134,6 +135,7 @@ RUN case "${PHP_BASE}" in \
                             php82-zip \
                             " && \
      export PHP_8_1_RUN_DEPS=" \
+                            gnu-libiconv \
                             mariadb-connector-c \
                             php81 \
                             php81-bcmath \
@@ -227,6 +229,7 @@ RUN case "${PHP_BASE}" in \
                             " && \
     \
     export PHP_8_0_RUN_DEPS=" \
+                            gnu-libiconv \
                             mariadb-connector-c \
                             php8 \
                             php8-bcmath \
@@ -815,7 +818,6 @@ RUN case "${PHP_BASE}" in \
                 ca-certificates \
                 git \
                 gnupg \
-                gnu-libiconv \
                 gpgme \
                 openssl \
                 mariadb-client \

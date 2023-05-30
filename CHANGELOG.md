@@ -1,3 +1,9 @@
+## 7.6.5 2023-05-30 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Drop requirement of gnu-libiconv for < PHP 8.0 on alpine
+
+
 ## 7.6.4 2023-05-12 <dave at tiredofit dot ca>
 
    ### Reverted
