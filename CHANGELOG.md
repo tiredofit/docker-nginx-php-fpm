@@ -1,3 +1,9 @@
+## 7.6.6 2023-06-19 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Stop building gnupg extension for <PHP 8.1
+
+
 ## 7.6.5 2023-05-30 <dave at tiredofit dot ca>
 
    ### Changed

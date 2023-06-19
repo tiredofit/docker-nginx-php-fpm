@@ -42,9 +42,9 @@ ENV PHP_BASE=${PHP_BASE:-"8.2"} \
 
 ### Dependency Installation
 RUN case "${PHP_BASE}" in \
-     8.2 ) export php_folder="82" ;; \
-     8.1 ) export php_folder="81" ;; \
-     *) export php_folder=${PHP_BASE:0:1} ;; \
+       8.2 ) export php_folder="82" export build_gnupg=true ;; \
+       8.1 ) export php_folder="81" export build_gnupg=true ;; \
+       *) export php_folder=${PHP_BASE:0:1} ; export build_gnupg=false ;; \
     esac ; \
     export PHP_8_2_RUN_DEPS=" \
                             gnu-libiconv \
@@ -840,9 +840,10 @@ RUN case "${PHP_BASE}" in \
     if [ -f "/etc/php${php_folder}/*magick*.ini" ]; then mv /tmp/*magick.ini* /etc/php${php_folder}/conf.d/ ; fi ; \
     \
     ### Build Extra Extensions
-    pecl install gnupg && \
-    echo "extension=gnupg.so" > /etc/php${php_folder}/conf.d/20-gnupg.ini && \
-    \
+    if [ "${build_gnupg,,}" = "true" ] ; then \
+    pecl install gnupg ; \
+    echo "extension=gnupg.so" > /etc/php${php_folder}/conf.d/20-gnupg.ini ; \
+    fi ; \
     mkdir -p /etc/php${php_folder}/mods-available/ && \
     #### Disabling any but core extensions - When using this image as a base for other images, you'll want to turn turn them on before running composer with the inverse of phpdisomd (phpenmod) to keep things clean
     set +x && \
