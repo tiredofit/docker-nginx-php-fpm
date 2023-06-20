@@ -1,3 +1,9 @@
+## 7.6.8 2023-06-20 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Restructure authentication routines when no NGINX_SITE_ENABLED being used to properly allow NGINX_AUTHENTICATION_TYPE=LLNG to be used.
+
+
 ## 7.6.6 2023-06-19 <dave at tiredofit dot ca>
 
    ### Changed
