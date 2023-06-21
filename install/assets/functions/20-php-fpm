@@ -43,9 +43,10 @@ phpfpm_configure_authentication() {
     cp -R /etc/nginx/snippets/php-fpm.conf /etc/nginx/snippets/monitoring-php-fpm.conf
     sed -i "s|include /etc/nginx/snippets/php-fpm.conf;|include /etc/nginx/snippets/monitoring-php-fpm.conf;|g" /etc/nginx/snippets/monitoring.conf
     cat <<EOF >> /etc/nginx/snippets/php-fpm.conf
-  ### LLNG Authentication handler
-  include /etc/nginx/snippets/authentication/llng_auth_request;
-  include /etc/nginx/snippets/authentication/llng_params;
+
+### LLNG Authentication handler
+include /etc/nginx/snippets/authentication/llng_auth_request;
+include /etc/nginx/snippets/authentication/llng_params;
 EOF
 
     if [ "${NGINX_SITE_ENABLED}" = "default" ] ; then

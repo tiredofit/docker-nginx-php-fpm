@@ -1,3 +1,9 @@
+## 7.6.9 2023-06-21 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix case introduced with 7.6.8 where authentication takes over default settings
+
+
 ## 7.6.8 2023-06-20 <dave at tiredofit dot ca>
 
    ### Changed
