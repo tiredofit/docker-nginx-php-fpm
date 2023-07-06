@@ -1,3 +1,9 @@
+## 7.6.10 2023-07-06 <dave at tiredofit dot ca>
+
+   ### Added
+      - Source defaults from upstream nginx container to avoid having to use NGINX_ENABLE_APPLICATION_CONFIGURATION=TRUE variable
+
+
 ## 7.6.9 2023-06-21 <dave at tiredofit dot ca>
 
    ### Changed
