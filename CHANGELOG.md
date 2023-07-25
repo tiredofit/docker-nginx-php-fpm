@@ -1,3 +1,9 @@
+## 7.6.11 2023-07-25 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change environment variable case
+
+
 ## 7.6.10 2023-07-06 <dave at tiredofit dot ca>
 
    ### Added
