@@ -87,11 +87,11 @@ The following image tags are available along with their tagged release based on 
 | PHP version | Alpine Base | Tag            | Debian Base | Tag           |
 | ----------- | ----------- | -------------- | ----------- | ------------- |
 | latest      | edge        | `:alpine-edge` |             |               |
-| 8.2.x       | edge        | `:alpine-8.2`  | Bullseye    | `:debian-8.2` |
-| 8.1.x       | 3.17        | `:alpine-8.1`  | Buster      | `:debian-8.1` |
-| 8.0.x       | 3.16        | `:alpine-8.0`  | Buster      | `:debian-8.0` |
-| 7.4.x       | 3.15        | `:alpine-7.4`  | Buster      | `:debian-7.3` |
-| 7.3.x       | 3.12        | `:alpine-7.3`  | Buster      | `:debian-7.3` |
+| 8.2.x       | edge        | `:alpine-8.2`  | Bookworm    | `:debian-8.2` |
+| 8.1.x       | 3.17        | `:alpine-8.1`  | Bookworm    | `:debian-8.1` |
+| 8.0.x       | 3.16        | `:alpine-8.0`  | Bookworm    | `:debian-8.0` |
+| 7.4.x       | 3.15        | `:alpine-7.4`  | Bookworm    | `:debian-7.4` |
+| 7.3.x       | 3.12        | `:alpine-7.3`  | Bookworm    | `:debian-7.3` |
 | 7.2.x       | 3.9         | `:alpine-7.2`  |             |               |
 | 7.1.x       | 3.7         | `:alpine-7.1`  |             |               |
 | 7.0.x       | 3.5         | `:alpine-7.0`  |             |               |

@@ -1,3 +1,12 @@
+## 7.6.12 2023-07-28 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add support for Debian Bookworm
+
+   ### Changed
+      - Cleanup some PHP directories that shouldn't exist on Debian variants
+
+
 ## 7.6.11 2023-07-25 <dave at tiredofit dot ca>
 
    ### Changed

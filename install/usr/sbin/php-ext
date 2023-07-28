@@ -27,7 +27,7 @@ case ${os} in
     ;;
 esac
 
-if [ "${PHP_ENABLE_OPENSSL,,}" = "true" ] && [ ! -f "${php_prefix}/mods-available/openssl.ini" ]; then
+if [ "${PHP_ENABLE_OPENSSL,,}" = "true" ] && [ ! -f "${php_prefix}"/mods-available/openssl.ini ]; then
     export PHP_ENABLE_OPENSSL=FALSE
 fi
 

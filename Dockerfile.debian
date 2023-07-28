@@ -181,6 +181,8 @@ RUN export PHP_7_3_RUN_DEPS=" \
     \
     package cleanup && \
     mkdir -p /var/log/nginx && \
+    shopt -s extglob && \
+    rm -rf /etc/php/!(${PHP_BASE})
     rm -rf \
            /root/.gnupg \
            /tmp/* \
