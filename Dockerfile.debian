@@ -1,5 +1,5 @@
 ARG DISTRO=debian
-ARG DISTRO_VARIANT=bullseye
+ARG DISTRO_VARIANT=bookworm
 
 FROM docker.io/tiredofit/nginx:${DISTRO}-${DISTRO_VARIANT}
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
@@ -73,7 +73,6 @@ RUN export PHP_7_3_RUN_DEPS=" \
     export PHP_ADDITIONAL_MODULES=" \
                 php$PHP_BASE-ast \
                 php$PHP_BASE-apcu \
-                php$PHP_BASE-decimal \
                 php$PHP_BASE-gearman \
                 php$PHP_BASE-grpc \
                 php$PHP_BASE-imagick \
@@ -181,8 +180,6 @@ RUN export PHP_7_3_RUN_DEPS=" \
     \
     package cleanup && \
     mkdir -p /var/log/nginx && \
-    shopt -s extglob && \
-    rm -rf /etc/php/!(${PHP_BASE})
     rm -rf \
            /root/.gnupg \
            /tmp/* \

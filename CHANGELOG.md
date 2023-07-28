@@ -1,3 +1,9 @@
+## 7.6.13 2023-07-28 <dave at tiredofit dot ca>
+
+   ### Reverted
+      - Remove php-decimal extension from debian variant
+
+
 ## 7.6.12 2023-07-28 <dave at tiredofit dot ca>
 
    ### Added
