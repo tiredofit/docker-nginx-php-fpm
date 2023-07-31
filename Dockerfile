@@ -845,7 +845,7 @@ RUN case "${PHP_BASE}" in \
     echo "extension=gnupg.so" > /etc/php${php_folder}/conf.d/20-gnupg.ini ; \
     fi ; \
     mkdir -p /etc/php${php_folder}/mods-available/ && \
-    #### Disabling any but core extensions - When using this image as a base for other images, you'll want to turn turn them on before running composer with the inverse of phpdisomd (phpenmod) to keep things clean
+    #### Disabling any but core extensions - When using this image as a base for other images, you'll want to turn them on before running composer with the inverse of phpdisomd (phpenmod) to keep things clean
     set +x && \
     for module in /etc/php${php_folder}/conf.d/*.ini; do if [ ! -L "${module}" ] ; then if [ "$(echo $(basename $module) | grep -c '^[0-9][0-9].*')" = "0" ] ; then mv "${module}" "$(dirname ${module})/20_$(basename ${module})" ; module="$(dirname ${module})/20_$(basename ${module})"; fi ; if ! grep -w -i -q ";priority" "$module"; then echo ";priority=$(basename $module .ini | cut -d _ -f1)" >> $module ; mv "${module}" /etc/php${php_folder}/mods-available/$(basename ${module} .ini | cut -c 4-).ini; fi; fi; done; \
     rm -rf /etc/php${php_folder}/conf.d/* && \
