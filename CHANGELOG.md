@@ -1,7 +1,13 @@
+## 7.6.14 2023-09-05 <fermion2020>
+
+   ### Changed
+      - Fixed not working LLNG handler authentification
+      - Fixed creating a default index page
+
 ## 7.6.13 2023-07-28 <dave at tiredofit dot ca>
 
    ### Reverted
-      - Remove php-decimal extension from debian variant
+      - Remove php-decimal extension from Debian variant
 
 
 ## 7.6.12 2023-07-28 <dave at tiredofit dot ca>

@@ -50,6 +50,10 @@ include /etc/nginx/snippets/authentication/llng_params;
 EOF
 
     if [ "${NGINX_SITE_ENABLED}" = "default" ] ; then
+
+        sed -i '/server {/a\ \ \ \ \  include /etc/nginx/snippets/authentication/llng_location_block;' /etc/nginx/sites.available/default.conf
+        sed -i '/server {/a\ \ \ \ \  ### LLNG Authentication handler' /etc/nginx/sites.available/default.conf
+
         sed -i \
                 "/location \/ {/a\
  \            ### LLNG Authentication handler \n\
@@ -265,7 +269,7 @@ phpfpm_configure_server() {
 }
 
 phpfpm_create_default_page() {
-    if var_true "${php_enable_create_sample_php}" ; then
+    if var_true "${PHP_ENABLE_CREATE_SAMPLE_PHP}" ; then
         if [ ! -f "${NGINX_WEBROOT}"/index.php ] ; then
             print_notice "Creating sample index.php"
             mkdir -p "${NGINX_WEBROOT}"
