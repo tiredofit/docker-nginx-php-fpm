@@ -269,7 +269,7 @@ phpfpm_configure_server() {
 }
 
 phpfpm_create_default_page() {
-    if var_true "${php_enable_create_sample_php}" ; then
+    if var_true "${PHP_ENABLE_CREATE_SAMPLE_PHP}" ; then
         if [ ! -f "${NGINX_WEBROOT}"/index.php ] ; then
             print_notice "Creating sample index.php"
             mkdir -p "${NGINX_WEBROOT}"
