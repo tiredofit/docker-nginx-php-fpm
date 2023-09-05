@@ -1,4 +1,4 @@
-## 7.6.14 2023-09-05 <fermion2020>
+## 7.6.14 2023-09-05 <fermion2020@github>
 
    ### Changed
       - Fixed not working LLNG handler authentification
