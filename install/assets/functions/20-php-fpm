@@ -251,6 +251,7 @@ phpfpm_configure_server() {
 
     sed -i \
                 -e "s#memory_limit = .*#memory_limit = ${PHP_MEMORY_LIMIT}#g" \
+                -e "s#max_execution_time = .*#max_execution_time = ${PHP_TIMEOUT}#g" \
                 -e "s#max_input_time = .*#max_input_time = ${PHP_TIMEOUT}#g" \
                 -e "s#default_socket_timeout = .*#default_socket_timeout = ${PHP_TIMEOUT}#g" \
                 -e "s#post_max_size = .*#post_max_size = ${PHP_UPLOAD_MAX_SIZE}#g" \

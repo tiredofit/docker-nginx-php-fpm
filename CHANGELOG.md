@@ -1,3 +1,9 @@
+## 7.6.15 2023-09-13 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix PHP_TIMEOUT not affecting php-cli operations causing unnecessary Signal 15s in some cases
+
+
 ## 7.6.14 2023-09-05 <fermion2020@github>
 
    ### Changed
