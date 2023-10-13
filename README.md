@@ -84,20 +84,20 @@ docker pull ghcr.io/tiredofit/docker-nginx-php-fpm:(imagetag)
 
 The following image tags are available along with their tagged release based on what's written in the [Changelog](CHANGELOG.md):
 
-| PHP version | Alpine Base | Tag            | Debian Base | Tag           |
-| ----------- | ----------- | -------------- | ----------- | ------------- |
-| latest      | edge        | `:alpine-edge` |             |               |
-| 8.2.x       | 3.18        | `:alpine-8.2`  | Bookworm    | `:debian-8.2` |
-| 8.1.x       | 3.18        | `:alpine-8.1`  | Bookworm    | `:debian-8.1` |
-| 8.0.x       | 3.16        | `:alpine-8.0`  | Bookworm    | `:debian-8.0` |
-| 7.4.x       | 3.15        | `:alpine-7.4`  | Bookworm    | `:debian-7.4` |
-| 7.3.x       | 3.12        | `:alpine-7.3`  | Bookworm    | `:debian-7.3` |
-| 7.2.x       | 3.9         | `:alpine-7.2`  |             |               |
-| 7.1.x       | 3.7         | `:alpine-7.1`  |             |               |
-| 7.0.x       | 3.5         | `:alpine-7.0`  |             |               |
-| 5.6.x       | 3.8         | `:alpine-5.6`  |             |               |
-| 5.5.x       | 3.4         | `:5.5-latest`  |             |               |
-| 5.3.x       | 3.4         | `:5.3-latest`  |             |               |
+| PHP version | Alpine Base | Tag            | Debian Base | Tag                    |
+| ----------- | ----------- | -------------- | ----------- | ---------------------- |
+| latest      | edge        | `:alpine-edge` |             |                        |
+| 8.2.x       | 3.18        | `:8.2-alpine`  | Bookworm    | `:8.2-debian-bookworm` |
+| 8.1.x       | 3.18        | `:8.1-alpine`  | Bookworm    | `:8.1-debian-bookworm` |
+| 8.0.x       | 3.16        | `:8.0-alpine`  | Bookworm    | `:8.0-debian-bookworm` |
+| 7.4.x       | 3.15        | `:7.4-alpine`  | Bookworm    | `:7.4-debian-bookworm` |
+| 7.3.x       | 3.12        | `:7.3-alpine`  | Bookworm    | `:7.3-debian-bookworm` |
+| 7.2.x       | 3.9         | `:7.2-alpine`  |             |                        |
+| 7.1.x       | 3.7         | `:7.1-alpine`  |             |                        |
+| 7.0.x       | 3.5         | `:7.0-alpine`  |             |                        |
+| 5.6.x       | 3.8         | `:5.6-alpine`  |             |                        |
+| 5.5.x       | 3.4         | `:5.5-latest`  |             |                        |
+| 5.3.x       | 3.4         | `:5.3-latest`  |             |                        |
 
 #### Multi Architecture
 Images are built primarily for `amd64` architecture, and may also include builds for `arm/v7`, `arm64` and others. These variants are all unsupported. Consider [sponsoring](https://github.com/sponsors/tiredofit) my work so that I can work with various hardware. To see if this image supports multiple architecures, type `docker manifest (image):(tag)`
