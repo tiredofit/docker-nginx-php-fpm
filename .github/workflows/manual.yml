@@ -9,7 +9,7 @@ on:
       Manual Build:
         description: 'Manual Build'
         required: false
-        jobs:
+jobs:
             php82_alpine:
               env:
                 DISTRO: "alpine"

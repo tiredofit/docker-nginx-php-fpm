@@ -1,3 +1,9 @@
+## 7.6.16 2023-11-22 <dave at tiredofit dot ca>
+
+   ### Added
+      - Introduce PHP 8.3 support
+
+
 ## 7.6.15 2023-09-13 <dave at tiredofit dot ca>
 
    ### Changed
