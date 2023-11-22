@@ -17,6 +17,9 @@ case ${os} in
             8.2 )
                 php_prefix="/etc/php82/"
             ;;
+            8.3 )
+                php_prefix="/etc/php83/"
+            ;;
             * )
                 php_prefix="/etc/php$(php -v 2>/dev/null | grep "^PHP " | head -n 1 | awk '{print $2}' | cut -c 1)/"
             ;;

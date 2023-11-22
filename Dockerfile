@@ -42,10 +42,100 @@ ENV PHP_BASE=${PHP_BASE:-"8.2"} \
 
 ### Dependency Installation
 RUN case "${PHP_BASE}" in \
+       8.3 ) export php_folder="83" export build_gnupg=true ;; \
        8.2 ) export php_folder="82" export build_gnupg=true ;; \
        8.1 ) export php_folder="81" export build_gnupg=true ;; \
        *) export php_folder=${PHP_BASE:0:1} ; export build_gnupg=false ;; \
     esac ; \
+    export PHP_8_3_RUN_DEPS=" \
+                            gnu-libiconv \
+                            mariadb-connector-c \
+                            php83 \
+                            php83-bcmath \
+                            php83-brotli \
+                            php83-bz2 \
+                            php83-calendar \
+                            php83-common \
+                            php83-ctype \
+                            php83-curl \
+                            php83-dba \
+                            php83-dom \
+                            php83-embed \
+                            php83-enchant \
+                            php83-exif \
+                            php83-ffi \
+                            php83-fileinfo \
+                            php83-fpm \
+                            php83-ftp \
+                            php83-gd \
+                            php83-gettext \
+                            php83-gmp \
+                            php83-iconv \
+                            php83-imap \
+                            php83-intl \
+                            php83-ldap \
+                            php83-litespeed \
+                            php83-mbstring \
+                            php83-mysqli \
+                            php83-mysqlnd \
+                            php83-odbc \
+                            php83-opcache \
+                            php83-openssl \
+                            php83-pcntl \
+                            php83-pdo \
+                            php83-pdo_dblib \
+                            php83-pdo_mysql \
+                            php83-pdo_odbc \
+                            php83-pdo_pgsql \
+                            php83-pdo_sqlite \
+                            php83-pear \
+                            php83-pecl-amqp \
+                            php83-pecl-apcu \
+                            php83-pecl-ast \
+                            php83-pecl-couchbase \
+                            php83-pecl-igbinary \
+                            php83-pecl-imagick \
+                            php83-pecl-lzf \
+                            php83-pecl-maxminddb \
+                            php83-pecl-memcache \
+                            php83-pecl-memcached \
+                            php83-pecl-mongodb \
+                            php83-pecl-msgpack \
+                            php83-pecl-protobuf \
+                            php83-pecl-psr \
+                            php83-pecl-redis \
+                            php83-pecl-swoole \
+                            php83-pecl-uploadprogress \
+                            php83-pecl-uuid \
+                            php83-pecl-xdebug \
+                            php83-pecl-xhprof \
+                            php83-pecl-xhprof-assets \
+                            php83-pecl-yaml \
+                            php83-pecl-zstd \
+                            php83-pgsql \
+                            php83-phar \
+                            php83-posix \
+                            php83-pspell \
+                            php83-session \
+                            php83-shmop \
+                            php83-simplexml \
+                            php83-snmp \
+                            php83-soap \
+                            php83-sockets \
+                            php83-sodium \
+                            php83-sqlite3 \
+                            php83-sysvmsg \
+                            php83-sysvsem \
+                            php83-sysvshm \
+                            php83-tidy \
+                            php83-tokenizer \
+                            php83-xml \
+                            php83-xmlreader \
+                            php83-xmlwriter \
+                            php83-xsl \
+                            php83-zip \
+                            " && \
+    \
     export PHP_8_2_RUN_DEPS=" \
                             gnu-libiconv \
                             mariadb-connector-c \

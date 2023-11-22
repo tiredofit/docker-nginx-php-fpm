@@ -14,7 +14,7 @@
 
 This repository will build a [Nginx](https://www.nginx.org) w/[PHP-FPM](https://php.net) docker image, suitable for serving PHP scripts, or utilizing as a base image for installing additional software.
 
-* Tracking PHP 5.3-8.2
+* Tracking PHP 5.3-8.3
 * Easily enable / disable extensions based on your use case
 * Automatic Log rotation
 * Composer Included
@@ -87,6 +87,7 @@ The following image tags are available along with their tagged release based on 
 | PHP version | Alpine Base | Tag            | Debian Base | Tag                    |
 | ----------- | ----------- | -------------- | ----------- | ---------------------- |
 | latest      | edge        | `:alpine-edge` |             |                        |
+| 8.3.x       | edge        | `:8.3-alpine`  | Bookworm    | `:8.3-debian-bookworm` |
 | 8.2.x       | 3.18        | `:8.2-alpine`  | Bookworm    | `:8.2-debian-bookworm` |
 | 8.1.x       | 3.18        | `:8.1-alpine`  | Bookworm    | `:8.1-debian-bookworm` |
 | 8.0.x       | 3.16        | `:8.0-alpine`  | Bookworm    | `:8.0-debian-bookworm` |
@@ -326,17 +327,17 @@ Welcomed. Please fork the repository and submit a [pull request](../../pulls) fo
 These images were built to serve a specific need in a production environment and gradually have had more functionality added based on requests from the community.
 ### Usage
 - The [Discussions board](../../discussions) is a great place for working with the community on tips and tricks of using this image.
-- Consider [sponsoring me](https://github.com/sponsors/tiredofit) for personalized support
+- [Sponsor me](https://tiredofit.ca/sponsor) for personalized support
 ### Bugfixes
 - Please, submit a [Bug Report](issues/new) if something isn't working as expected. I'll do my best to issue a fix in short order.
 
 ### Feature Requests
 - Feel free to submit a feature request, however there is no guarantee that it will be added, or at what timeline.
-- Consider [sponsoring me](https://github.com/sponsors/tiredofit) regarding development of features.
+- [Sponsor me](https://tiredofit.ca/sponsor) regarding development of features.
 
 ### Updates
 - Best effort to track upstream changes, More priority if I am actively using the image in a production environment.
-- Consider [sponsoring me](https://github.com/sponsors/tiredofit) for up to date releases.
+- [Sponsor me](https://tiredofit.ca/sponsor) for up to date releases.
 
 ## License
 MIT. See [LICENSE](LICENSE) for more details.

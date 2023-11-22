@@ -70,6 +70,9 @@ RUN export PHP_7_3_RUN_DEPS=" \
     export PHP_8_2_RUN_DEPS=" \
                 " && \
     \
+    export PHP_8_3_RUN_DEPS=" \
+                " && \
+    \
     export PHP_ADDITIONAL_MODULES=" \
                 php$PHP_BASE-ast \
                 php$PHP_BASE-apcu \
