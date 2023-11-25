@@ -96,7 +96,7 @@ EOF
         if [ "${PHP_XDEBUG_PROFILER_ENABLE}" = "1" ] || [ "${PHP_XDEBUG_MODE}" = "trace" ]; then
             print_notice "PROFILING MODE ACTIVATED: Please find the profiler logs at: ${PHP_XDEBUG_PROFILER_DIR}"
             mkdir -p "$PHP_XDEBUG_PROFILER_DIR"
-            chown -R "${NGINX_USER}":"${NGINX_GROUP}" "${PHP_XDEBUG_PROFILER_DIR}"
+            chown -R "${PHP_FPM_USER}":"${PHP_FPM_GROUP}" "${PHP_XDEBUG_PROFILER_DIR}"
         fi
     fi
 
@@ -117,7 +117,7 @@ EOF
     esac
 
     if var_true "${CONTAINER_ENABLE_MESSAGING}" ; then
-        chown "${NGINX_USER}":"${NGINX_GROUP}" /etc/msmtprc
+        chown "${PHP_FPM_USER}":"${PHP_FPM_GROUP}" /etc/msmtprc
         chmod 0600 /etc/msmtprc
     fi
 
@@ -149,9 +149,9 @@ phpfpm_configure_logging() {
     mkdir -p "${PHP_LOG_LOCATION}"
     touch "${PHP_LOG_LOCATION}"/"${PHP_LOG_ACCESS_FILE}"
     touch "${PHP_LOG_LOCATION}"/"${PHP_LOG_ERROR_FILE}"
-    chown -R "${NGINX_USER}":"${NGINX_GROUP}" "${PHP_LOG_LOCATION}"
-    create_logrotate php-fpm-access "${PHP_LOG_LOCATION}"/"${PHP_LOG_ACCESS_FILE}" php-fpm "${NGINX_USER}" "${NGINX_GROUP}"
-    create_logrotate php-fpm-error "${PHP_LOG_LOCATION}"/"${PHP_LOG_ERROR_FILE}" php-fpm-error "${NGINX_USER}" "${NGINX_GROUP}"
+    chown -R "${PHP_FPM_USER}":"${PHP_FPM_GROUP}" "${PHP_LOG_LOCATION}"
+    create_logrotate php-fpm-access "${PHP_LOG_LOCATION}"/"${PHP_LOG_ACCESS_FILE}" php-fpm "${NGINX_USER}" "${PHP_FPM_GROUP}"
+    create_logrotate php-fpm-error "${PHP_LOG_LOCATION}"/"${PHP_LOG_ERROR_FILE}" php-fpm-error "${NGINX_USER}" "${PHP_FPM_GROUP}"
     sed -i "/access.format=/d" /assets/php-fpm/fpm/php-fpm.conf
     case "${PHP_LOG_ACCESS_FORMAT,,}" in
         "default" | "standard" )
@@ -170,17 +170,14 @@ phpfpm_configure_nginx() {
     if var_true "${NGINX_ENABLE_UPSTREAM_KEEPALIVE}" ; then
         upstream_keepalive="keepalive ${NGINX_UPSTREAM_KEEPALIVE};"
     fi
-
     php_fpm_hosts=$(echo "${PHP_FPM_HOST}" | tr "," "\n")
     echo "upstream php-fpm-upstream {" >> /etc/nginx/snippets/php-fpm-upstream.conf
     echo "     ${upstream_keepalive}" >> /etc/nginx/snippets/php-fpm-upstream.conf
-    for host in $php_fpm_hosts; do
-        if [[ ${host} != *":"* ]];then
-            php_listen_port=":${PHP_FPM_LISTEN_PORT}"
-        else
-            php_listen_port=""
+    for php_fpm_host in $php_fpm_hosts; do
+        if [[ ${php_fpm_host} != *":"* ]];then
+            php_fpm_host_socket_prefix="unix://"
         fi
-        echo "    server $host${php_listen_port} ${PHP_FPM_UPSTREAM_OPTIONS};" >> /etc/nginx/snippets/php-fpm-upstream.conf
+        echo "    server ${php_fpm_host_socket_prefix}${php_fpm_host} ${PHP_FPM_UPSTREAM_OPTIONS};" >> /etc/nginx/snippets/php-fpm-upstream.conf
     done
     echo "}" >> /etc/nginx/snippets/php-fpm-upstream.conf
 
@@ -195,15 +192,45 @@ phpfpm_configure_nginx() {
 }
 
 phpfpm_configure_server() {
+    create_socket_dir() {
+        if [ ! -d "$(dirname "${PHP_FPM_LISTEN_UNIX_SOCKET}")" ]; then
+            mkdir -p "$(dirname "${PHP_FPM_LISTEN_UNIX_SOCKET}")"
+            chown -R "${PHP_FPM_LISTEN_UNIX_USER}":"${PHP_FPM_LISTEN_UNIX_GROUP}" "$(dirname "${PHP_FPM_LISTEN_UNIX_SOCKET}")"
+        fi
+    }
+
     if [ "${PHP_BASE:0:1}" = "5" ] ; then echo "suhosin.executor.include.whitelist = phar" >> /etc/php"${PHP_BASE:0:1}"/php.ini ; fi
     truefalse_onoff PHP_DISPLAY_ERRORS
+
+    case "${PHP_FPM_LISTEN_TYPE,,}" in
+        "both" )
+            create_socket_dir
+        ;;
+        "tcp" )
+            sed -i \
+                        -e "/listen = {{PHP_FPM_LISTEN_UNIX_SOCKET}}/d" \
+                        -e "/listen.owner = {{PHP_FPM_LISTEN_UNIX_USER}}/d" \
+                        -e "/listen.group = {{PHP_FPM_LISTEN_UNIX_GROUP}}/d" \
+                    /assets/php-fpm/fpm/php-fpm.conf
+        ;;
+        "unix" )
+            create_socket_dir
+            sed -i \
+                        -e "/listen = {{PHP_FPM_LISTEN_TCP_IP}}:{{PHP_FPM_LISTEN_TCP_PORT}}/d" \
+                        -e "/listen.allowed_clients = {{PHP_FPM_LISTEN_TCP_IP_ALLOWED}}/d" \
+                    /assets/php-fpm/fpm/php-fpm.conf
+        ;;
+    esac
+
     update_template /assets/php-fpm/fpm/php-fpm.conf \
-                                                    NGINX_USER \
-                                                    NGINX_GROUP \
                                                     PHP_DISPLAY_ERRORS \
                                                     PHP_FPM_HOST \
-                                                    PHP_FPM_LISTEN_PORT \
-                                                    PHP_FPM_LISTEN_PORT \
+                                                    PHP_FPM_LISTEN_TCP_IP \
+                                                    PHP_FPM_LISTEN_TCP_IP_ALLOWED \
+                                                    PHP_FPM_LISTEN_TCP_PORT \
+                                                    PHP_FPM_LISTEN_UNIX_GROUP \
+                                                    PHP_FPM_LISTEN_UNIX_SOCKET \
+                                                    PHP_FPM_LISTEN_UNIX_USER \
                                                     PHP_FPM_MAX_CHILDREN \
                                                     PHP_FPM_MAX_REQUESTS \
                                                     PHP_FPM_MAX_SPARE_SERVERS \
@@ -369,7 +396,7 @@ phpfpm_post_init() {
     fi
 
     chmod -R 0755 "${php_prefix}"
-    chown -R root:"${NGINX_GROUP}" "${php_prefix}"
+    chown -R root:"${PHP_FPM_GROUP}" "${php_prefix}"
 
     if [ -n "${PHP_FPM_POST_INIT_SCRIPT}" ] ; then
         print_debug "Found Post Init Scripts"

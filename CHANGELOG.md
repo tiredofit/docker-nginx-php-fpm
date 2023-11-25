@@ -1,3 +1,11 @@
+## 7.7.0 2023-11-25 <dave at tiredofit dot ca>
+
+   ### Added
+      - Allow listening on Unix Socket or TCP Socket (default Unix Socket)
+      - Add host/ip restrictions for TCP listening
+      - Add PHP_FPM_USER and PHP_FPM_GROUP variables to create isolation from upstream image (default NGINX_ or UNIT_ USER|GROUP)
+
+
 ## 7.6.16 2023-11-22 <dave at tiredofit dot ca>
 
    ### Added

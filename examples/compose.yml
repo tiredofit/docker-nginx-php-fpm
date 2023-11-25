@@ -1,8 +1,6 @@
-version: '3.7'
-
 services:
   nginx-php-fpm-app:
-    image: tiredofit/nginx-php-fpm/8.1
+    image: tiredofit/nginx-php-fpm/8.3-alpine
     container_name: nginx-php-fpm-app
     labels:
       - traefik.enable=true
@@ -14,7 +12,6 @@ services:
     environment:
       - TIMEZONE=America/Vancouver
       - CONTAINER_NAME=nginx-php-fpm-app-app
-      
     networks:
       - services
       - proxy
