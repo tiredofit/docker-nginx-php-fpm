@@ -1,3 +1,9 @@
+## 7.7.2 2023-11-28 <dave at tiredofit dot ca>
+
+   ### Reverted
+      - Drop php-lua extension
+
+
 ## 7.7.1 2023-11-28 <dave at tiredofit dot ca>
 
    ### Changed
