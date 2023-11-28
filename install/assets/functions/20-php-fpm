@@ -203,9 +203,6 @@ phpfpm_configure_server() {
     truefalse_onoff PHP_DISPLAY_ERRORS
 
     case "${PHP_FPM_LISTEN_TYPE,,}" in
-        "both" )
-            create_socket_dir
-        ;;
         "tcp" )
             sed -i \
                         -e "/listen = {{PHP_FPM_LISTEN_UNIX_SOCKET}}/d" \

@@ -194,12 +194,12 @@ When `PHP_FPM_CONTAINER_MODE` set to `nginx` the `PHP_FPM_LISTEN_PORT` environme
 | `PHP_APC_SHM_SIZE`                    | APC Cache Memory size - `0` to disable                                                                   | `128M`                                      |
 | `PHP_APC_TTL`                         | APC Time to live in seconds                                                                              | `7200`                                      |
 | `PHP_FPM_HOST`                        | PHP-FPM Host, dependenent on PHP_FPM_LISTEN_TYPE, add multiple with commas                               | `127.0.0.1:9000` or `/var/run/php-fpm.sock` |
-| `PHP_FPM_LISTEN_TYPE`                 | PHP-FPM listen type `UNIX` sockets or `TCP` sockets or `BOTH`                                            | `unix`                                      |
+| `PHP_FPM_LISTEN_TYPE`                 | PHP-FPM listen type `UNIX` sockets or `TCP` sockets                                                      | `unix`                                      |
 | `PHP_FPM_LISTEN_TCP_IP`               | PHP-FPM Listening IP if `PHP_LISTEN_TYPE=TCP`                                                            | `0.0.0.0`                                   |
 | `PHP_FPM_LISTEN_TCP_IP_ALLOWED`       | PHP-FPM allow only these hosts if `PHP_LISTEN_TYPE=TCP`                                                  | `127.0.0.1`                                 |
 | `PHP_FPM_LISTEN_TCP_PORT`             | PHP-FPM Listening Port - Ignored with above container options                                            | `9000`                                      |
 | `PHP_FPM_LISTEN_UNIX_SOCKET`          | PHP-FPM Listen Socket if `PHP_LISTEN_TYPE=UNIX`                                                          | `/var/run/php-fpm.sock`                     |
-| `PHP_FPM_LISTEN_UNIX_SOCKET_USER`     | PHP-FPM Listen Socket user `PHP_LISTEN_TYPE=UNIX`                                                        | `${NGINX_USER}` or `${UNIT_USER}`          |
+| `PHP_FPM_LISTEN_UNIX_SOCKET_USER`     | PHP-FPM Listen Socket user `PHP_LISTEN_TYPE=UNIX`                                                        | `${NGINX_USER}` or `${UNIT_USER}`           |
 | `PHP_FPM_LISTEN_UNIX_SOCKET_GROUP`    | PHP-FPM Listen Socket group `PHP_LISTEN_TYPE=UNIX`                                                       | `${NGINX_GROUP}` or `${UNIT_GROUP}`         |
 | `PHP_FPM_MAX_CHILDREN`                | Maximum Children                                                                                         | `75`                                        |
 | `PHP_FPM_MAX_REQUESTS`                | How many requests before spawning new server                                                             | `500`                                       |
@@ -210,7 +210,7 @@ When `PHP_FPM_CONTAINER_MODE` set to `nginx` the `PHP_FPM_LISTEN_PORT` environme
 | `PHP_FPM_POST_INIT_SCRIPT`            | If you wish to execute a script before php-fpm executes, enter it here and seperate multiples by comma.  |                                             |
 | `PHP_FPM_PROCESS_MANAGER`             | How to handle processes `static`, `ondemand`, `dynamic`                                                  | `dynamic`                                   |
 | `PHP_FPM_START_SERVERS`               | How many FPM servers to start initially                                                                  | `2`                                         |
-| `PHP_FPM_USER`                        | User to run PHP-FPM master process as                                                                    | `${NGINX_USER}` or `${UNIT_USER}`                            |
+| `PHP_FPM_USER`                        | User to run PHP-FPM master process as                                                                    | `${NGINX_USER}` or `${UNIT_USER}`           |
 | `PHP_HIDE_X_POWERED_BY`               | Hide X-Powered by response                                                                               | `TRUE`                                      |
 | `PHP_LOG_ACCESS_FILE`                 | PHP Access Logfile Name                                                                                  | `access.log`                                |
 | `PHP_LOG_ERROR_FILE`                  | Logfile name                                                                                             | `error.log`                                 |

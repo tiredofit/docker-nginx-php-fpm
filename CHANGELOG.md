@@ -1,3 +1,9 @@
+## 7.7.1 2023-11-28 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Remove `BOTH` Option for PHP_FPM_LISTEN_TYPE
+
+
 ## 7.7.0 2023-11-25 <dave at tiredofit dot ca>
 
    ### Added
