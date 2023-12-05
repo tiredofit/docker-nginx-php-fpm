@@ -80,7 +80,6 @@ RUN export PHP_7_3_RUN_DEPS=" \
                 php$PHP_BASE-grpc \
                 php$PHP_BASE-imagick \
                 php$PHP_BASE-inotify \
-                php-lua \
                 php$PHP_BASE-lz4 \
                 php$PHP_BASE-mailparse \
                 php$PHP_BASE-maxminddb \

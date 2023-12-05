@@ -1,3 +1,9 @@
+## 7.7.3 2023-12-05 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change build for Alpine PHP 8.3 to not include 4 PECL extensions
+
+
 ## 7.7.2 2023-11-28 <dave at tiredofit dot ca>
 
    ### Reverted

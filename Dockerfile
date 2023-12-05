@@ -1,12 +1,12 @@
 ARG DISTRO=alpine
-ARG DISTRO_VARIANT=3.18
+ARG DISTRO_VARIANT=edge
 
 FROM docker.io/tiredofit/nginx:${DISTRO}-${DISTRO_VARIANT}
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE
 
-ENV PHP_BASE=${PHP_BASE:-"8.2"} \
+ENV PHP_BASE=${PHP_BASE:-"8.3"} \
     PHP_ENABLE_APCU=TRUE \
     PHP_ENABLE_BCMATH=TRUE \
     PHP_ENABLE_BZ2=TRUE \
@@ -94,19 +94,15 @@ RUN case "${PHP_BASE}" in \
                             php83-pecl-ast \
                             php83-pecl-couchbase \
                             php83-pecl-igbinary \
-                            php83-pecl-imagick \
-                            php83-pecl-lzf \
                             php83-pecl-maxminddb \
                             php83-pecl-memcache \
                             php83-pecl-memcached \
                             php83-pecl-mongodb \
                             php83-pecl-msgpack \
-                            php83-pecl-protobuf \
                             php83-pecl-psr \
                             php83-pecl-redis \
                             php83-pecl-swoole \
                             php83-pecl-uploadprogress \
-                            php83-pecl-uuid \
                             php83-pecl-xdebug \
                             php83-pecl-xhprof \
                             php83-pecl-xhprof-assets \

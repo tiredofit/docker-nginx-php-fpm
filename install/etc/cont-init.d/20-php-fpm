@@ -30,7 +30,9 @@ case "${PHP_FPM_CONTAINER_MODE,,}" in
       ;;
       "php-fpm")
             print_warn "Setting Container to operate in PHP-FPM standalone mode - You will need a seperate container for Nginx or another webserver to serve content"
-            service_stop 10-nginx
+            set -x
+            mod_service_stop 10-nginx
+            set +x
             print_notice "Setting PHP-FPM to serve from ${PHP_WEBROOT}"
             sed -i "/[www]#/achdir = ${PHP_WEBROOT}" /assets/php-fpm/fpm/php-fpm.conf
             rm -rf /etc/zabbix/zabbix_agent.conf.d/nginx.conf
