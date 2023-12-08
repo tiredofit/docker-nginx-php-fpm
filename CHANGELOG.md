@@ -1,3 +1,9 @@
+## 7.7.4 2023-12-08 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Add alpine:3.19
+
+
 ## 7.7.3 2023-12-05 <dave at tiredofit dot ca>
 
    ### Changed

@@ -87,9 +87,9 @@ The following image tags are available along with their tagged release based on 
 | PHP version | Alpine Base | Tag            | Debian Base | Tag                    |
 | ----------- | ----------- | -------------- | ----------- | ---------------------- |
 | latest      | edge        | `:alpine-edge` |             |                        |
-| 8.3.x       | edge        | `:8.3-alpine`  | Bookworm    | `:8.3-debian-bookworm` |
-| 8.2.x       | 3.18        | `:8.2-alpine`  | Bookworm    | `:8.2-debian-bookworm` |
-| 8.1.x       | 3.18        | `:8.1-alpine`  | Bookworm    | `:8.1-debian-bookworm` |
+| 8.3.x       | 3.19        | `:8.3-alpine`  | Bookworm    | `:8.3-debian-bookworm` |
+| 8.2.x       | 3.19        | `:8.2-alpine`  | Bookworm    | `:8.2-debian-bookworm` |
+| 8.1.x       | 3.19        | `:8.1-alpine`  | Bookworm    | `:8.1-debian-bookworm` |
 | 8.0.x       | 3.16        | `:8.0-alpine`  | Bookworm    | `:8.0-debian-bookworm` |
 | 7.4.x       | 3.15        | `:7.4-alpine`  | Bookworm    | `:7.4-debian-bookworm` |
 | 7.3.x       | 3.12        | `:7.3-alpine`  | Bookworm    | `:7.3-debian-bookworm` |
