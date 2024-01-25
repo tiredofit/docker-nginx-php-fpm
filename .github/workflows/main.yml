@@ -34,10 +34,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
@@ -158,10 +158,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
@@ -282,10 +282,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
@@ -406,10 +406,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
@@ -531,10 +531,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
@@ -656,10 +656,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
@@ -781,10 +781,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
@@ -906,10 +906,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
@@ -1030,10 +1030,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
@@ -1154,10 +1154,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_ALPINE }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}${image_latest}"
@@ -1278,10 +1278,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -1402,10 +1402,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -1525,10 +1525,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -1649,10 +1649,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -1773,10 +1773,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -1898,10 +1898,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -2023,10 +2023,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -2147,10 +2147,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -2271,10 +2271,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -2395,10 +2395,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -2519,10 +2519,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -2643,10 +2643,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -2767,10 +2767,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -2891,10 +2891,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -3015,10 +3015,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
@@ -3139,10 +3139,10 @@ jobs:
 
               case "${git_branch}" in
                   "main" | "master" )
-                      if [ "${{ env.LATEST }}" = "TRUE" ] || [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST }}" ]; then
+                      if [ "${{ vars.LATEST }}" = "TRUE" ] || [ "${{ vars.LATEST }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest=",${GITHUB_REPOSITORY}:latest"
                       fi
-                      if [ "${DISTRO_VARIANT}" = "${{ secrets.LATEST_DEBIAN }}" ]; then
+                      if [ "${{ vars.LATEST_ALPINE }}" = "${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}" ]; then
                           image_latest+=",${GITHUB_REPOSITORY}:${DISTRO}"
                       fi
                       branch_tag="${GITHUB_REPOSITORY}:${PHP_BASE},${GITHUB_REPOSITORY}:${PHP_BASE}-${DISTRO}-${DISTRO_VARIANT}${image_latest}"
