@@ -1,3 +1,9 @@
+## 7.7.5 2024-01-26 <dave at tiredofit dot ca>
+
+   ### Reverted
+      - Remove lz4 extension from Debian variant
+
+
 ## 7.7.4 2023-12-08 <dave at tiredofit dot ca>
 
    ### Changed
