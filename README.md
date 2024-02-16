@@ -125,6 +125,11 @@ Use this as a starting point for your site configurations:
       ### Populate your custom directives here
       index  index.php index.html index.htm;
 
+      # Deny access to any files with a .php extension in the uploads directory
+      location ~* /(?:uploads|files)/.*\.php$ {
+          deny all;
+      }
+
       location / {
           try_files \$uri \$uri/ /index.php?\$args;
       }
@@ -137,11 +142,6 @@ Use this as a starting point for your site configurations:
           fastcgi_index index.php;
           include fastcgi_params;
           fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-      }
-
-      # Deny access to any files with a .php extension in the uploads directory
-      location ~* /(?:uploads|files)/.*\.php$ {
-          deny all;
       }
 
       ### Don't edit past here
