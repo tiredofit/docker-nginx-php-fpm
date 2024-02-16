@@ -881,7 +881,7 @@ RUN case "${PHP_BASE}" in \
                             php5-soap \
                             php5-sockets \
                             php5-sqlite3 \
-                            php5-suhosin \
+                            #php5-suhosin \
                             php5-wddx \
                             php5-xml \
                             php5-xmlreader \
