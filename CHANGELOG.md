@@ -1,3 +1,9 @@
+## 7.7.6 2024-02-16 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Remove Suhosin from hp5.6 variant
+
+
 ## 7.7.5 2024-01-26 <dave at tiredofit dot ca>
 
    ### Reverted
