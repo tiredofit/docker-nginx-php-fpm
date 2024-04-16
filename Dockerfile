@@ -52,7 +52,6 @@ RUN case "${PHP_BASE}" in \
                             mariadb-connector-c \
                             php83 \
                             php83-bcmath \
-                            php83-brotli \
                             php83-bz2 \
                             php83-calendar \
                             php83-common \
@@ -92,15 +91,25 @@ RUN case "${PHP_BASE}" in \
                             php83-pecl-amqp \
                             php83-pecl-apcu \
                             php83-pecl-ast \
+                            php83-pecl-brotli \
                             php83-pecl-couchbase \
+                            php83-pecl-ds \
+                            php83-pecl-event \
+                            php83-pecl-grpc \
+                            php83-pecl-imagick \
                             php83-pecl-igbinary \
                             php83-pecl-maxminddb \
                             php83-pecl-memcache \
                             php83-pecl-memcached \
                             php83-pecl-mongodb \
                             php83-pecl-msgpack \
+                            php83-pecl-opentelemetry \
+                            php83-pecl-pcov \
                             php83-pecl-psr \
+                            php83-pecl-rdkafka \
                             php83-pecl-redis \
+                            php83-pecl-smbclient \
+                            php83-pecl-ssh2 \
                             php83-pecl-swoole \
                             php83-pecl-uploadprogress \
                             php83-pecl-xdebug \
@@ -137,7 +146,6 @@ RUN case "${PHP_BASE}" in \
                             mariadb-connector-c \
                             php82 \
                             php82-bcmath \
-                            php82-brotli \
                             php82-bz2 \
                             php82-calendar \
                             php82-common \
@@ -177,24 +185,39 @@ RUN case "${PHP_BASE}" in \
                             php82-pecl-amqp \
                             php82-pecl-apcu \
                             php82-pecl-ast \
+                            php82-pecl-brotli \
                             php82-pecl-couchbase \
+                            php82-pecl-decimal \
+                            php82-pecl-ds \
+                            php82-pecl-event \
+                            php82-pecl-grpc \
                             php82-pecl-igbinary \
                             php82-pecl-imagick \
                             php82-pecl-lzf \
+                            php82-pecl-mailparse \
                             php82-pecl-maxminddb \
+                            php82-pecl-mcrypt \
                             php82-pecl-memcache \
                             php82-pecl-memcached \
                             php82-pecl-mongodb \
                             php82-pecl-msgpack \
+                            php82-pecl-opentelemetry \
+                            php82-pecl-pcov \
                             php82-pecl-protobuf \
                             php82-pecl-psr \
+                            php82-pecl-rdkafka \
                             php82-pecl-redis \
+                            php82-pecl-smbclient \
+                            php82-pecl-ssh2 \
                             php82-pecl-swoole \
+                            php82-pecl-timezonedb \
                             php82-pecl-uploadprogress \
                             php82-pecl-uuid \
+                            php82-pecl-vips \
                             php82-pecl-xdebug \
                             php82-pecl-xhprof \
                             php82-pecl-xhprof-assets \
+                            php82-pecl-xlswriter \
                             php82-pecl-yaml \
                             php82-pecl-zstd \
                             php82-pgsql \
@@ -225,7 +248,6 @@ RUN case "${PHP_BASE}" in \
                             mariadb-connector-c \
                             php81 \
                             php81-bcmath \
-                            php81-brotli \
                             php81-bz2 \
                             php81-calendar \
                             php81-common \
@@ -265,21 +287,29 @@ RUN case "${PHP_BASE}" in \
                             php81-pecl-amqp \
                             php81-pecl-apcu \
                             php81-pecl-ast \
+                            php81-pecl-brotli \
                             php81-pecl-couchbase \
+                            php81-pecl-decimal \
+                            php81-pecl-ds \
                             php81-pecl-event \
                             php81-pecl-igbinary \
                             php81-pecl-imagick \
+                            php81-pecl-luasandbox \
                             php81-pecl-lzf \
                             php81-pecl-mailparse \
                             php81-pecl-maxminddb \
+                            php81-pecl-mcrypt \
                             php81-pecl-memcache \
                             php81-pecl-memcached \
                             php81-pecl-mongodb \
                             php81-pecl-msgpack \
+                            php81-pecl-opentelemetry \
+                            php81-pecl-pcov \
                             php81-pecl-protobuf \
                             php81-pecl-psr \
                             php81-pecl-rdkafka \
                             php81-pecl-redis \
+                            php81-pecl-smbclient \
                             php81-pecl-ssh2 \
                             php81-pecl-swoole \
                             php81-pecl-uploadprogress \

@@ -1,3 +1,11 @@
+## 7.7.7 2024-04-16 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add php83 extensions: ds,event,grpc,imagick,opentelemetry,pcov,rdkafka,smblient,ssh2
+      - Add php82 extensions: decimal,ds,event,grpc,mailparse,mcrypt,opentelemetry,pcov,rdkafka,smbclient,ssh2,timezonedb,vips,xlswriter
+      - Add php81 extensions: decimal,ds,luasandbox,mcrypt,opentelemetry,pcov,smbclient
+
+
 ## 7.7.6 2024-02-16 <dave at tiredofit dot ca>
 
    ### Changed
