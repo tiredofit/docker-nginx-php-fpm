@@ -144,7 +144,7 @@ RUN export PHP_7_3_RUN_DEPS=" \
     echo "deb https://mirror.its.dal.ca/mariadb/repo/${mariadb_client_ver}/debian $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')') main" > /etc/apt/sources.list.d/mariadb.list && \
     curl -sSLk https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
     echo "deb https://apt.postgresql.org/pub/repos/apt $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')')-pgdg main" > /etc/apt/sources.list.d/postgres.list && \
-    curl -sSLk https://packages.sury.org/php/apt.gpg | apt-key add - && \
+    apt-key adv --fetch-keys https://packages.sury.org/php/apt.gpg && \
     echo "deb https://packages.sury.org/php/ $(cat /etc/os-release |grep "VERSION=" | awk 'NR>1{print $1}' RS='(' FS=')') main" > /etc/apt/sources.list.d/php.list && \
     package update && \
     package upgrade -y && \

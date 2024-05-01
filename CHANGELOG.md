@@ -1,3 +1,9 @@
+## 7.7.8 2024-05-01 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change sury.org GPG key for Debian installations
+
+
 ## 7.7.7 2024-04-16 <dave at tiredofit dot ca>
 
    ### Added
