@@ -967,7 +967,6 @@ RUN case "${PHP_BASE}" in \
     rm -rf /etc/php${php_folder}/conf.d/* && \
     sed -i "s|;priority=00|;priority=10|g" /etc/php${php_folder}/mods-available/opcache.ini && \
     php_env_plugins_enabled="$(set | sort | grep PHP_ENABLE_ | grep -i TRUE | cut -d _ -f 3 | cut -d = -f 1 |  tr [A-Z] [a-z])" && \
-    cat /etc/php${php_folder}/mods-available/opcache.ini && \
     for module in $php_env_plugins_enabled ; do if [ -f "/etc/php${php_folder}/mods-available/${module}.ini" ] ; then priority=$(cat /etc/php${php_folder}/mods-available/${module}.ini | grep ";priority" | cut -d = -f2) ; ln -sf "/etc/php${php_folder}/mods-available/${module}.ini" /etc/php${php_folder}/conf.d/${priority}-${module}.ini ; fi ; done ; \
     if [ "${PHP_BASE:0:1}" != "8" ] ; then priority=$(cat /etc/php${PHP_BASE:0:1}/mods-available/json.ini | grep ";priority" | cut -d = -f2) ; ln -sf "/etc/php${PHP_BASE:0:1}/mods-available/json.ini" /etc/php${PHP_BASE:0:1}/conf.d/${priority}-json.ini ; fi ; \
     set -x && \

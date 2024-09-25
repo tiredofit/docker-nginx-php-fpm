@@ -1,3 +1,9 @@
+## 7.7.9 2024-09-25 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Remove stray cat command in Dockerfile
+
+
 ## 7.7.8 2024-05-01 <dave at tiredofit dot ca>
 
    ### Changed
