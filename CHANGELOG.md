@@ -1,3 +1,9 @@
+## 7.7.10 2024-09-25 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add php-ext disable reset statement to refresh environments
+
+
 ## 7.7.9 2024-09-25 <dave at tiredofit dot ca>
 
    ### Changed

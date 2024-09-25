@@ -208,6 +208,16 @@ disable_module() {
                     fi
                 done
             ;;
+            reset )
+                case ${os} in
+                    "alpine" )
+                        rm -rf ${php_prefix}conf.d/*
+                    ;;
+                    "debian" )
+                        silent phpdismod $(basename $module .ini)
+                    ;;
+                esac
+            ;;
             * )
                 if [ -f "${php_prefix}mods-available/$1.ini" ]; then
                     echo "Disabling $1"
