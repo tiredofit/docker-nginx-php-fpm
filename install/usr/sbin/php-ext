@@ -214,7 +214,7 @@ disable_module() {
                         rm -rf ${php_prefix}conf.d/*
                     ;;
                     "debian" )
-                        silent phpdismod $(basename $module .ini)
+                        rm -rf ${php_prefix}conf.d/*
                     ;;
                 esac
             ;;

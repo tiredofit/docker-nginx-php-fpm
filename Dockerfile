@@ -1,7 +1,7 @@
 ARG DISTRO=alpine
-ARG DISTRO_VARIANT=edge
+ARG DISTRO_VARIANT=3.20
 
-FROM docker.io/tiredofit/nginx:${DISTRO}-${DISTRO_VARIANT}
+FROM docker.io/tiredofit/nginx:${DISTRO}-${DISTRO_VARIANT}-6.5.2
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE

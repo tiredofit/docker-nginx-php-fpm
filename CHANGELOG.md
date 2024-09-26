@@ -1,3 +1,10 @@
+## 7.7.11 2024-09-26 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Cleanup php-ext script
+      - Pin to tiredofit/nginx:6.5.2
+
+
 ## 7.7.10 2024-09-25 <dave at tiredofit dot ca>
 
    ### Added
