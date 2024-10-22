@@ -1,3 +1,9 @@
+## 7.7.13 2024-10-22 <dave at tiredofit dot ca>
+
+   ### Added
+      - Pin to tiredofit/nginx:6.5.4
+
+
 ## 7.7.12 2024-10-04 <dave at tiredofit dot ca>
 
    ### Added
