@@ -1,3 +1,12 @@
+## 7.7.14 2024-12-07 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add PHP 8.4 Support
+
+   ### Changed
+      - Switch PHP 8.3 and PHP 8.2 to use Alpine 3.21 as base
+
+
 ## 7.7.13 2024-10-22 <dave at tiredofit dot ca>
 
    ### Added

@@ -1,12 +1,12 @@
 ARG DISTRO=alpine
-ARG DISTRO_VARIANT=3.20
+ARG DISTRO_VARIANT=3.21
 
-FROM docker.io/tiredofit/nginx:${DISTRO}-${DISTRO_VARIANT}-6.5.4
+FROM docker.io/tiredofit/nginx:${DISTRO}-${DISTRO_VARIANT}-6.5.7
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE
 
-ENV PHP_BASE=${PHP_BASE:-"8.3"} \
+ENV PHP_BASE=${PHP_BASE:-"8.4"} \
     PHP_ENABLE_APCU=TRUE \
     PHP_ENABLE_BCMATH=TRUE \
     PHP_ENABLE_BZ2=TRUE \
@@ -42,11 +42,106 @@ ENV PHP_BASE=${PHP_BASE:-"8.3"} \
 
 ### Dependency Installation
 RUN case "${PHP_BASE}" in \
+       8.4 ) export php_folder="84" export build_gnupg=true ;; \
        8.3 ) export php_folder="83" export build_gnupg=true ;; \
        8.2 ) export php_folder="82" export build_gnupg=true ;; \
        8.1 ) export php_folder="81" export build_gnupg=true ;; \
        *) export php_folder=${PHP_BASE:0:1} ; export build_gnupg=false ;; \
     esac ; \
+    export PHP_8_4_RUN_DEPS=" \
+                            gnu-libiconv \
+                            mariadb-connector-c \
+                            php84 \
+                            php84-bcmath \
+                            php84-bz2 \
+                            php84-calendar \
+                            php84-common \
+                            php84-ctype \
+                            php84-curl \
+                            php84-dba \
+                            php84-dom \
+                            php84-embed \
+                            php84-enchant \
+                            php84-exif \
+                            php84-ffi \
+                            php84-fileinfo \
+                            php84-fpm \
+                            php84-ftp \
+                            php84-gd \
+                            php84-gettext \
+                            php84-gmp \
+                            php84-iconv \
+                            php84-imap \
+                            php84-intl \
+                            php84-ldap \
+                            php84-litespeed \
+                            php84-mbstring \
+                            php84-mysqli \
+                            php84-mysqlnd \
+                            php84-odbc \
+                            php84-opcache \
+                            php84-openssl \
+                            php84-pcntl \
+                            php84-pdo \
+                            php84-pdo_dblib \
+                            php84-pdo_mysql \
+                            php84-pdo_odbc \
+                            php84-pdo_pgsql \
+                            php84-pdo_sqlite \
+                            php84-pear \
+                            php84-pecl-amqp \
+                            php84-pecl-apcu \
+                            php84-pecl-ast \
+                            php84-pecl-brotli \
+                            php84-pecl-couchbase \
+                            php84-pecl-ds \
+                            php84-pecl-event \
+                            php84-pecl-grpc \
+                            php84-pecl-imagick \
+                            php84-pecl-igbinary \
+                            php84-pecl-maxminddb \
+                            php84-pecl-memcache \
+                            php84-pecl-memcached \
+                            php84-pecl-mongodb \
+                            php84-pecl-msgpack \
+                            php84-pecl-opentelemetry \
+                            php84-pecl-pcov \
+                            php84-pecl-psr \
+                            php84-pecl-rdkafka \
+                            php84-pecl-redis \
+                            php84-pecl-smbclient \
+                            php84-pecl-ssh2 \
+                            php84-pecl-swoole \
+                            php84-pecl-uploadprogress \
+                            php84-pecl-xdebug \
+                            php84-pecl-xhprof \
+                            php84-pecl-xhprof-assets \
+                            php84-pecl-yaml \
+                            php84-pecl-zstd \
+                            php84-pgsql \
+                            php84-phar \
+                            php84-posix \
+                            php84-pspell \
+                            php84-session \
+                            php84-shmop \
+                            php84-simplexml \
+                            php84-snmp \
+                            php84-soap \
+                            php84-sockets \
+                            php84-sodium \
+                            php84-sqlite3 \
+                            php84-sysvmsg \
+                            php84-sysvsem \
+                            php84-sysvshm \
+                            php84-tidy \
+                            php84-tokenizer \
+                            php84-xml \
+                            php84-xmlreader \
+                            php84-xmlwriter \
+                            php84-xsl \
+                            php84-zip \
+                            " && \
+    \
     export PHP_8_3_RUN_DEPS=" \
                             gnu-libiconv \
                             mariadb-connector-c \

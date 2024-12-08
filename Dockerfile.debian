@@ -6,7 +6,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ARG PHP_BASE
 
-ENV PHP_BASE=${PHP_BASE:-"8.2"} \
+ENV PHP_BASE=${PHP_BASE:-"8.4"} \
     PHP_ENABLE_APCU=TRUE \
     PHP_ENABLE_BCMATH=TRUE \
     PHP_ENABLE_BZ2=TRUE \
@@ -71,6 +71,9 @@ RUN export PHP_7_3_RUN_DEPS=" \
                 " && \
     \
     export PHP_8_3_RUN_DEPS=" \
+                " && \
+    \
+    export PHP_8_4_RUN_DEPS=" \
                 " && \
     \
     export PHP_ADDITIONAL_MODULES=" \
