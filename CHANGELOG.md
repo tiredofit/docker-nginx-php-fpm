@@ -1,3 +1,9 @@
+## 7.7.15 2024-12-09 <dave at tiredofit dot ca>
+
+   ### Added
+      - Alpine pin to tiredofit/nginx:6.5.8
+
+
 ## 7.7.14 2024-12-07 <dave at tiredofit dot ca>
 
    ### Added
