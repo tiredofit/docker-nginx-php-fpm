@@ -1,3 +1,9 @@
+## 7.7.17 2024-12-19 <dave at tiredofit dot ca>
+
+   ### Reverted
+      - Remove php84-spell component to support building under Alpine
+
+
 ## 7.7.16 2024-12-12 <dave at tiredofit dot ca>
 
    ### Added

@@ -121,7 +121,6 @@ RUN case "${PHP_BASE}" in \
                             php84-pgsql \
                             php84-phar \
                             php84-posix \
-                            php84-pspell \
                             php84-session \
                             php84-shmop \
                             php84-simplexml \
