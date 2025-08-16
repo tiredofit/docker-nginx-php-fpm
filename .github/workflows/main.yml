@@ -509,7 +509,7 @@ jobs:
   php81_alpine:
     env:
       DISTRO: "alpine"
-      DISTRO_VARIANT: "3.19"
+      DISTRO_VARIANT: "3.18"
       PHP_BASE: 8.1
       build_file: Dockerfile
     runs-on: ubuntu-latest

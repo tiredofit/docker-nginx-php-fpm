@@ -1,3 +1,9 @@
+## 7.7.20 2025-08-16 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change php8.1-alpine to use alpine 3.18 base with prebuilt images
+
+
 ## 7.7.19 2025-04-27 <dave at tiredofit dot ca>
 
    ### Added
