@@ -14,6 +14,9 @@ phpfpm_bootstrap() {
                 8.3 )
                     php_prefix="/etc/php83/"
                 ;;
+                8.4 )
+                    php_prefix="/etc/php84/"
+                ;;
                 * )
                     php_prefix="/etc/php$(php -v 2>/dev/null | grep "^PHP " | head -n 1 | awk '{print $2}' | cut -c 1)/"
                 ;;
